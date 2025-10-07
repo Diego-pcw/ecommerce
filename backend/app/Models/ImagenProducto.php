@@ -20,6 +20,9 @@ class ImagenProducto extends Model
         'estado',
     ];
 
+    // 🧩 Agregar 'url' automáticamente en las respuestas JSON
+    protected $appends = ['url'];
+
     protected $casts = [
         'principal' => 'boolean',
         'orden' => 'integer',
@@ -36,10 +39,15 @@ class ImagenProducto extends Model
     }
 
     // 🔹 URL pública de imagen
+    
     public function getUrlAttribute()
     {
-        return $this->path
-            ? asset('storage/' . $this->path)
-            : asset('images/default-product.jpg');
+        if ($this->path) {
+            // Retorna la URL completa a la imagen dentro de storage
+            return asset('storage/' . ltrim($this->path, '/'));
+        }
+
+        // Imagen por defecto si no existe
+        return asset('images/default-product.jpg');
     }
 }
