@@ -7,17 +7,55 @@ use App\Http\Requests\StorePromocionRequest;
 use App\Http\Requests\UpdatePromocionRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class PromocionController extends Controller
 {
     /**
      * 🔹 Listar todas las promociones (públicas o admin)
+     * Soporta filtros, orden, y paginación.
+     * Ejemplo:
+     *   GET /api/promociones?estado=activo&vigente=true&search=INVIERNO&sort=fecha_inicio,desc&page=1&per_page=10
      */
-    public function index()
+    public function index(Request $request)
     {
-        $promociones = Promocion::with('productos:id,nombre,precio')
-            ->orderByDesc('fecha_inicio')
-            ->get();
+        $query = Promocion::with('productos:id,nombre,precio');
+
+        // 🔹 Filtrar por estado
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        // 🔹 Filtrar por promociones vigentes
+        if ($request->boolean('vigente')) {
+            $hoy = Carbon::today();
+            $query->where('estado', 'activo')
+                  ->whereDate('fecha_inicio', '<=', $hoy)
+                  ->whereDate('fecha_fin', '>=', $hoy);
+        }
+
+        // 🔹 Búsqueda parcial (por título o descripción)
+        if ($request->filled('search')) {
+            $search = mb_strtoupper($request->search);
+            $query->where(function ($q) use ($search) {
+                $q->whereRaw('UPPER(titulo) LIKE ?', ["%$search%"])
+                  ->orWhereRaw('UPPER(descripcion) LIKE ?', ["%$search%"]);
+            });
+        }
+
+        // 🔹 Ordenamiento dinámico
+        if ($request->filled('sort')) {
+            [$column, $direction] = explode(',', $request->sort) + [null, 'asc'];
+            if (in_array($column, ['fecha_inicio', 'fecha_fin', 'titulo', 'descuento_valor'])) {
+                $query->orderBy($column, $direction === 'desc' ? 'desc' : 'asc');
+            }
+        } else {
+            $query->orderByDesc('fecha_inicio');
+        }
+
+        // 🔹 Paginación
+        $perPage = $request->get('per_page', 10);
+        $promociones = $query->paginate($perPage);
 
         return response()->json($promociones);
     }
@@ -43,7 +81,6 @@ class PromocionController extends Controller
     {
         $data = $request->validated();
 
-        // 🚦 Validación lógica: fecha_fin debe ser >= fecha_inicio
         if (strtotime($data['fecha_fin']) < strtotime($data['fecha_inicio'])) {
             return response()->json(['message' => 'La fecha de fin debe ser posterior o igual a la fecha de inicio.'], 422);
         }

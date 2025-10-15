@@ -16,7 +16,7 @@ class CarritoController extends Controller
         $this->carritoService = $carritoService;
     }
 
-    // Obtener carrito activo
+    // 🔹 Obtener carrito activo (usuario o invitado)
     public function obtenerCarrito(Request $request)
     {
         $user = Auth::user();
@@ -30,7 +30,7 @@ class CarritoController extends Controller
         ]);
     }
 
-    // Agregar producto
+    // 🔹 Agregar producto
     public function agregarProducto(Request $request)
     {
         $request->validate([
@@ -49,13 +49,13 @@ class CarritoController extends Controller
         );
 
         return response()->json([
-            'message' => 'Producto agregado al carrito',
+            'message' => 'Producto agregado al carrito correctamente',
             'session_id' => $carrito->session_id,
-            'carrito' => $carrito
+            'carrito' => $carrito->load('detalles.producto')
         ]);
     }
 
-    // Actualizar cantidad
+    // 🔹 Actualizar cantidad
     public function actualizarCantidad(Request $request, $id)
     {
         $request->validate([
@@ -70,10 +70,10 @@ class CarritoController extends Controller
             $request->cantidad
         );
 
-        return response()->json(['message' => 'Cantidad actualizada', 'detalle' => $detalle]);
+        return response()->json(['message' => 'Cantidad actualizada correctamente', 'detalle' => $detalle]);
     }
 
-    // Eliminar producto
+    // 🔹 Eliminar producto
     public function eliminarProducto($id, $producto_id)
     {
         $carrito = Carrito::findOrFail($id);
@@ -82,58 +82,57 @@ class CarritoController extends Controller
         return response()->json(['message' => 'Producto eliminado del carrito']);
     }
 
-    // Vaciar carrito
+    // 🔹 Vaciar carrito
     public function vaciarCarrito($id)
     {
         $carrito = Carrito::findOrFail($id);
         $this->carritoService->clearCart($carrito);
 
-        return response()->json(['message' => 'Carrito vaciado']);
+        return response()->json(['message' => 'Carrito vaciado correctamente']);
     }
 
-    // Mostrar carrito
+    // 🔹 Mostrar carrito con total
     public function mostrar($id)
     {
         $carrito = Carrito::with('detalles.producto')->findOrFail($id);
-        return response()->json($carrito);
+
+        return response()->json([
+            'carrito' => $carrito,
+            'total' => $carrito->total,
+            'esta_vacio' => $carrito->esta_vacio,
+        ]);
     }
 
-    // Listar carritos (con filtros y paginación)
+    // 🔹 Listar carritos (admin dashboard)
     public function index(Request $request)
     {
-        // Filtros opcionales
-        $estado = $request->query('estado');        // activo, expirado, completado, etc.
+        $estado = $request->query('estado');
         $sessionId = $request->query('session_id');
         $userId = $request->query('user_id');
-    
-        // Construcción dinámica de la query
+        $sort = $request->query('sort', 'updated_at,desc');
+        [$sortField, $sortDir] = explode(',', $sort) + [null, 'desc'];
+
         $query = Carrito::with(['detalles.producto'])
             ->when($estado, fn($q) => $q->where('estado', $estado))
             ->when($sessionId, fn($q) => $q->where('session_id', $sessionId))
             ->when($userId, fn($q) => $q->where('user_id', $userId))
-            ->orderByDesc('updated_at');
-    
-        // Paginación (10 por defecto)
+            ->orderBy($sortField, $sortDir === 'asc' ? 'asc' : 'desc');
+
         $perPage = $request->query('per_page', 10);
         $carritos = $query->paginate($perPage);
-    
-        // Resumen general (para dashboard o estadísticas)
+
         $resumen = [
             'total' => Carrito::count(),
             'activos' => Carrito::where('estado', 'activo')->count(),
             'expirados' => Carrito::where('estado', 'expirado')->count(),
             'vacios' => Carrito::doesntHave('detalles')->count(),
         ];
-    
+
         return response()->json([
-            'filtros' => [
-                'estado' => $estado,
-                'session_id' => $sessionId,
-                'user_id' => $userId,
-            ],
+            'filtros' => compact('estado', 'sessionId', 'userId'),
             'resumen' => $resumen,
+            'orden' => ['campo' => $sortField, 'direccion' => $sortDir],
             'carritos' => $carritos
         ]);
     }
-
 }

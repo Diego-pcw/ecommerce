@@ -7,58 +7,57 @@ use Illuminate\Http\Request;
 
 class ContactMessageController extends Controller
 {
-    // ✅ Listar mensajes con filtros
+    // 📋 Listar mensajes (con filtros, paginación y visibilidad)
     public function index(Request $request)
     {
         $user = $request->user();
 
-        if ($user && $user->rol === 'admin') {
-            // 🔹 Admin ve todos los mensajes (con opción de filtrar por estado)
-            $mensajes = ContactMessage::with('user')
-                ->when($request->estado, fn($q) => $q->where('estado', $request->estado))
-                ->orderBy('created_at', 'desc')
-                ->paginate(10);
-        } else {
-            // 🔹 Usuario autenticado solo ve sus propios mensajes
-            $mensajes = ContactMessage::where('user_id', $user->id)
-                ->orderBy('created_at', 'desc')
-                ->paginate(10);
-        }
+        $mensajes = ContactMessage::with('user')
+            ->when($user->rol !== 'admin', fn($q) =>
+                $q->where('user_id', $user->id)
+            )
+            ->when($request->filled('estado'), fn($q) =>
+                $q->where('estado', strtoupper($request->estado))
+            )
+            ->orderBy($request->get('sort_by', 'created_at'), $request->get('order', 'desc'))
+            ->paginate($request->get('per_page', 10));
 
         return response()->json([
-            'total' => $mensajes->total(),
-            'data' => $mensajes
+            'total'        => $mensajes->total(),
+            'current_page' => $mensajes->currentPage(),
+            'last_page'    => $mensajes->lastPage(),
+            'data'         => $mensajes->items(),
         ]);
     }
 
-    // ✅ Enviar un nuevo mensaje de contacto
+    // 🧾 Crear nuevo mensaje
     public function store(Request $request)
     {
         $user = $request->user();
 
         $validated = $request->validate([
-            'mensaje' => 'required|string',
-            'telefono' => 'nullable|string|max:20',
-            'canal_preferido' => 'nullable|in:email,whatsapp,telefono',
+            'mensaje'         => 'required|string',
+            'telefono'        => 'nullable|string|max:20',
+            'canal_preferido' => 'nullable|in:EMAIL,WHATSAPP,TELEFONO',
         ]);
 
         $mensaje = ContactMessage::create([
-            'user_id' => $user->id,
-            'nombre' => $user->name,
-            'email' => $user->email,
-            'telefono' => $validated['telefono'] ?? null,
-            'mensaje' => $validated['mensaje'],
-            'canal_preferido' => $validated['canal_preferido'] ?? 'email',
-            'estado' => 'nuevo',
+            'user_id'         => $user->id,
+            'nombre'          => $user->name,
+            'email'           => $user->email,
+            'telefono'        => $validated['telefono'] ?? null,
+            'mensaje'         => $validated['mensaje'],
+            'canal_preferido' => $validated['canal_preferido'] ?? 'EMAIL',
+            'estado'          => 'NUEVO',
         ]);
 
         return response()->json([
             'message' => 'Mensaje enviado correctamente.',
-            'data' => $mensaje
+            'data'    => $mensaje,
         ], 201);
     }
 
-    // ✅ Mostrar mensaje individual (solo admin o dueño)
+    // 🔍 Mostrar un mensaje individual
     public function show(Request $request, $id)
     {
         $mensaje = ContactMessage::with('user')->findOrFail($id);
@@ -71,7 +70,7 @@ class ContactMessageController extends Controller
         return response()->json($mensaje);
     }
 
-    // ✅ Actualizar o responder mensaje (solo admin)
+    // ✏️ Actualizar o responder mensaje (solo admin)
     public function update(Request $request, $id)
     {
         $user = $request->user();
@@ -81,7 +80,7 @@ class ContactMessageController extends Controller
         }
 
         $validated = $request->validate([
-            'estado' => 'nullable|in:nuevo,respondido,cerrado',
+            'estado'    => 'nullable|in:NUEVO,RESPONDIDO,CERRADO',
             'respuesta' => 'nullable|string',
         ]);
 
@@ -89,8 +88,8 @@ class ContactMessageController extends Controller
 
         if (isset($validated['respuesta'])) {
             $mensaje->update([
-                'respuesta' => $validated['respuesta'],
-                'estado' => 'respondido',
+                'respuesta'       => $validated['respuesta'],
+                'estado'          => 'RESPONDIDO',
                 'fecha_respuesta' => now(),
             ]);
         } elseif (isset($validated['estado'])) {
@@ -99,11 +98,11 @@ class ContactMessageController extends Controller
 
         return response()->json([
             'message' => 'Mensaje actualizado correctamente.',
-            'data' => $mensaje
+            'data'    => $mensaje,
         ]);
     }
 
-    // ✅ Eliminar mensaje (solo admin)
+    // 🗑️ Eliminar mensaje (solo admin)
     public function destroy(Request $request, $id)
     {
         $user = $request->user();

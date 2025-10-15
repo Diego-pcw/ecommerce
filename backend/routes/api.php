@@ -60,6 +60,7 @@ Route::middleware('api')->group(function () {
         // 🔸 Usuario autenticado
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/profile', [AuthController::class, 'profile']);
+        Route::put('/profile/actualizar', [AuthController::class, 'actualizarPerfil']);
 
         /** 🔸 💬 Mensajes de contacto (Autenticados puede enviar) */
         Route::get('/contact-messages', [ContactMessageController::class, 'index']);
@@ -79,6 +80,10 @@ Route::middleware('api')->group(function () {
 
         /** 🔸 Rutas exclusivas para administradores */
         Route::middleware('admin')->group(function () {
+
+            /** 🧍‍♂️ Usuarios (solo admin) */
+            Route::get('/usuarios', [AuthController::class, 'index']);
+            Route::put('/usuarios/{id}/estado', [AuthController::class, 'cambiarEstado']); 
 
             /** 📦 Categorías (CRUD) */
             Route::post('/categorias', [CategoriaController::class, 'store']);

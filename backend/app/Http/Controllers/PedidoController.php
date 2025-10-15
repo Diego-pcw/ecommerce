@@ -17,12 +17,21 @@ class PedidoController extends Controller
 
         $pedidos = Pedido::with(['detalles.producto', 'user'])
             ->when($user->rol !== 'admin', fn($q) => $q->where('user_id', $user->id))
+            ->when($request->filled('estado'), fn($q) =>
+                $q->where('estado', strtoupper($request->estado))
+            )
+            ->when($request->filled(['fecha_inicio', 'fecha_fin']), fn($q) =>
+                $q->whereBetween('fecha_pedido', [$request->fecha_inicio, $request->fecha_fin])
+            )
             ->orderByDesc('created_at')
-            ->paginate(10);
+            ->paginate($request->get('per_page', 10));
 
         return response()->json([
-            'total' => $pedidos->total(),
-            'data' => $pedidos
+            'total'        => $pedidos->total(),
+            'current_page' => $pedidos->currentPage(),
+            'per_page'     => $pedidos->perPage(),
+            'last_page'    => $pedidos->lastPage(),
+            'data'         => $pedidos->items(),
         ]);
     }
 
@@ -31,10 +40,10 @@ class PedidoController extends Controller
     {
         $validated = $request->validate([
             'shipping_address' => 'required|array',
-            'payment_method' => 'required|string',
-            'items' => 'required|array|min:1',
+            'payment_method'   => 'required|string',
+            'items'            => 'required|array|min:1',
             'items.*.producto_id' => 'required|exists:productos,id',
-            'items.*.cantidad' => 'required|integer|min:1',
+            'items.*.cantidad'    => 'required|integer|min:1',
             'items.*.precio_unitario' => 'nullable|numeric|min:0',
         ]);
 
@@ -47,8 +56,6 @@ class PedidoController extends Controller
             foreach ($validated['items'] as $item) {
                 $producto = Producto::findOrFail($item['producto_id']);
                 $precio_base = $producto->precio;
-
-                // Si hay descuento vigente, úsalo
                 $precio_final = $producto->precio_con_descuento ?? $precio_base;
 
                 // Si el asesor define un precio manual, se respeta
@@ -60,32 +67,32 @@ class PedidoController extends Controller
                 $total += $subtotal;
 
                 $detalles[] = [
-                    'producto_id' => $producto->id,
-                    'cantidad' => $item['cantidad'],
-                    'precio_unitario' => $precio_final,
+                    'producto_id'    => $producto->id,
+                    'cantidad'       => $item['cantidad'],
+                    'precio_unitario'=> $precio_final,
                 ];
             }
 
             $pedido = Pedido::create([
-                'user_id' => $user->id,
-                'total' => $total,
-                'shipping_address' => $validated['shipping_address'],
-                'payment_method' => $validated['payment_method'],
-                'estado' => 'pendiente',
+                'user_id'          => $user->id,
+                'total'            => $total,
+                'shipping_address' => $validated['shipping_address'], // El modelo lo convierte a mayúsculas
+                'payment_method'   => $validated['payment_method'],   // El modelo lo convierte a mayúsculas
+                'estado'           => 'PENDIENTE',                    // También lo maneja el modelo
             ]);
 
             foreach ($detalles as $detalle) {
                 DetallePedido::create([
-                    'pedido_id' => $pedido->id,
-                    'producto_id' => $detalle['producto_id'],
-                    'cantidad' => $detalle['cantidad'],
+                    'pedido_id'       => $pedido->id,
+                    'producto_id'     => $detalle['producto_id'],
+                    'cantidad'        => $detalle['cantidad'],
                     'precio_unitario' => $detalle['precio_unitario'],
                 ]);
             }
 
             return response()->json([
                 'message' => 'Pedido creado correctamente.',
-                'data' => $pedido->load('detalles.producto')
+                'data'    => $pedido->load('detalles.producto'),
             ], 201);
         });
     }
@@ -112,19 +119,19 @@ class PedidoController extends Controller
         }
 
         $validated = $request->validate([
-            'estado' => 'required|in:pendiente,pagado,enviado,cancelado,entregado'
+            'estado' => 'required|in:PENDIENTE,PAGADO,ENVIADO,CANCELADO,ENTREGADO',
         ]);
 
         $pedido = Pedido::findOrFail($id);
-        $pedido->update($validated);
+        $pedido->update(['estado' => $validated['estado']]);
 
-        if ($validated['estado'] === 'pagado') {
+        if (strtoupper($validated['estado']) === 'PAGADO') {
             $pedido->update(['paid_at' => now()]);
         }
 
         return response()->json([
             'message' => 'Pedido actualizado correctamente.',
-            'data' => $pedido
+            'data'    => $pedido,
         ]);
     }
 

@@ -30,23 +30,30 @@ class Promocion extends Model
 
     const ESTADOS = ['activo', 'inactivo'];
 
-    /**
-     * 🔗 Relación muchos a muchos con productos
-     */
+    // 🔗 Relación muchos a muchos con productos
     public function productos()
     {
         return $this->belongsToMany(Producto::class, 'producto_promocion')
             ->withTimestamps();
     }
 
-    /**
-     * 🔹 Determina si la promoción está actualmente vigente
-     */
+    // 🔹 Determina si la promoción está actualmente vigente
     public function getEstaVigenteAttribute(): bool
     {
         $hoy = Carbon::today();
         return $this->estado === 'activo'
             && $this->fecha_inicio <= $hoy
             && $this->fecha_fin >= $hoy;
+    }
+
+    // 🔸 Mutadores: guardar texto en mayúsculas
+    public function setTituloAttribute($value)
+    {
+        $this->attributes['titulo'] = mb_strtoupper($value);
+    }
+
+    public function setDescripcionAttribute($value)
+    {
+        $this->attributes['descripcion'] = $value ? mb_strtoupper($value) : null;
     }
 }

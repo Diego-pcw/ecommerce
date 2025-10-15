@@ -23,10 +23,35 @@ class Producto extends Model
         'estado',
     ];
 
-    // 👇 Esto hace que aparezcan automáticamente en el JSON
     protected $appends = ['promocion_vigente', 'precio_con_descuento'];
 
-    // 🔹 Relaciones
+    /**
+     * 🔹 Normalizar texto automáticamente antes de guardar
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            if (isset($model->nombre)) {
+                $model->nombre = mb_strtoupper(trim($model->nombre), 'UTF-8');
+            }
+
+            if (isset($model->descripcion)) {
+                $model->descripcion = mb_strtoupper(trim($model->descripcion), 'UTF-8');
+            }
+
+            if (isset($model->estado)) {
+                $model->estado = mb_strtolower(trim($model->estado)); // activo/inactivo
+            }
+
+            if (isset($model->sku)) {
+                $model->sku = mb_strtoupper(trim($model->sku));
+            }
+        });
+    }
+
+    // 🔸 Relaciones
     public function categoria()
     {
         return $this->belongsTo(Categoria::class);
@@ -39,8 +64,7 @@ class Producto extends Model
 
     public function promociones()
     {
-        return $this->belongsToMany(Promocion::class, 'producto_promocion')
-            ->withTimestamps();
+        return $this->belongsToMany(Promocion::class, 'producto_promocion')->withTimestamps();
     }
 
     /**
@@ -75,7 +99,6 @@ class Producto extends Model
 
     /**
      * 🧮 Obtener promoción vigente
-     * Devuelve un objeto con los datos esenciales de la promoción activa o null.
      */
     public function getPromocionVigenteAttribute()
     {
@@ -102,7 +125,6 @@ class Producto extends Model
 
     /**
      * 💰 Calcular precio con descuento
-     * Si hay promoción vigente, aplica el descuento, si no, devuelve el precio original.
      */
     public function getPrecioConDescuentoAttribute()
     {

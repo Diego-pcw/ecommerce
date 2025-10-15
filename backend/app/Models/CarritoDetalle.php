@@ -15,6 +15,11 @@ class CarritoDetalle extends Model
         'precio_unitario',
     ];
 
+    protected $casts = [
+        'precio_unitario' => 'decimal:2',
+    ];
+
+    // 🔗 Relaciones
     public function carrito()
     {
         return $this->belongsTo(Carrito::class, 'carrito_id');
@@ -23,5 +28,11 @@ class CarritoDetalle extends Model
     public function producto()
     {
         return $this->belongsTo(Producto::class, 'producto_id');
+    }
+
+    // 🔹 Subtotal automático
+    public function getSubtotalAttribute(): float
+    {
+        return $this->cantidad * $this->precio_unitario;
     }
 }

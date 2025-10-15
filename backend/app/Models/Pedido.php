@@ -36,4 +36,32 @@ class Pedido extends Model
     {
         return $this->hasMany(DetallePedido::class);
     }
+
+    // 🔹 Mutadores automáticos (para guardar en mayúsculas)
+    public function setEstadoAttribute($value)
+    {
+        $this->attributes['estado'] = strtoupper($value);
+    }
+
+    public function setPaymentMethodAttribute($value)
+    {
+        $this->attributes['payment_method'] = strtoupper($value);
+    }
+
+    public function setTransactionIdAttribute($value)
+    {
+        $this->attributes['transaction_id'] = $value ? strtoupper($value) : null;
+    }
+
+    public function setShippingAddressAttribute($value)
+    {
+        // Si es un array, convertimos cada valor a mayúsculas antes de guardarlo como JSON
+        if (is_array($value)) {
+            $this->attributes['shipping_address'] = json_encode(
+                array_map(fn($v) => strtoupper($v), $value)
+            );
+        } else {
+            $this->attributes['shipping_address'] = $value;
+        }
+    }
 }

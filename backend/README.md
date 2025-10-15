@@ -1,92 +1,109 @@
+# 🧱 E-Commerce Biker Wolf Perú — Backend (v1.2)
 
-# 🧱 E-Commerce Biker Wolf Perú — Backend (v1.0)
-
-> **Versión estable inicial** del sistema backend para la gestión del e-commerce y catálogo digital de Biker Wolf Perú.  
-> Desarrollado con **Laravel 11 + Sanctum** para autenticación y protección de rutas API.
+> **Versión mejorada y optimizada** del sistema backend para la gestión del e-commerce y catálogo digital de **Biker Wolf Perú**.  
+> Desarrollado con **Laravel 11 + Sanctum** para autenticación segura y control de acceso basado en roles.
 
 ---
 
 ## 🚀 Descripción General
 
-Este backend provee una **API RESTful** para manejar usuarios, productos, categorías, promociones, carrito de compras, pedidos, reseñas y mensajes de contacto.  
-Su diseño modular permite la integración con un frontend (React, Vue, u otro) y está preparado para futuras ampliaciones.
+El backend provee una **API RESTful** robusta y escalable que permite manejar usuarios, productos, categorías, promociones, carrito de compras, pedidos, reseñas y mensajes de contacto.  
+Incluye **paginación, validaciones uniformes y normalización de datos (mayúsculas automáticas)** para asegurar consistencia en la base de datos.
+
+El diseño está optimizado para integrarse con frontends en **React, Vue, Next.js** u otros frameworks modernos.
 
 ---
 
 ## 🧩 Arquitectura y Tecnologías
 
-- **Framework:** Laravel 11  
-- **Base de datos:** MySQL
-- **Autenticación:** Laravel Sanctum (Tokens API)  
-- **Control de acceso:** Middleware `auth:sanctum` y `admin`  
-- **Formato de datos:** JSON  
-- **Gestión de imágenes:** almacenamiento local/public  
-- **Versionamiento:** API v1 (rutas `/api/...`)
+| Componente | Tecnología / Descripción |
+|-------------|--------------------------|
+| **Framework** | Laravel 11 |
+| **Base de datos** | MySQL |
+| **Autenticación** | Laravel Sanctum (Tokens API) |
+| **Control de acceso** | Middleware `auth:sanctum` y `admin` |
+| **Formato de datos** | JSON |
+| **Gestión de imágenes** | Almacenamiento local/public |
+| **Paginación estándar** | Laravel Paginator (`?page=` y `?per_page=`) |
+| **Versionamiento API** | v1 — rutas base `/api/...` |
+| **Normalización de datos** | Conversión automática a **mayúsculas** en modelos clave |
 
 ---
 
 ## ⚙️ Instalación
 
-1. Clonar el repositorio:
-   git clone https://github.com/usuario/ecommerce-ferreteria-backend.git
-   cd e-commerce-web
-Instalar dependencias:
+```bash
+# 1️⃣ Clonar el repositorio
+git clone https://github.com/Diego-pcw/ecommerce.git
+cd e-commerce_web/backend
 
+# 2️⃣ Instalar dependencias
 composer install
-Copiar y configurar el archivo .env:
 
+# 3️⃣ Copiar y configurar el archivo .env
 cp .env.example .env
-Luego actualizar las variables:
 
-env
-APP_NAME=FerreteriaSantaCruz
+Actualizar variables principales:
+
+APP_NAME=BikerWolf
 APP_URL=http://127.0.0.1:8000
-DB_DATABASE=ferreteria_db
+DB_DATABASE=ecommerce
 DB_USERNAME=root
 DB_PASSWORD=
-Generar key y migraciones:
 
+# 4️⃣ Generar clave y migraciones
 php artisan key:generate
 php artisan migrate --seed
-Iniciar el servidor:
 
+# 5️⃣ Iniciar el servidor local
 php artisan serve
+
 🧠 Roles de Usuario
 Rol	Descripción
-Admin	Control total del sistema (CRUD completo de productos, categorías, promociones, pedidos, reseñas, mensajes, etc.)
-Cliente	Puede registrarse, autenticarse, ver productos, realizar pedidos, dejar reseñas y enviar mensajes de contacto
+
+Admin	- Control total del sistema (CRUD de productos, categorías, promociones, pedidos, reseñas, mensajes, etc.)
+Cliente	- Puede registrarse, autenticarse, ver productos, realizar pedidos, dejar reseñas y enviar mensajes de contacto
 
 🔐 Autenticación
-Laravel Sanctum se utiliza para generar y validar tokens de sesión.
-Cada endpoint protegido requiere un header de autorización:
 
-http
+La autenticación se maneja con Laravel Sanctum.
+Cada endpoint protegido requiere un token de usuario enviado en los headers:
+
 Authorization: Bearer {TOKEN_DEL_USUARIO}
+
 📚 Endpoints Principales
 🧍 Usuarios
 Método	Endpoint	Descripción
 POST	/api/register	Registro de usuario
 POST	/api/login	Inicio de sesión
-POST	/api/logout	Cierre de sesión (token)
-GET	/api/profile	Datos del usuario autenticado
+POST	/api/logout	Cierre de sesión
+GET	/api/profile	Perfil del usuario autenticado
+PUT /api/profile/actualizar permite actualizar nombre o contraseña del usuario autenticado
+GET /api/usuarios lista usuarios con filtros y paginación (admin)
+PUT /api/usuarios/{id}/estado alterna entre activo/inactivo (admin)
 
 🗂️ Categorías
 Método	Endpoint	Descripción
-GET	/api/categorias	Listar todas las categorías
+GET	/api/categorias	Listar categorías (con paginación)
 GET	/api/categorias/{id}	Ver una categoría
 POST	/api/categorias	Crear categoría (admin)
 PUT	/api/categorias/{id}	Actualizar categoría (admin)
 DELETE	/api/categorias/{id}	Eliminar categoría (admin)
 
+🧠 Nota: Los nombres de categorías se almacenan automáticamente en mayúsculas.
+
 🛍️ Productos
 Método	Endpoint	Descripción
-GET	/api/productos	Listar productos
-GET	/api/productos/{id}	Ver producto individual
+GET	/api/productos	Listar productos (con paginación y filtros)
+GET	/api/productos/{id}	Ver un producto
 POST	/api/productos	Crear producto (admin)
 PUT	/api/productos/{id}	Actualizar producto (admin)
 DELETE	/api/productos/{id}	Eliminar producto (admin)
 
-🖼️ Imágenes
+📦 Datos en mayúsculas y con relación automática a su categoría.
+Incluye soporte de búsqueda (?search=) y filtrado por categoría (?categoria_id=).
+
+🖼️ Imágenes de Productos
 Método	Endpoint	Descripción
 GET	/api/imagenes/producto/{producto_id}	Ver imágenes de un producto
 POST	/api/imagenes	Subir imagen (admin)
@@ -99,23 +116,29 @@ GET	/api/promociones	Ver promociones activas
 POST	/api/promociones	Crear promoción (admin)
 PUT	/api/promociones/{id}	Actualizar promoción (admin)
 DELETE	/api/promociones/{id}	Eliminar promoción (admin)
-POST	/api/promociones/{id}/asignar	Asignar productos (admin)
+POST	/api/promociones/{id}/asignar	Asignar productos a promoción (admin)
+
+📌 Descuentos automáticos aplicados en pedidos.
 
 🛒 Carrito
 Método	Endpoint	Descripción
-GET	/api/carrito	Ver carrito
-POST	/api/carrito/agregar	Agregar producto
+GET	/api/carrito	Ver carrito actual
+POST	/api/carrito/agregar	Agregar producto al carrito
 PUT	/api/carrito/{id}/actualizar	Actualizar cantidad
 DELETE	/api/carrito/{id}/eliminar/{producto_id}	Eliminar producto
 DELETE	/api/carrito/{id}/vaciar	Vaciar carrito
 
+🧮 Calcula subtotales y aplica descuentos si corresponden.
+
 📦 Pedidos
 Método	Endpoint	Descripción
-GET	/api/pedidos	Listar pedidos del usuario
-POST	/api/pedidos	Crear pedido (calcula descuentos automáticos)
-GET	/api/pedidos/{id}	Ver detalle del pedido
-PUT	/api/pedidos/{id}	Actualizar pedido (admin)
+GET	/api/pedidos	Listar pedidos del usuario autenticado (con paginación)
+POST	/api/pedidos	Crear pedido desde el carrito (con descuento automático)
+GET	/api/pedidos/{id}	Ver detalle de un pedido
+PUT	/api/pedidos/{id}	Actualizar pedido (admin o asesor)
 DELETE	/api/pedidos/{id}	Eliminar pedido (admin)
+
+🧠 Los datos de dirección y método de pago se almacenan como JSON (shipping_address, payment_method).
 
 🧾 Detalles del Pedido
 Método	Endpoint	Descripción
@@ -126,17 +149,18 @@ DELETE	/api/pedidos/detalles/{id}	Eliminar ítem (admin)
 
 💬 Contacto y Reseñas
 Método	Endpoint	Descripción
-GET	/api/contact-messages	Ver mensajes (autenticado o admin)
-POST	/api/contact-messages	Enviar mensaje
+GET	/api/contact-messages	Ver mensajes de contacto (admin)
+POST	/api/contact-messages	Enviar mensaje desde formulario
 PUT	/api/contact-messages/{id}	Actualizar estado o responder (admin)
-DELETE	/api/contact-messages/{id}	Eliminar (admin)
-GET	/api/reseñas	Listar reseñas
+DELETE	/api/contact-messages/{id}	Eliminar mensaje (admin)
+
+GET	/api/reseñas	Listar reseñas (paginadas)
 POST	/api/reseñas	Crear reseña (usuario autenticado)
 PUT	/api/reseñas/{id}	Aprobar/Rechazar (admin)
-DELETE	/api/reseñas/{id}	Eliminar (admin)
+DELETE	/api/reseñas/{id}	Eliminar reseña (admin)
 
-🧱 Estructura del Proyecto
-Copiar código
+Estructura del Proyecto
+
 app/
  ├── Http/
  │   ├── Controllers/
@@ -144,39 +168,49 @@ app/
  │   │   ├── CategoriaController.php
  │   │   ├── ProductoController.php
  │   │   ├── PedidoController.php
- │   │   ├── DetallePedidoController.php
- │   │   ├── ...
+ │   │   ├── CarritoController.php
+ │   │   ├── PromocionController.php
+ │   │   ├── ContactMessageController.php
+ │   │   └── ReseñaController.php
  │   ├── Middleware/
  │   │   ├── AdminMiddleware.php
  │   └── Requests/
  ├── Models/
  │   ├── User.php
+ │   ├── Categoria.php
  │   ├── Producto.php
  │   ├── Pedido.php
  │   ├── DetallePedido.php
  │   ├── Promocion.php
- │   └── ...
+ │   ├── Carrito.php
+ │   ├── ContactMessage.php
+ │   └── Reseña.php
 routes/
  ├── api.php
 database/
  ├── migrations/
  ├── seeders/
  └── factories/
- 
+
 🧩 Estado del Proyecto
 Módulo	Estado	Descripción
-Autenticación	✅ Completo - Tokens, roles, protección de rutas
-Productos y Categorías	✅ - Completo	CRUD con permisos
+Autenticación	✅ Completo	- Tokens, roles, middleware
+Productos y Categorías	✅ Completo	- CRUD + mayúsculas + paginación
 Promociones	✅ Completo	- Descuentos automáticos
-Carrito	✅ Completo	- Funcional con session_id
-Pedidos y Detalles	✅ Completo	- Cálculo de totales con descuento
-Contacto y Reseñas	✅ Completo	- Gestión y moderación
-Descuento manual	⚙️ Pendiente	- Implementación futura (opcional)
+Carrito	✅ Completo	- Funcional por usuario o sesión
+Pedidos	✅ Completo	- Cálculo de totales + normalización
+Detalles de Pedido	✅ Completo	- Relación y edición controlada
+Contacto y Reseñas	✅ Completo	- Moderación y respuesta
+Normalización de Datos	✅ - Implementada	Guardado en mayúsculas
+Descuento Manual	⚙️ Pendiente	- Para futuras versiones
 
 📅 Versión
-v1.0 - Octubre 2025
-Desarrollado por Gonzalo y Diego [Desarrollador Web e IA]
+
+v1.2 — Octubre 2025
+Autores: Gonzalo & Diego (Desarrolladores Web e IA)
 
 📜 Licencia
+
 Proyecto privado para Biker Wolf Perú.
 Todos los derechos reservados © 2025.
+Desarrollado en Laravel.

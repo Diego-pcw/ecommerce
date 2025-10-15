@@ -1,16 +1,42 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Categoria; 
 
+use App\Models\Categoria;
 use Illuminate\Http\Request;
 
 class CategoriaController extends Controller
 {
-    // 🔸 Mostrar todas las categorías (admin y clientes pueden ver)
-    public function index()
+    // 🔸 Mostrar todas las categorías (con paginación, filtros y orden)
+    public function index(Request $request)
     {
-        $categorias = Categoria::where('estado', 'activo')->get();
+        $query = Categoria::query();
+
+        // Filtro por estado (activo/inactivo)
+        if ($request->has('estado')) {
+            $query->where('estado', strtolower($request->estado));
+        } else {
+            $query->where('estado', 'activo');
+        }
+
+        // Filtro por búsqueda en nombre o descripción
+        if ($request->has('search')) {
+            $search = mb_strtoupper($request->search, 'UTF-8');
+            $query->where(function ($q) use ($search) {
+                $q->where('nombre', 'LIKE', "%$search%")
+                ->orWhere('descripcion', 'LIKE', "%$search%");
+            });
+        }
+
+        // Ordenamiento dinámico
+        $sortBy = $request->get('sort_by', 'id');
+        $sortDir = $request->get('sort_dir', 'asc');
+        $query->orderBy($sortBy, $sortDir);
+
+        // Paginación
+        $perPage = $request->get('per_page', 10);
+        $categorias = $query->paginate($perPage);
+
         return response()->json($categorias);
     }
 
@@ -84,7 +110,7 @@ class CategoriaController extends Controller
         return response()->json(['message' => 'Categoría eliminada correctamente']);
     }
 
-    // 🔸 Helper para verificar rol
+    // 🔸 Helper para verificar rol admin
     private function authorizeAdmin(Request $request)
     {
         $user = $request->user();

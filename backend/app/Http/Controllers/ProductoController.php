@@ -4,17 +4,57 @@ namespace App\Http\Controllers;
 
 use App\Models\Producto;
 use App\Http\Requests\ProductoRequest;
+use Illuminate\Http\Request;
 
 class ProductoController extends Controller
 {
     /**
-     * 🔹 Listar todos los productos (visible para todos)
+     * 🔹 Listar productos con paginación, búsqueda y filtros
      */
-    public function index()
+    public function index(Request $request)
     {
-        $productos = Producto::with(['categoria', 'imagenes', 'promociones'])->get();
+        $query = Producto::with(['categoria', 'imagenes', 'promociones']);
 
-        $data = $productos->map(function ($producto) {
+        // Filtro por estado
+        if ($request->has('estado')) {
+            $query->where('estado', strtolower($request->estado));
+        } else {
+            $query->where('estado', 'activo');
+        }
+
+        // Filtro por categoría
+        if ($request->has('categoria_id')) {
+            $query->where('categoria_id', $request->categoria_id);
+        }
+
+        // Filtro por rango de precios
+        if ($request->has(['precio_min', 'precio_max'])) {
+            $query->whereBetween('precio', [
+                $request->precio_min,
+                $request->precio_max
+            ]);
+        }
+
+        // Búsqueda general por nombre o descripción
+        if ($request->has('search')) {
+            $search = mb_strtoupper($request->search, 'UTF-8');
+            $query->where(function ($q) use ($search) {
+                $q->where('nombre', 'LIKE', "%$search%")
+                  ->orWhere('descripcion', 'LIKE', "%$search%");
+            });
+        }
+
+        // Orden dinámico
+        $sortBy = $request->get('sort_by', 'id');
+        $sortDir = $request->get('sort_dir', 'asc');
+        $query->orderBy($sortBy, $sortDir);
+
+        // Paginación
+        $perPage = $request->get('per_page', 10);
+        $productos = $query->paginate($perPage);
+
+        // Transformar datos
+        $productos->getCollection()->transform(function ($producto) {
             return [
                 'id' => $producto->id,
                 'nombre' => $producto->nombre,
@@ -28,18 +68,18 @@ class ProductoController extends Controller
                     ->where('estado', 'activo')
                     ->map(fn($img) => [
                         'id' => $img->id,
-                        'url' => $img->url, // ✅ Usa el accesor dinámico
+                        'url' => $img->url,
                         'principal' => $img->principal,
                     ])
                     ->values(),
             ];
         });
 
-        return response()->json($data);
+        return response()->json($productos);
     }
 
     /**
-     * 🔹 Mostrar un producto específico (visible para todos)
+     * 🔹 Mostrar un producto específico
      */
     public function show($id)
     {
@@ -70,12 +110,11 @@ class ProductoController extends Controller
     }
 
     /**
-     * 🔸 Crear un nuevo producto (solo admin)
+     * 🔸 Crear producto
      */
     public function store(ProductoRequest $request)
     {
         $data = $request->validated();
-
         $data['slug'] = Producto::generarSlug($data['nombre']);
         $data['sku']  = $data['sku'] ?? Producto::generarSKU($data['categoria_id']);
         $data['estado'] = $data['estado'] ?? 'activo';
@@ -89,12 +128,11 @@ class ProductoController extends Controller
     }
 
     /**
-     * 🔸 Actualizar un producto existente (solo admin)
+     * 🔸 Actualizar producto
      */
     public function update(ProductoRequest $request, $id)
     {
         $producto = Producto::find($id);
-
         if (!$producto) {
             return response()->json(['message' => 'Producto no encontrado'], 404);
         }
@@ -118,12 +156,11 @@ class ProductoController extends Controller
     }
 
     /**
-     * 🔸 Eliminar un producto (solo admin)
+     * 🔸 Eliminar producto
      */
     public function destroy($id)
     {
         $producto = Producto::find($id);
-
         if (!$producto) {
             return response()->json(['message' => 'Producto no encontrado'], 404);
         }
@@ -162,7 +199,7 @@ class ProductoController extends Controller
                     ->where('estado', 'activo')
                     ->map(fn($img) => [
                         'id' => $img->id,
-                        'url' => $img->url, // ✅ usa accessor del modelo
+                        'url' => $img->url,
                         'principal' => $img->principal,
                     ])
                     ->values(),
