@@ -1,46 +1,20 @@
+// src/services/categoria.service.ts
 import api from "./api";
-import { type AxiosResponse } from "axios";
+import type { AxiosResponse } from "axios";
+import type {
+  Categoria,
+  CategoriaCreateData,
+  CategoriaUpdateData,
+  CategoriaListResponse,
+} from "../types/Categoria";
 
 /**
- * Interface principal de Categoría
- */
-export interface Categoria {
-  id: number;
-  nombre: string;
-  descripcion?: string;
-  estado?: "activo" | "inactivo";
-  created_at?: string;
-  updated_at?: string;
-}
-
-/**
- * Estructura para crear o actualizar una categoría
- */
-export interface CategoriaInput {
-  nombre: string;
-  descripcion?: string;
-  estado?: "activo" | "inactivo";
-}
-
-/**
- * Parámetros opcionales para filtros y paginación
- */
-export interface CategoriaQuery {
-  estado?: "activo" | "inactivo";
-  search?: string;
-  sort_by?: string;
-  sort_dir?: "asc" | "desc";
-  per_page?: number;
-  page?: number;
-}
-
-/**
- * Servicio centralizado para la gestión de categorías
+ * Servicio centralizado para gestionar categorías (CRUD)
  */
 class CategoriaService {
-  /** 🔹 Obtener todas las categorías con filtros, orden y paginación */
-  async obtenerTodas(params?: CategoriaQuery): Promise<any> {
-    const res: AxiosResponse<any> = await api.get("/categorias", { params });
+  /** 🔹 Obtener todas las categorías (público o admin) */
+  async obtenerTodas(page = 1): Promise<CategoriaListResponse> {
+    const res: AxiosResponse<CategoriaListResponse> = await api.get(`/categorias?page=${page}`);
     return res.data;
   }
 
@@ -50,8 +24,8 @@ class CategoriaService {
     return res.data;
   }
 
-  /** 🔸 Crear nueva categoría (solo admin) */
-  async crear(data: CategoriaInput): Promise<{ message: string; data: Categoria }> {
+  /** 🔸 Crear una nueva categoría (solo admin) */
+  async crear(data: CategoriaCreateData): Promise<{ message: string; data: Categoria }> {
     const res: AxiosResponse<{ message: string; data: Categoria }> = await api.post("/categorias", data);
     return res.data;
   }
@@ -59,7 +33,7 @@ class CategoriaService {
   /** 🔸 Actualizar categoría (solo admin) */
   async actualizar(
     id: number,
-    data: Partial<CategoriaInput>
+    data: CategoriaUpdateData
   ): Promise<{ message: string; data: Categoria }> {
     const res: AxiosResponse<{ message: string; data: Categoria }> = await api.put(`/categorias/${id}`, data);
     return res.data;
@@ -72,4 +46,4 @@ class CategoriaService {
   }
 }
 
-export default new CategoriaService();
+export const categoriaService = new CategoriaService();

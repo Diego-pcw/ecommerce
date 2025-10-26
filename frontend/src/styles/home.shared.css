@@ -1,0 +1,93 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: linear-gradient(135deg, var(--light-blue) 0%, var(--soft-white) 100%);
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Sección principal que ocupa toda la pantalla */
+.home-section {
+  background-color: var(--biker-gray);
+  color: var(--biker-black);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* ← ocupa toda la altura visible */
+  width: 100%;
+  text-align: center;
+  flex-direction: column;
+  padding: 2rem;
+}
+
+/* Contenido centrado y con ancho máximo controlado */
+.home-content {
+  max-width: 600px;
+}
+
+/* Título */
+.home-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.home-title span {
+  color: var(--biker-yellow);
+}
+
+/* Subtítulo */
+.home-subtitle {
+  margin-top: 0.75rem;
+  color: var(--biker-dark-gray);
+  font-size: 1.1rem;
+}
+
+/* Botones */
+.home-actions {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.btn-home-primary,
+.btn-home-secondary {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+/* Botón amarillo */
+.btn-home-primary {
+  background-color: var(--biker-yellow);
+  color: var(--biker-black);
+}
+
+.btn-home-primary:hover {
+  background-color: #ffcf40;
+}
+
+/* Botón negro */
+.btn-home-secondary {
+  background-color: var(--biker-black);
+  color: var(--biker-white);
+}
+
+.btn-home-secondary:hover {
+  background-color: var(--biker-dark-gray);
+}

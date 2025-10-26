@@ -1,22 +1,28 @@
-// src/pages/UserHome.tsx
 import React from "react";
 import { Link } from "react-router-dom";
+import "../styles/home.shared.css";
 
 const UserHome: React.FC = () => {
   return (
-    <div className="space-y-6">
-      <section className="p-6 bg-white rounded shadow">
-        <h1 className="text-2xl font-bold">Bienvenido a Mi Tienda</h1>
-        <p className="mt-2 text-gray-600">
-          Explora nuestros productos y ofertas. Usa el menú para navegar.
+    <section className="home-section">
+      <div className="home-content">
+        <h1 className="home-title">
+          Bienvenido a <span>Mi Tienda</span>
+        </h1>
+        <p className="home-subtitle">
+          Encuentra lo mejor en herramientas, materiales y productos de calidad.
         </p>
-        <div className="mt-4">
-          <Link to="/productos" className="text-blue-600 underline">
+
+        <div className="home-actions">
+          <Link to="/productos" className="btn-home-primary">
             Ver productos
           </Link>
+          <Link to="/categorias" className="btn-home-secondary">
+            Explorar categorías
+          </Link>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 };
 

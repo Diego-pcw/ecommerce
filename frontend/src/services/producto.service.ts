@@ -98,17 +98,27 @@ class ProductoService {
     return res.data;
   }
 
-  /* 🔸 Crear producto (solo admin) */
-  async crear(producto: ProductoInput): Promise<Producto> {
-    const res: AxiosResponse<Producto> = await api.post("/productos", producto);
-    return res.data;
-  }
+/* 🔸 Crear producto (solo admin) */
+async crear(producto: ProductoInput): Promise<Producto> {
+  const token = localStorage.getItem("token"); // o sessionStorage según tu login
+  const res: AxiosResponse<Producto> = await api.post("/productos", producto, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
+}
 
-  /* 🔸 Actualizar producto (solo admin) */
-  async actualizar(id: number, producto: Partial<ProductoInput>): Promise<Producto> {
-    const res: AxiosResponse<Producto> = await api.put(`/productos/${id}`, producto);
-    return res.data;
-  }
+/* 🔸 Actualizar producto (solo admin) */
+async actualizar(id: number, producto: Partial<ProductoInput>): Promise<Producto> {
+  const token = localStorage.getItem("token");
+  const res: AxiosResponse<Producto> = await api.put(`/productos/${id}`, producto, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
+}
 
   /* 🔸 Eliminar producto (solo admin) */
   async eliminar(id: number): Promise<void> {

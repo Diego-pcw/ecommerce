@@ -1,0 +1,234 @@
+/* ===========================
+   🎨 CATEGORÍAS - ESTILOS OFICIALES
+   =========================== */
+
+.categoria-list-container {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: var(--biker-white);
+  color: var(--biker-dark-gray);
+}
+
+/* ---------- Encabezado ---------- */
+.categoria-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--biker-gray);
+  padding-bottom: 0.5rem;
+}
+
+.categoria-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--biker-black);
+}
+
+/* ---------- Botón Crear ---------- */
+.btn-crear {
+  background-color: var(--biker-yellow);
+  color: var(--biker-black);
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-crear:hover {
+  background-color: #e6c200;
+  transform: translateY(-1px);
+}
+
+/* ---------- Listado ---------- */
+.categoria-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.categoria-item {
+  background: var(--biker-gray);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.categoria-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+.categoria-item h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--biker-black);
+}
+
+.categoria-item p {
+  margin: 0.4rem 0;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+/* ---------- Estado ---------- */
+.estado {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.estado.activo {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.estado.inactivo {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* ---------- Botón Editar ---------- */
+.categoria-actions {
+  margin-top: 0.5rem;
+}
+
+.btn-editar {
+  background-color: #ffc107;
+  color: var(--biker-black);
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-editar:hover {
+  background-color: #e0a800;
+}
+
+/* ---------- Paginación ---------- */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.pagination button {
+  background-color: var(--biker-black);
+  color: var(--biker-white);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: var(--biker-yellow);
+  color: var(--biker-black);
+}
+
+/* ---------- Formulario ---------- */
+.categoria-form-container {
+  max-width: 500px;
+  margin: 2rem auto;
+  background: var(--biker-white);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.categoria-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.categoria-form label {
+  text-align: left;
+  font-weight: 500;
+  color: var(--biker-dark-gray);
+}
+
+.categoria-form input,
+.categoria-form textarea,
+.categoria-form select {
+  width: 100%;
+  padding: 0.7rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: var(--biker-gray);
+  font-size: 1rem;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.categoria-form input:focus,
+.categoria-form textarea:focus,
+.categoria-form select:focus {
+  outline: none;
+  border-color: var(--biker-yellow);
+}
+
+/* ---------- Botones del formulario ---------- */
+.categoria-form-actions,
+.categoria-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  gap: 1rem;
+}
+
+.categoria-form-actions button,
+.categoria-buttons button {
+  flex: 1;
+  padding: 0.7rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+
+.categoria-form-actions button[type="submit"],
+.categoria-buttons .btn-guardar {
+  background: var(--biker-yellow);
+  color: var(--biker-black);
+}
+
+.categoria-form-actions button[type="button"],
+.categoria-buttons .btn-cancelar {
+  background: var(--biker-dark-gray);
+  color: var(--biker-white);
+}
+
+.categoria-form-actions button:hover,
+.categoria-buttons button:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+/* ---------- Loader ---------- */
+.categoria-loader {
+  text-align: center;
+  font-weight: 500;
+  color: var(--biker-black);
+  padding: 2rem;
+}

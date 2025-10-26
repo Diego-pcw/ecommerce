@@ -1,14 +1,14 @@
-// src/pages/Register.tsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import authService from "../services/auth.service";
 import { useToast } from "../context/ToastContext";
+import "../styles/users.shared.css";
 
 const Register: React.FC = () => {
   const { push } = useToast();
   const navigate = useNavigate();
 
-  const [nombre, setNombre] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
@@ -19,7 +19,7 @@ const Register: React.FC = () => {
     setSubmitting(true);
     try {
       await authService.register({
-        nombre,
+        name, 
         email,
         password,
         password_confirmation: passwordConfirmation,
@@ -34,67 +34,56 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto border rounded p-6 shadow">
-      <h2 className="text-xl font-semibold mb-4">Crear cuenta</h2>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <label className="block">
-          <span className="text-sm">Nombre</span>
+    <div className="auth-container">
+      <h2>Crear cuenta</h2>
+      <form onSubmit={handleSubmit}>
+        <label>
+          <span>Nombre</span>
           <input
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             type="text"
             required
-            className="mt-1 block w-full border rounded px-3 py-2"
           />
         </label>
 
-        <label className="block">
-          <span className="text-sm">Correo</span>
+        <label>
+          <span>Correo</span>
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             type="email"
             required
-            className="mt-1 block w-full border rounded px-3 py-2"
           />
         </label>
 
-        <label className="block">
-          <span className="text-sm">Contraseña</span>
+        <label>
+          <span>Contraseña</span>
           <input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
             required
-            className="mt-1 block w-full border rounded px-3 py-2"
           />
         </label>
 
-        <label className="block">
-          <span className="text-sm">Confirmar contraseña</span>
+        <label>
+          <span>Confirmar contraseña</span>
           <input
             value={passwordConfirmation}
             onChange={(e) => setPasswordConfirmation(e.target.value)}
             type="password"
             required
-            className="mt-1 block w-full border rounded px-3 py-2"
           />
         </label>
 
-        <div className="flex items-center justify-between">
-          <button
-            type="submit"
-            disabled={submitting}
-            className="bg-green-600 text-white px-4 py-2 rounded disabled:opacity-60"
-          >
-            {submitting ? "Registrando..." : "Registrarme"}
-          </button>
+        <button type="submit" disabled={submitting}>
+          {submitting ? "Registrando..." : "Registrarme"}
+        </button>
 
-          <Link to="/login" className="text-sm text-blue-600">
-            ¿Ya tienes cuenta? Ingresar
-          </Link>
-        </div>
+        <p style={{ textAlign: "right" }}>
+          <Link to="/login">¿Ya tienes cuenta? Iniciar sesión</Link>
+        </p>
       </form>
     </div>
   );

@@ -1,8 +1,8 @@
-// src/pages/Login.tsx
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import "../styles/users.shared.css";
 
 const Login: React.FC = () => {
   const { login } = useAuth();
@@ -28,44 +28,36 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto border rounded p-6 shadow">
-      <h2 className="text-xl font-semibold mb-4">Iniciar sesión</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <label className="block">
-          <span className="text-sm">Correo</span>
+    <div className="auth-container">
+      <h2>Iniciar sesión</h2>
+      <form onSubmit={handleSubmit}>
+        <label>
+          <span>Correo</span>
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             type="email"
             required
-            className="mt-1 block w-full border rounded px-3 py-2"
           />
         </label>
 
-        <label className="block">
-          <span className="text-sm">Contraseña</span>
+        <label>
+          <span>Contraseña</span>
           <input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
             required
-            className="mt-1 block w-full border rounded px-3 py-2"
           />
         </label>
 
-        <div className="flex items-center justify-between">
-          <button
-            type="submit"
-            disabled={submitting}
-            className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-60"
-          >
-            {submitting ? "Ingresando..." : "Ingresar"}
-          </button>
+        <button type="submit" disabled={submitting}>
+          {submitting ? "Ingresando..." : "Ingresar"}
+        </button>
 
-          <Link to="/register" className="text-sm text-blue-600">
-            ¿No tienes cuenta? Regístrate
-          </Link>
-        </div>
+        <p style={{ textAlign: "right" }}>
+          <Link to="/register">¿No tienes cuenta? Regístrate</Link>
+        </p>
       </form>
     </div>
   );

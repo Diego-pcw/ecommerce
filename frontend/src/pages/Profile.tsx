@@ -1,14 +1,14 @@
-// src/pages/Profile.tsx
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import authService from "../services/auth.service";
 import { useToast } from "../context/ToastContext";
+import "../styles/users.shared.css";
 
 const Profile: React.FC = () => {
   const { user, refreshProfile } = useAuth();
   const { push } = useToast();
 
-  const [name, setName] = useState(user?.nombre ?? (user as any)?.name ?? "");
+  const [name, setName] = useState(user?.name ?? (user as any)?.name ?? "");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [saving, setSaving] = useState(false);
@@ -22,10 +22,10 @@ const Profile: React.FC = () => {
         password: password || undefined,
         password_confirmation: passwordConfirmation || undefined,
       } as any);
-      push("Perfil actualizado", "success");
+      push("✅ Perfil actualizado correctamente", "success");
       await refreshProfile();
     } catch (err: any) {
-      push(err?.response?.data?.message ?? "Error al actualizar", "error");
+      push(err?.response?.data?.message ?? "❌ Error al actualizar el perfil", "error");
     } finally {
       setSaving(false);
       setPassword("");
@@ -34,51 +34,73 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto border rounded p-6 shadow">
-      <h2 className="text-xl font-semibold mb-4">Mi perfil</h2>
+    <div className="auth-container profile-page">
+      <h2 className="profile-title">Mi Perfil</h2>
 
-      <form onSubmit={handleSave} className="space-y-4">
-        <label className="block">
-          <span className="text-sm">Nombre</span>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            type="text"
-            required
-            className="mt-1 block w-full border rounded px-3 py-2"
-          />
-        </label>
+      <div className="profile-card">
+        <div className="profile-info">
+          <div className="info-item">
+            <strong>Email:</strong> <span>{user?.email ?? "No disponible"}</span>
+          </div>
+          <div className="info-item">
+            <strong>Rol:</strong> <span>{user?.rol ?? "Usuario"}</span>
+          </div>
+          <div className="info-item">
+            <strong>Estado:</strong>{" "}
+            <span
+              className={`status-badge ${
+                user?.estado === "activo" ? "active" : "inactive"
+              }`}
+            >
+              {user?.estado ?? "activo"}
+            </span>
+          </div>
+          <div className="info-item">
+            <strong>Fecha de registro:</strong>{" "}
+            <span>
+              {user?.created_at
+                ? new Date(user.created_at).toLocaleDateString()
+                : "No disponible"}
+            </span>
+          </div>
+        </div>
 
-        <label className="block">
-          <span className="text-sm">Nueva contraseña (opcional)</span>
-          <input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-            className="mt-1 block w-full border rounded px-3 py-2"
-          />
-        </label>
+        <form onSubmit={handleSave} className="profile-form">
+          <label>
+            <span>Nombre</span>
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              type="text"
+              required
+            />
+          </label>
 
-        <label className="block">
-          <span className="text-sm">Confirmar contraseña</span>
-          <input
-            value={passwordConfirmation}
-            onChange={(e) => setPasswordConfirmation(e.target.value)}
-            type="password"
-            className="mt-1 block w-full border rounded px-3 py-2"
-          />
-        </label>
+          <label>
+            <span>Nueva contraseña (opcional)</span>
+            <input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              placeholder="••••••••"
+            />
+          </label>
 
-        <div>
-          <button
-            type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-60"
-            disabled={saving}
-          >
+          <label>
+            <span>Confirmar contraseña</span>
+            <input
+              value={passwordConfirmation}
+              onChange={(e) => setPasswordConfirmation(e.target.value)}
+              type="password"
+              placeholder="••••••••"
+            />
+          </label>
+
+          <button type="submit" className="btn-save" disabled={saving}>
             {saving ? "Guardando..." : "Guardar cambios"}
           </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 };

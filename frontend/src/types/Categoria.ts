@@ -1,14 +1,11 @@
 // src/types/Categoria.ts
-
 import { type DataResponse } from './Common'
 
 /**
  * 🔹 Representa una categoría de productos.
- * Cada categoría agrupa múltiples productos.
- * 
- * Reglas de consistencia aplicadas en el backend:
- *  - nombre y descripción → siempre en MAYÚSCULAS
- *  - estado → siempre en minúsculas ('activo' | 'inactivo')
+ * Reglas backend:
+ * - nombre y descripción → MAYÚSCULAS
+ * - estado → 'activo' | 'inactivo'
  */
 export interface Categoria {
   id: number
@@ -19,34 +16,24 @@ export interface Categoria {
   updated_at?: string
 }
 
-/**
- * 🔹 Datos enviados al crear una nueva categoría (solo admin).
- */
+/** 🔹 Datos usados al crear una categoría */
 export interface CategoriaCreateData {
   nombre: string
   descripcion?: string | null
   estado?: 'activo' | 'inactivo'
 }
 
-/**
- * 🔹 Datos enviados al actualizar una categoría (solo admin).
- */
+/** 🔹 Datos usados al actualizar una categoría */
 export interface CategoriaUpdateData {
   nombre?: string
   descripcion?: string | null
   estado?: 'activo' | 'inactivo'
 }
 
-/**
- * 🔹 Respuesta estándar al crear, actualizar o eliminar una categoría.
- */
+/** 🔹 Respuesta común al crear/actualizar/eliminar */
 export interface CategoriaResponse extends DataResponse<Categoria> {}
 
-/**
- * 🔹 Respuesta del endpoint index() → lista paginada de categorías.
- * 
- * Compatible con Laravel paginate().
- */
+/** 🔹 Lista paginada (Laravel paginate) */
 export interface CategoriaListResponse {
   current_page: number
   data: Categoria[]

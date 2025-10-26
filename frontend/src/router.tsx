@@ -1,80 +1,49 @@
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+// src/Router.tsx
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 // 🔐 Páginas de autenticación
-import Login from './pages/Login';
-import Register from './pages/Register';
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
-// 👤 Perfil y panel de usuario
-import Profile from './pages/Profile';
-import UserHome from './pages/UserHome';
+// 👤 Perfil y home
+import Profile from "./pages/Profile";
+import UserHome from "./pages/UserHome";
 
-// 🧱 Layout general (con header/footer y <Outlet />)
-import Layout from './components/Layout';
-import ToastRoot from './components/ToastRoot';
+// 🧱 Layout global
+import Layout from "./components/Layout";
 
-// 🛒 Módulo de productos
-//import ProductosList from './pages/Productos/ProductosList';
-//import ProductoDetail from './pages/Productos/ProductoDetail';
-//import ProductoCreate from './pages/Productos/ProductoCreate';
-//import ProductoEdit from './pages/Productos/ProductoEdit';
+// 🔒 Rutas protegidas
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
-// 🏷️ Módulo de categorías
-//import CategoriasList from './pages/Categorias/CategoriasList';
-//import CategoriaCreate from './pages/Categorias/CategoriaCreate';
-//import CategoriaEdit from './pages/Categorias/CategoriaEdit';
-
-// 🖼️ Módulo de imágenes de productos
-//import ImagenesList from './pages/Imagenes/ImagenesList';
-//import ImagenCreate from './pages/Imagenes/ImagenCreate';
-//import ImagenEdit from './pages/Imagenes/ImagenEdit';
-
-// 🧰 Panel de administración
-//import Dashboard from './pages/Admin/Dashboard';
-
-// 🔒 Ruta protegida por autenticación / roles
-import { ProtectedRoute } from './components/ProtectedRoute';
+// 🗂️ Categorías (solo admin)
+import CategoriaList from "./pages/categorias/CategoriaList";
+import CategoriaCreate from "./pages/categorias/CategoriaCreate";
+import CategoriaEdit from "./pages/categorias/CategoriaEdit";
 
 export default function Router() {
   return (
     <Routes>
-      {/* ================================
-          🔓 PÁGINAS PÚBLICAS (no login)
-      ================================= */}
+      {/* Públicas */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
-      {/* Layout general (con header/footer y <Outlet />) */}
+      {/* Layout global */}
       <Route element={<Layout />}>
+        {/* Página principal */}
         <Route path="/" element={<UserHome />} />
 
-        {/* Productos públicos */}
-        
-
-        {/* Categorías públicas */}
-        
-
-        {/* ================================
-            🔐 RUTAS PROTEGIDAS (usuario logueado)
-        ================================= */}
+        {/* Rutas protegidas (usuarios autenticados) */}
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
         </Route>
 
-        {/* ================================
-            🛠️ RUTAS ADMIN (solo rol admin)
-        ================================= */}
+        {/* Admin (categorías y otros futuros módulos) */}
         <Route element={<ProtectedRoute requiredRole="admin" />}>
-          
-
-          {/* CRUD Productos */}
-          
-
-          {/* CRUD Categorías */}
-          
-
-          {/* CRUD Imágenes */}
-          
+          {/* Categorías */}
+          <Route path="/categorias" element={<CategoriaList />} />
+          <Route path="/categorias/crear" element={<CategoriaCreate />} />
+          <Route path="/categorias/editar/:id" element={<CategoriaEdit />} />
         </Route>
       </Route>
 
