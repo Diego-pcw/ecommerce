@@ -20,6 +20,9 @@ const UserHome: React.FC = () => {
           <Link to="/categorias" className="btn-home-secondary">
             Explorar categorías
           </Link>
+          <Link to="/imagenes" className="btn-home-secondary">
+            Explorar Imagenes
+          </Link>
         </div>
       </div>
     </section>

@@ -29,7 +29,7 @@ export interface ImagenProducto {
   /** URL pública generada automáticamente por el modelo */
   url: string
 
-  /** Relación con producto (si se carga con with()) */
+  /** Relación con el producto (si se carga con with()) */
   producto?: Producto
 
   created_at?: string | null

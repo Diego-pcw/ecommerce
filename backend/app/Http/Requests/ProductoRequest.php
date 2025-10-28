@@ -24,6 +24,7 @@ class ProductoRequest extends FormRequest
     {
         return [
             'nombre'        => ['required', 'string', 'max:255'],
+            'marca'         => ['nullable', 'string', 'max:255'], // 👈 agregado
             'descripcion'   => ['nullable', 'string'],
             'precio'        => ['required', 'numeric', 'min:0'],
             'stock'         => ['required', 'integer', 'min:0'],

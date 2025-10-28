@@ -16,6 +16,7 @@ class Producto extends Model
         'categoria_id',
         'nombre',
         'slug',
+        'marca', 
         'descripcion',
         'precio',
         'stock',

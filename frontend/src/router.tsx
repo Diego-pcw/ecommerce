@@ -1,4 +1,3 @@
-// src/Router.tsx
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
@@ -21,6 +20,18 @@ import CategoriaList from "./pages/categorias/CategoriaList";
 import CategoriaCreate from "./pages/categorias/CategoriaCreate";
 import CategoriaEdit from "./pages/categorias/CategoriaEdit";
 
+// 📦 Productos (solo admin)
+import ProductosList from "./pages/productos/ProductosList";
+import ProductoDetail from "./pages/productos/ProductoDetail";
+import ProductoCreate from "./pages/productos/ProductoCreate";
+import ProductoEdit from "./pages/productos/ProductoEdit";
+
+// 🖼️ Imágenes de productos (solo admin)
+import ImagenesIndex from "./pages/imagenes/ImagenesIndex";
+import ImagenesCreate from "./pages/imagenes/ImagenesCreate";
+import ImagenesEdit from "./pages/imagenes/ImagenesEdit";
+import ImagenesShow from "./pages/imagenes/ImagenesShow";
+
 export default function Router() {
   return (
     <Routes>
@@ -38,12 +49,24 @@ export default function Router() {
           <Route path="/profile" element={<Profile />} />
         </Route>
 
-        {/* Admin (categorías y otros futuros módulos) */}
+        {/* Rutas de administración */}
         <Route element={<ProtectedRoute requiredRole="admin" />}>
           {/* Categorías */}
           <Route path="/categorias" element={<CategoriaList />} />
           <Route path="/categorias/crear" element={<CategoriaCreate />} />
           <Route path="/categorias/editar/:id" element={<CategoriaEdit />} />
+
+          {/* Productos */}
+          <Route path="/productos" element={<ProductosList />} />
+          <Route path="/productos/crear" element={<ProductoCreate />} />
+          <Route path="/productos/:id" element={<ProductoDetail />} />
+          <Route path="/productos/editar/:id" element={<ProductoEdit />} />
+
+          {/* Imágenes de productos */}
+          <Route path="/imagenes" element={<ImagenesIndex />} />
+          <Route path="/imagenes/crear" element={<ImagenesCreate />} />
+          <Route path="/imagenes/editar/:id" element={<ImagenesEdit />} />
+          <Route path="/imagenes/:id" element={<ImagenesShow />} />
         </Route>
       </Route>
 

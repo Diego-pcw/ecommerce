@@ -58,11 +58,13 @@ class ProductoController extends Controller
             return [
                 'id' => $producto->id,
                 'nombre' => $producto->nombre,
+                'marca' => $producto->marca, // 👈 agregado
                 'descripcion' => $producto->descripcion,
                 'categoria' => $producto->categoria?->nombre,
                 'precio_original' => $producto->precio,
                 'precio_final' => $producto->precio_con_descuento,
                 'stock' => $producto->stock,
+                'estado' => $producto->estado, // 👈 agregado
                 'promocion_vigente' => $producto->promocion_vigente,
                 'imagenes' => $producto->imagenes
                     ->where('estado', 'activo')
@@ -92,11 +94,13 @@ class ProductoController extends Controller
         return response()->json([
             'id' => $producto->id,
             'nombre' => $producto->nombre,
+            'marca' => $producto->marca, // 👈 agregado
             'descripcion' => $producto->descripcion,
             'categoria' => $producto->categoria?->nombre,
             'precio_original' => $producto->precio,
             'precio_final' => $producto->precio_con_descuento,
             'stock' => $producto->stock,
+            'estado' => $producto->estado, // 👈 agregado
             'promocion_vigente' => $producto->promocion_vigente,
             'imagenes' => $producto->imagenes
                 ->where('estado', 'activo')
@@ -189,11 +193,13 @@ class ProductoController extends Controller
             return [
                 'id' => $producto->id,
                 'nombre' => $producto->nombre,
+                'marca' => $producto->marca, // 👈 agregado
                 'descripcion' => $producto->descripcion,
                 'categoria' => $producto->categoria?->nombre,
                 'precio_original' => $producto->precio,
                 'precio_final' => $producto->precio_con_descuento,
                 'stock' => $producto->stock,
+                'estado' => $producto->estado, // 👈 agregado
                 'promocion_vigente' => $producto->promocion_vigente,
                 'imagenes' => $producto->imagenes
                     ->where('estado', 'activo')
