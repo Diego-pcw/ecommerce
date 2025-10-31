@@ -9,19 +9,31 @@ const Login: React.FC = () => {
   const { push } = useToast();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({ email: "", password: "" });
   const [submitting, setSubmitting] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.email.trim() || !form.password.trim()) {
+      push("Por favor, complete todos los campos.", "error");
+      return;
+    }
+
     setSubmitting(true);
     try {
-      await login(email, password);
-      push("Inicio de sesión exitoso", "success");
+      await login(form.email, form.password);
+      push("Inicio de sesión exitoso ✅", "success");
       navigate("/", { replace: true });
     } catch (err: any) {
-      push(err?.response?.data?.message ?? "Credenciales inválidas", "error");
+      const message =
+        err?.response?.data?.message ??
+        "Credenciales inválidas. Verifique sus datos.";
+      push(message, "error");
     } finally {
       setSubmitting(false);
     }
@@ -30,32 +42,42 @@ const Login: React.FC = () => {
   return (
     <div className="auth-container">
       <h2>Iniciar sesión</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         <label>
           <span>Correo</span>
           <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            name="email"
+            value={form.email}
+            onChange={handleChange}
             type="email"
+            placeholder="ejemplo@correo.com"
             required
+            autoComplete="email"
           />
         </label>
 
         <label>
           <span>Contraseña</span>
           <input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            name="password"
+            value={form.password}
+            onChange={handleChange}
             type="password"
+            placeholder="••••••••"
             required
+            autoComplete="current-password"
           />
         </label>
 
-        <button type="submit" disabled={submitting}>
+        <button
+          type="submit"
+          disabled={submitting}
+          className="btn-submit"
+        >
           {submitting ? "Ingresando..." : "Ingresar"}
         </button>
 
-        <p style={{ textAlign: "right" }}>
+        <p className="auth-footer">
           <Link to="/register">¿No tienes cuenta? Regístrate</Link>
         </p>
       </form>

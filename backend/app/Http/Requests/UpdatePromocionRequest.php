@@ -20,7 +20,7 @@ class UpdatePromocionRequest extends FormRequest
             'descuento_valor' => 'sometimes|numeric|min:0.01',
             'fecha_inicio' => 'sometimes|date',
             'fecha_fin' => 'sometimes|date|after_or_equal:fecha_inicio',
-            'estado' => 'sometimes|in:activo,inactivo',
+            'estado' => 'sometimes|in:activo,inactivo,ACTIVO,INACTIVO',
         ];
     }
 }

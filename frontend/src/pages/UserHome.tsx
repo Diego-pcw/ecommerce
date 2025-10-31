@@ -21,7 +21,15 @@ const UserHome: React.FC = () => {
             Explorar categorías
           </Link>
           <Link to="/imagenes" className="btn-home-secondary">
-            Explorar Imagenes
+            Explorar imágenes
+          </Link>
+          <Link to="/promociones" className="btn-home-secondary">
+            Explorar promociones
+          </Link>
+
+          {/* 🔹 Enlace al módulo de gestión de usuarios */}
+          <Link to="/admin/usuarios" className="btn-home-secondary">
+            Gestión de usuarios
           </Link>
         </div>
       </div>

@@ -1,35 +1,12 @@
-//auth.service.ts → login, registro, logout, perfil (porque User es la base del resto).
 // src/services/auth.service.ts
 import api, { setAuthToken } from "./api";
 import { type AxiosResponse } from "axios";
-
-export interface User {
-  id: number;
-  name: string; // ✅ en el backend el campo es "name", no "nombre"
-  email: string;
-  rol: "admin" | "cliente";
-  estado: "activo" | "inactivo";
-  created_at?: string;
-  updated_at?: string;
-}
-
-export interface AuthResponse {
-  token: string;
-  user: User;
-  message?: string;
-}
-
-export interface RegisterData {
-  name: string;
-  email: string;
-  password: string;
-  password_confirmation: string;
-}
-
-export interface LoginData {
-  email: string;
-  password: string;
-}
+import type {
+  User,
+  AuthResponse,
+  RegisterData,
+  LoginData,
+} from "../types/User";
 
 class AuthService {
   /** 🔹 Registro */
@@ -50,27 +27,26 @@ class AuthService {
   async logout(): Promise<void> {
     try {
       await api.post("/logout");
+    } catch (error) {
+      console.warn("⚠️ Error al cerrar sesión:", error);
     } finally {
       this.clearSession();
     }
   }
 
-  /** 🔹 Perfil del usuario autenticado */
+  /** 🔹 Perfil */
   async profile(): Promise<User> {
     const res: AxiosResponse<{ user: User }> = await api.get("/profile");
     return res.data.user;
   }
 
-  /** 🔹 Actualizar perfil (nombre o contraseña) */
+  /** 🔹 Actualizar perfil */
   async updateProfile(data: {
     name?: string;
     password?: string;
     password_confirmation?: string;
   }): Promise<User> {
-    const res: AxiosResponse<{ user: User }> = await api.put(
-      "/usuario/actualizar",
-      data
-    );
+    const res: AxiosResponse<{ user: User }> = await api.put("/profile/actualizar", data);
     return res.data.user;
   }
 
@@ -90,7 +66,7 @@ class AuthService {
     };
   }
 
-  /** 🔹 ADMIN: Cambiar estado del usuario (toggle activo/inactivo) */
+  /** 🔹 ADMIN: Cambiar estado */
   async cambiarEstadoUsuario(id: number): Promise<User> {
     const res: AxiosResponse<{ user: User }> = await api.put(
       `/usuarios/${id}/estado`
@@ -101,7 +77,6 @@ class AuthService {
   // =====================================================
   // 🧩 GESTIÓN LOCAL DE SESIÓN
   // =====================================================
-
   private setSession(auth: AuthResponse): void {
     localStorage.setItem("token", auth.token);
     localStorage.setItem("user", JSON.stringify(auth.user));
@@ -116,7 +91,7 @@ class AuthService {
 
   getCurrentUser(): User | null {
     const user = localStorage.getItem("user");
-    return user ? JSON.parse(user) : null;
+    return user ? (JSON.parse(user) as User) : null;
   }
 
   isAuthenticated(): boolean {
@@ -125,4 +100,3 @@ class AuthService {
 }
 
 export default new AuthService();
-

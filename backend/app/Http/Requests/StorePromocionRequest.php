@@ -20,7 +20,7 @@ class StorePromocionRequest extends FormRequest
             'descuento_valor' => 'required|numeric|min:0.01',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
-            'estado' => 'in:activo,inactivo',
+            'estado' => 'required|in:activo,inactivo,ACTIVO,INACTIVO',
         ];
     }
 }

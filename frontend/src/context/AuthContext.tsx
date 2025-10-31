@@ -7,7 +7,8 @@ import React, {
   useCallback,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import authService, { type User as AuthUser } from "../services/auth.service";
+import authService from "../services/auth.service";
+import type { User as AuthUser } from "../types/User";
 
 type AuthContextType = {
   user: AuthUser | null;
@@ -23,27 +24,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
-  const parseProfileResponse = (payload: any): AuthUser | null => {
-    // backend sometimes returns { user } or { user: {...} } or user directly
-    if (!payload) return null;
-    if (payload.user) return payload.user as AuthUser;
-    if (payload.data && payload.data.user) return payload.data.user as AuthUser;
-    if (payload.data && typeof payload.data === "object" && !Array.isArray(payload.data))
-      return payload.data as AuthUser;
-    return (payload as AuthUser) ?? null;
-  };
 
   const refreshProfile = useCallback(async (): Promise<void> => {
     setLoading(true);
     try {
-      const res = await authService.profile();
-      const parsed = parseProfileResponse(res); // authService.profile returns various shapes
-      setUser(parsed);
-    } catch (err) {
-      // if token invalid or no profile, make sure session cleared
+      const user = await authService.profile();
+      setUser(user);
+    } catch {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       setUser(null);
@@ -63,15 +52,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
         return;
       }
-      try {
-        await refreshProfile();
-      } catch {
-        // ignore
-      }
+      await refreshProfile();
     };
     init();
 
-    // allow listening to cross-tab logout
     const handleExternalLogout = () => {
       localStorage.removeItem("token");
       setUser(null);
@@ -89,11 +73,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     async (email: string, password: string) => {
       setLoading(true);
       try {
-        const res = await authService.login({ email, password });
-        // authService sets token & user in local storage on success
-        // refresh profile to get canonical user data
+        await authService.login({ email, password });
         await refreshProfile();
-        // navigate to home/dashboard after login
         navigate("/", { replace: true });
       } finally {
         setLoading(false);
@@ -105,8 +86,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const logout = useCallback(async () => {
     try {
       await authService.logout();
-    } catch {
-      // ignore
     } finally {
       localStorage.removeItem("token");
       localStorage.removeItem("user");

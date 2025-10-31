@@ -1,98 +1,61 @@
-// src/types/Promocion.ts
+// =========================================================
+// 📘 Types: Promocion
+// =========================================================
 
-import { type Paginated } from "./Common";
+export interface Promocion {
+  id: number;
+  titulo: string;
+  descripcion: string | null;
+  descuento_tipo: "percent" | "fixed"; // ← según backend
+  descuento_valor: number; // ← valor numérico (viene como string, pero lo tratamos como number)
+  fecha_inicio: string;
+  fecha_fin: string;
+  estado: "activo" | "inactivo"; // ← coincide con Laravel
+  productos?: PromocionProducto[];
+  created_at?: string;
+  updated_at?: string;
+}
 
 /**
- * 🔹 Producto simplificado cuando se devuelve junto a una promoción.
- * Incluye los campos necesarios del modelo Producto.
+ * 🔹 Relación de productos asignados a una promoción
  */
 export interface PromocionProducto {
   id: number;
   nombre: string;
-  precio: number;
-
-  /** Información proveniente de la tabla pivote (producto_promocion) */
-  pivot?: {
-    promocion_id: number;
-    producto_id: number;
-    created_at?: string | null;
-    updated_at?: string | null;
-  };
+  precio: number | string;
+  categoria_id: number;
+  categoria_nombre?: string;
+  estado: "ACTIVO" | "INACTIVO";
+  precio_con_descuento?: number;
 }
 
 /**
- * 🔹 Representa una promoción activa o inactiva aplicada a uno o varios productos.
- * Incluye descuentos por valor fijo o porcentual.
- */
-export interface Promocion {
-  id: number;
-
-  /** Título en mayúsculas de la promoción (ej. "PROMOCIÓN DE INVIERNO") */
-  titulo: string;
-
-  /** Descripción opcional en mayúsculas */
-  descripcion?: string | null;
-
-  /** Tipo de descuento: porcentaje (%) o valor fijo */
-  descuento_tipo: "percent" | "fixed";
-
-  /** Valor numérico del descuento (según tipo) */
-  descuento_valor: number;
-
-  /** Fecha de inicio (YYYY-MM-DD) */
-  fecha_inicio: string;
-
-  /** Fecha de fin (YYYY-MM-DD) */
-  fecha_fin: string;
-
-  /** Estado actual de la promoción */
-  estado: "activo" | "inactivo";
-
-  /** Productos asociados a esta promoción (si se carga con with()) */
-  productos?: PromocionProducto[];
-
-  /** Campo calculado: indica si está vigente actualmente (no siempre presente) */
-  esta_vigente?: boolean;
-
-  created_at?: string | null;
-  updated_at?: string | null;
-}
-
-/**
- * 🔸 Datos enviados al crear una nueva promoción.
+ * 🔸 Datos para crear una nueva promoción
  */
 export interface PromocionCreateData {
   titulo: string;
-  descripcion?: string | null;
+  descripcion?: string;
   descuento_tipo: "percent" | "fixed";
   descuento_valor: number;
-  fecha_inicio: string; // YYYY-MM-DD
-  fecha_fin: string; // YYYY-MM-DD
+  fecha_inicio: string;
+  fecha_fin: string;
   estado?: "activo" | "inactivo";
 }
 
 /**
- * 🔸 Datos enviados al actualizar una promoción existente.
+ * 🔸 Datos para actualizar una promoción existente
  */
-export interface PromocionUpdateData {
-  titulo?: string;
-  descripcion?: string | null;
-  descuento_tipo?: "percent" | "fixed";
-  descuento_valor?: number;
-  fecha_inicio?: string;
-  fecha_fin?: string;
-  estado?: "activo" | "inactivo";
-}
+export interface PromocionUpdateData extends Partial<PromocionCreateData> {}
 
 /**
- * 🔸 Datos enviados al asignar productos a una promoción.
+ * 🔸 Datos para asignar productos a una promoción
  */
 export interface AsignarProductosData {
-  productos: number[]; // IDs de productos
+  producto_ids: number[];
 }
 
 /**
- * ✅ Respuesta al crear o actualizar una promoción.
+ * 🔹 Respuesta de creación/actualización de promoción
  */
 export interface PromocionResponse {
   message: string;
@@ -100,7 +63,7 @@ export interface PromocionResponse {
 }
 
 /**
- * ✅ Respuesta al asignar productos a una promoción.
+ * 🔹 Respuesta de asignación de productos
  */
 export interface AsignarProductosResponse {
   message: string;
@@ -108,6 +71,9 @@ export interface AsignarProductosResponse {
 }
 
 /**
- * ✅ Respuesta del endpoint index() → lista paginada de promociones.
+ * 🔹 Respuesta al listar promociones
  */
-export interface PromocionListResponse extends Paginated<Promocion> {}
+export interface PromocionListResponse {
+  total: number;
+  data: Promocion[];
+}

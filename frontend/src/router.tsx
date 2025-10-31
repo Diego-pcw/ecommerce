@@ -32,6 +32,15 @@ import ImagenesCreate from "./pages/imagenes/ImagenesCreate";
 import ImagenesEdit from "./pages/imagenes/ImagenesEdit";
 import ImagenesShow from "./pages/imagenes/ImagenesShow";
 
+// 💸 Promociones (solo admin)
+import PromocionList from "./pages/promociones/PromocionList";
+import PromocionDetail from "./pages/promociones/PromocionDetail";
+import PromocionCreate from "./pages/promociones/PromocionCreate";
+import PromocionEdit from "./pages/promociones/PromocionEdit";
+
+// 👥 Usuarios (solo admin)
+import UsuarioList from "./pages/admin/usuarios/UsuarioList";
+
 export default function Router() {
   return (
     <Routes>
@@ -67,6 +76,15 @@ export default function Router() {
           <Route path="/imagenes/crear" element={<ImagenesCreate />} />
           <Route path="/imagenes/editar/:id" element={<ImagenesEdit />} />
           <Route path="/imagenes/:id" element={<ImagenesShow />} />
+
+          {/* Promociones */}
+          <Route path="/promociones" element={<PromocionList />} />
+          <Route path="/promociones/crear" element={<PromocionCreate />} />
+          <Route path="/promociones/:id" element={<PromocionDetail />} />
+          <Route path="/promociones/editar/:id" element={<PromocionEdit />} />
+
+          {/* Usuarios */}
+          <Route path="/admin/usuarios" element={<UsuarioList />} />
         </Route>
       </Route>
 

@@ -8,26 +8,36 @@ const Register: React.FC = () => {
   const { push } = useToast();
   const navigate = useNavigate();
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
+  });
   const [submitting, setSubmitting] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (form.password !== form.password_confirmation) {
+      push("Las contraseñas no coinciden", "error");
+      return;
+    }
+
     setSubmitting(true);
     try {
-      await authService.register({
-        name, 
-        email,
-        password,
-        password_confirmation: passwordConfirmation,
-      });
-      push("Registro exitoso. Bienvenido!", "success");
+      await authService.register(form);
+      push("Registro exitoso 🎉 Bienvenido!", "success");
       navigate("/", { replace: true });
     } catch (err: any) {
-      push(err?.response?.data?.message ?? "Error al registrar", "error");
+      const message =
+        err?.response?.data?.message ?? "Error al registrar el usuario.";
+      push(message, "error");
     } finally {
       setSubmitting(false);
     }
@@ -36,23 +46,27 @@ const Register: React.FC = () => {
   return (
     <div className="auth-container">
       <h2>Crear cuenta</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         <label>
-          <span>Nombre</span>
+          <span>Nombre completo</span>
           <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            name="name"
+            value={form.name}
+            onChange={handleChange}
             type="text"
+            placeholder="Tu nombre"
             required
           />
         </label>
 
         <label>
-          <span>Correo</span>
+          <span>Correo electrónico</span>
           <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            name="email"
+            value={form.email}
+            onChange={handleChange}
             type="email"
+            placeholder="ejemplo@correo.com"
             required
           />
         </label>
@@ -60,29 +74,37 @@ const Register: React.FC = () => {
         <label>
           <span>Contraseña</span>
           <input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            name="password"
+            value={form.password}
+            onChange={handleChange}
             type="password"
+            placeholder="Mínimo 6 caracteres"
             required
+            minLength={6}
           />
         </label>
 
         <label>
           <span>Confirmar contraseña</span>
           <input
-            value={passwordConfirmation}
-            onChange={(e) => setPasswordConfirmation(e.target.value)}
+            name="password_confirmation"
+            value={form.password_confirmation}
+            onChange={handleChange}
             type="password"
             required
           />
         </label>
 
-        <button type="submit" disabled={submitting}>
+        <button
+          type="submit"
+          disabled={submitting}
+          className="btn-submit"
+        >
           {submitting ? "Registrando..." : "Registrarme"}
         </button>
 
-        <p style={{ textAlign: "right" }}>
-          <Link to="/login">¿Ya tienes cuenta? Iniciar sesión</Link>
+        <p className="auth-footer">
+          <Link to="/login">¿Ya tienes cuenta? Inicia sesión</Link>
         </p>
       </form>
     </div>

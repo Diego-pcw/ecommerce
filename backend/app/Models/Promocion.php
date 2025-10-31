@@ -28,7 +28,7 @@ class Promocion extends Model
         'descuento_valor' => 'decimal:2',
     ];
 
-    const ESTADOS = ['activo', 'inactivo'];
+    const ESTADOS = ['ACTIVO', 'INACTIVO'];
 
     // 🔗 Relación muchos a muchos con productos
     public function productos()
@@ -41,7 +41,7 @@ class Promocion extends Model
     public function getEstaVigenteAttribute(): bool
     {
         $hoy = Carbon::today();
-        return $this->estado === 'activo'
+        return $this->estado === 'ACTIVO'
             && $this->fecha_inicio <= $hoy
             && $this->fecha_fin >= $hoy;
     }
@@ -55,5 +55,10 @@ class Promocion extends Model
     public function setDescripcionAttribute($value)
     {
         $this->attributes['descripcion'] = $value ? mb_strtoupper($value) : null;
+    }
+
+    public function setEstadoAttribute($value)
+    {
+        $this->attributes['estado'] = mb_strtoupper($value);
     }
 }
