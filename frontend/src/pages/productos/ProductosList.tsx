@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { productoService } from "../../services/producto.service";
 import type { ProductoListItem } from "../../types/Producto";
+import ProductoCard from "../../components/productos/ProductoCard"; // ✅ importación añadida
 
 const ProductosList: React.FC = () => {
   const [productos, setProductos] = useState<ProductoListItem[]>([]);
@@ -32,7 +33,9 @@ const ProductosList: React.FC = () => {
   const handleDetail = (id: number) => navigate(`/productos/${id}`);
 
   const handleDelete = async (id: number) => {
-    const ok = confirm("¿Seguro que deseas eliminar este producto? Esta acción no se puede deshacer.");
+    const ok = confirm(
+      "¿Seguro que deseas eliminar este producto? Esta acción no se puede deshacer."
+    );
     if (!ok) return;
 
     try {
@@ -67,32 +70,14 @@ const ProductosList: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {productos.map((prod) => (
-            <article
+            <div
               key={prod.id}
               className="border p-4 rounded-xl shadow-sm hover:shadow-md transition flex flex-col justify-between"
             >
-              <div>
-                {prod.imagenes?.[0] && (
-                  <img
-                    src={prod.imagenes[0].url}
-                    alt={prod.nombre}
-                    className="w-full h-40 object-cover rounded mb-3"
-                  />
-                )}
+              {/* ✅ Sección visual del producto (tu ProductoCard) */}
+              <ProductoCard producto={prod} />
 
-                <h2 className="font-bold text-lg">{prod.nombre}</h2>
-                <p className="text-sm text-gray-600">{prod.categoria}</p>
-                <p className="text-green-700 font-semibold mt-2">
-                  S/ {Number(prod.precio_final).toFixed(2)}
-                </p>
-
-                {prod.promocion_vigente && (
-                  <span className="text-sm text-blue-600 block mt-1">
-                    {prod.promocion_vigente.titulo} 🔖
-                  </span>
-                )}
-              </div>
-
+              {/* ✅ Sección administrativa (Ver / Editar / Eliminar) */}
               <div className="flex gap-2 mt-4">
                 <button
                   onClick={() => handleDetail(prod.id)}
@@ -114,7 +99,7 @@ const ProductosList: React.FC = () => {
                   {deletingId === prod.id ? "Eliminando..." : "🗑️ Eliminar"}
                 </button>
               </div>
-            </article>
+            </div>
           ))}
         </div>
       )}

@@ -1,62 +1,29 @@
-//carrito.service.ts → carrito y sus detalles.
+// src/services/carrito.service.ts
 import api from "./api";
 import { type AxiosResponse } from "axios";
+import {
+  type Carrito,
+  type CarritoObtenerResponse,
+  type CarritoAgregarResponse,
+  type CarritoActualizarResponse,
+  type CarritoEliminarResponse,
+  type CarritoMostrarResponse,
+  type CarritoIndexResponse,
+  type AgregarProductoData,
+  type ActualizarCantidadData,
+} from "../types/Carrito";
 
-/* -------------------------------------------
- * 🧩 Interfaces principales
- * ----------------------------------------- */
-export interface DetalleCarrito {
-  id: number;
-  producto_id: number;
-  cantidad: number;
-  precio_unitario: number;
-  subtotal: number;
-  producto?: {
-    id: number;
-    nombre: string;
-    precio_original: number;
-    precio_final?: number;
-    imagenes?: { url: string }[];
-  };
-  created_at?: string;
-  updated_at?: string;
-}
-
-export interface Carrito {
-  id: number;
-  user_id?: number | null;
-  session_id?: string;
-  estado?: "activo" | "expirado";
-  total?: number;
-  esta_vacio?: boolean;
-  detalles?: DetalleCarrito[];
-  created_at?: string;
-  updated_at?: string;
-}
-
-/* -------------------------------------------
- * ✏️ Estructuras de entrada
- * ----------------------------------------- */
-export interface AgregarProductoInput {
-  producto_id: number;
-  cantidad?: number;
-}
-
-export interface ActualizarCantidadInput {
-  producto_id: number;
-  cantidad: number;
-}
-
-/* -------------------------------------------
- * ⚙️ Servicio centralizado de Carrito
- * ----------------------------------------- */
+/**
+ * 🛒 Servicio centralizado para gestionar el carrito de compras.
+ * Compatible con usuarios autenticados y sesiones invitadas.
+ */
 class CarritoService {
   /**
-   * 🔹 Obtener el carrito activo (usuario autenticado o invitado)
-   * - Usa header X-Session-Id si el usuario no está logueado
+   * 🔹 Obtener el carrito actual (usuario autenticado o invitado)
+   * - Usa header `X-Session-Id` si el usuario no está logueado
    */
-  async obtenerCarrito(sessionId?: string): Promise<{ session_id: string; carrito: Carrito }> {
-    const res: AxiosResponse = await api.get("/carrito", {
+  async obtenerCarrito(sessionId?: string): Promise<CarritoObtenerResponse> {
+    const res: AxiosResponse<CarritoObtenerResponse> = await api.get("/carrito", {
       headers: sessionId ? { "X-Session-Id": sessionId } : undefined,
     });
     return res.data;
@@ -66,62 +33,69 @@ class CarritoService {
    * 🔹 Agregar un producto al carrito
    */
   async agregarProducto(
-    data: AgregarProductoInput,
+    data: AgregarProductoData,
     sessionId?: string
-  ): Promise<{ message: string; session_id: string; carrito: Carrito }> {
-    const res: AxiosResponse = await api.post("/carrito/agregar", data, {
+  ): Promise<CarritoAgregarResponse> {
+    const res: AxiosResponse<CarritoAgregarResponse> = await api.post("/carrito/agregar", data, {
       headers: sessionId ? { "X-Session-Id": sessionId } : undefined,
     });
     return res.data;
   }
 
   /**
-   * 🔹 Actualizar la cantidad de un producto
+   * 🔹 Actualizar cantidad de un producto en el carrito
    */
   async actualizarCantidad(
     carritoId: number,
-    data: ActualizarCantidadInput
-  ): Promise<{ message: string; detalle: DetalleCarrito }> {
-    const res: AxiosResponse = await api.put(`/carrito/${carritoId}/cantidad`, data);
+    data: ActualizarCantidadData
+  ): Promise<CarritoActualizarResponse> {
+    const res: AxiosResponse<CarritoActualizarResponse> = await api.put(
+      `/carrito/${carritoId}/actualizar`,
+      data
+    );
     return res.data;
   }
 
   /**
    * 🔹 Eliminar un producto del carrito
    */
-  async eliminarProducto(carritoId: number, productoId: number): Promise<{ message: string }> {
-    const res: AxiosResponse = await api.delete(`/carrito/${carritoId}/producto/${productoId}`);
+  async eliminarProducto(carritoId: number, productoId: number): Promise<CarritoEliminarResponse> {
+    const res: AxiosResponse<CarritoEliminarResponse> = await api.delete(
+      `/carrito/${carritoId}/eliminar/${productoId}`
+    );
     return res.data;
   }
 
   /**
    * 🔹 Vaciar completamente el carrito
    */
-  async vaciarCarrito(carritoId: number): Promise<{ message: string }> {
-    const res: AxiosResponse = await api.delete(`/carrito/${carritoId}/vaciar`);
+  async vaciarCarrito(carritoId: number): Promise<CarritoEliminarResponse> {
+    const res: AxiosResponse<CarritoEliminarResponse> = await api.delete(
+      `/carrito/${carritoId}/vaciar`
+    );
     return res.data;
   }
 
   /**
-   * 🔹 Mostrar carrito con total
+   * 🔹 Mostrar carrito con todos los productos y total
    */
-  async mostrar(carritoId: number): Promise<{ carrito: Carrito; total: number; esta_vacio: boolean }> {
-    const res: AxiosResponse = await api.get(`/carrito/${carritoId}`);
+  async mostrar(carritoId: number): Promise<CarritoMostrarResponse> {
+    const res: AxiosResponse<CarritoMostrarResponse> = await api.get(`/carrito/${carritoId}`);
     return res.data;
   }
 
   /**
-   * 🔸 Listar todos los carritos (solo admin)
+   * 🔸 Listar todos los carritos (solo para administrador)
    */
   async listar(params?: {
     estado?: string;
-    session_id?: string;
-    user_id?: number;
-    sort?: string;
-    per_page?: number;
+    sessionId?: string;
+    userId?: number;
     page?: number;
-  }): Promise<any> {
-    const res: AxiosResponse = await api.get("/carritos", { params });
+    per_page?: number;
+    sort?: string;
+  }): Promise<CarritoIndexResponse> {
+    const res: AxiosResponse<CarritoIndexResponse> = await api.get("/carritos", { params });
     return res.data;
   }
 }

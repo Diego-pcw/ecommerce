@@ -1,6 +1,9 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
+// Context / Provider del carrito
+import { CarritoProvider } from "./context/CarritoContext";
+
 // 🔐 Páginas de autenticación
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -41,55 +44,76 @@ import PromocionEdit from "./pages/promociones/PromocionEdit";
 // 👥 Usuarios (solo admin)
 import UsuarioList from "./pages/admin/usuarios/UsuarioList";
 
+// 🛒 Carrito (usuario)
+import CarritoUserView from "./pages/carritos/CarritoUserView";
+import CarritoCheckout from "./pages/carritos/CarritoCheckout";
+import CarritoVacio from "./pages/carritos/CarritoVacio";
+
+// 🧾 Carritos (admin) — ya los tenías
+import CarritoList from "./pages/carritos/CarritoList";
+import CarritoDetail from "./pages/carritos/CarritoDetail";
+
 export default function Router() {
   return (
-    <Routes>
-      {/* Públicas */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+    // Proveedor global del carrito (disponible en toda la app)
+    <CarritoProvider>
+      <Routes>
+        {/* Públicas */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-      {/* Layout global */}
-      <Route element={<Layout />}>
-        {/* Página principal */}
-        <Route path="/" element={<UserHome />} />
+        {/* Layout global */}
+        <Route element={<Layout />}>
+          {/* Página principal */}
+          <Route path="/" element={<UserHome />} />
 
-        {/* Rutas protegidas (usuarios autenticados) */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/profile" element={<Profile />} />
+          {/* Rutas del carrito (públicas, accesibles tanto por invitados como por usuarios) */}
+          <Route path="/carrito" element={<CarritoUserView />} />
+          <Route path="/carrito/checkout" element={<CarritoCheckout />} />
+          <Route path="/carrito/vacio" element={<CarritoVacio />} />
+
+          {/* Rutas protegidas (usuarios autenticados) */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/profile" element={<Profile />} />
+          </Route>
+
+          {/* Rutas de administración */}
+          <Route element={<ProtectedRoute requiredRole="admin" />}>
+            {/* Categorías */}
+            <Route path="/categorias" element={<CategoriaList />} />
+            <Route path="/categorias/crear" element={<CategoriaCreate />} />
+            <Route path="/categorias/editar/:id" element={<CategoriaEdit />} />
+
+            {/* Productos */}
+            <Route path="/productos" element={<ProductosList />} />
+            <Route path="/productos/crear" element={<ProductoCreate />} />
+            <Route path="/productos/:id" element={<ProductoDetail />} />
+            <Route path="/productos/editar/:id" element={<ProductoEdit />} />
+
+            {/* Imágenes de productos */}
+            <Route path="/imagenes" element={<ImagenesIndex />} />
+            <Route path="/imagenes/crear" element={<ImagenesCreate />} />
+            <Route path="/imagenes/editar/:id" element={<ImagenesEdit />} />
+            <Route path="/imagenes/:id" element={<ImagenesShow />} />
+
+            {/* Promociones */}
+            <Route path="/promociones" element={<PromocionList />} />
+            <Route path="/promociones/crear" element={<PromocionCreate />} />
+            <Route path="/promociones/:id" element={<PromocionDetail />} />
+            <Route path="/promociones/editar/:id" element={<PromocionEdit />} />
+
+            {/* Usuarios */}
+            <Route path="/admin/usuarios" element={<UsuarioList />} />
+
+            {/* Admin: listado y detalle de carritos */}
+            <Route path="/carritos" element={<CarritoList />} />
+            <Route path="/carritos/:id" element={<CarritoDetail />} />
+          </Route>
         </Route>
 
-        {/* Rutas de administración */}
-        <Route element={<ProtectedRoute requiredRole="admin" />}>
-          {/* Categorías */}
-          <Route path="/categorias" element={<CategoriaList />} />
-          <Route path="/categorias/crear" element={<CategoriaCreate />} />
-          <Route path="/categorias/editar/:id" element={<CategoriaEdit />} />
-
-          {/* Productos */}
-          <Route path="/productos" element={<ProductosList />} />
-          <Route path="/productos/crear" element={<ProductoCreate />} />
-          <Route path="/productos/:id" element={<ProductoDetail />} />
-          <Route path="/productos/editar/:id" element={<ProductoEdit />} />
-
-          {/* Imágenes de productos */}
-          <Route path="/imagenes" element={<ImagenesIndex />} />
-          <Route path="/imagenes/crear" element={<ImagenesCreate />} />
-          <Route path="/imagenes/editar/:id" element={<ImagenesEdit />} />
-          <Route path="/imagenes/:id" element={<ImagenesShow />} />
-
-          {/* Promociones */}
-          <Route path="/promociones" element={<PromocionList />} />
-          <Route path="/promociones/crear" element={<PromocionCreate />} />
-          <Route path="/promociones/:id" element={<PromocionDetail />} />
-          <Route path="/promociones/editar/:id" element={<PromocionEdit />} />
-
-          {/* Usuarios */}
-          <Route path="/admin/usuarios" element={<UsuarioList />} />
-        </Route>
-      </Route>
-
-      {/* Redirección por defecto */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        {/* Redirección por defecto */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </CarritoProvider>
   );
 }

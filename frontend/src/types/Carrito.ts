@@ -1,38 +1,24 @@
 // src/types/Carrito.ts
-
 import { type CarritoDetalle } from "./CarritoDetalle";
 import { type User } from "./User";
 import { type Paginated } from "./Common";
 
 /**
- * 🔹 Representa un carrito de compras activo, expirado o vacío.
+ * 🔹 Representa un carrito de compras (activo, expirado o vacío)
  * Puede pertenecer a un usuario autenticado o a una sesión invitada.
  */
 export interface Carrito {
   id: number;
-
-  /** ID del usuario propietario (si está autenticado) */
   user_id?: number | null;
-
-  /** Identificador de sesión para carritos de invitados */
   session_id?: string | null;
-
-  /** Estado del carrito: puede cambiar dinámicamente por expiración */
   estado: "activo" | "expirado";
-
-  /** Fecha de expiración automática del carrito */
   expires_at?: string | null;
 
-  /** Relación con usuario (si se carga con with()) */
   usuario?: User | null;
-
-  /** Lista de productos agregados al carrito (si se carga con with()) */
   detalles?: CarritoDetalle[];
 
-  /** Indica si el carrito está vacío (propiedad accesora) */
+  /** Propiedades accesoras */
   esta_vacio?: boolean;
-
-  /** Total general del carrito (propiedad accesora) */
   total?: number;
 
   created_at?: string | null;
@@ -44,12 +30,11 @@ export interface Carrito {
  */
 export interface AgregarProductoData {
   producto_id: number;
-  cantidad?: number; // Default: 1
+  cantidad?: number; // Por defecto: 1
 }
 
 /**
  * 🔸 Datos enviados para actualizar la cantidad de un producto.
- * Si cantidad = 0 → el producto se elimina.
  */
 export interface ActualizarCantidadData {
   producto_id: number;
@@ -57,16 +42,24 @@ export interface ActualizarCantidadData {
 }
 
 /**
- * ✅ Respuesta al obtener o crear carrito (obtenerCarrito / agregarProducto).
+ * ✅ Respuesta al obtener carrito (GET /api/carrito)
  */
-export interface CarritoResponse {
+export interface CarritoObtenerResponse {
   session_id: string | null;
   carrito: Carrito;
-  message?: string; // Solo presente al agregar producto
 }
 
 /**
- * ✅ Respuesta al mostrar un carrito con totales (mostrar).
+ * ✅ Respuesta al agregar producto (POST /api/carrito/agregar)
+ */
+export interface CarritoAgregarResponse {
+  message: string;
+  session_id: string | null;
+  carrito: Carrito;
+}
+
+/**
+ * ✅ Respuesta al mostrar carrito con total (GET /api/carrito/{id})
  */
 export interface CarritoMostrarResponse {
   carrito: Carrito;
@@ -75,15 +68,22 @@ export interface CarritoMostrarResponse {
 }
 
 /**
- * ✅ Respuesta al actualizar la cantidad de un producto en el carrito.
+ * ✅ Respuesta al actualizar cantidad (PUT /api/carrito/{id}/actualizar)
  */
-export interface ActualizarCantidadResponse {
+export interface CarritoActualizarResponse {
   message: string;
-  detalle: CarritoDetalle | null;
+  detalle: CarritoDetalle;
 }
 
 /**
- * 🔸 Resumen estadístico de carritos (para vista de administrador).
+ * ✅ Respuesta al eliminar producto o vaciar carrito
+ */
+export interface CarritoEliminarResponse {
+  message: string;
+}
+
+/**
+ * 🔸 Resumen estadístico para la vista de administrador
  */
 export interface CarritoResumen {
   total: number;
@@ -93,7 +93,7 @@ export interface CarritoResumen {
 }
 
 /**
- * 🔸 Filtros aplicados en el listado de carritos (index admin).
+ * 🔸 Filtros aplicados al listado de carritos (solo admin)
  */
 export interface CarritoFiltros {
   estado?: string | null;
@@ -102,7 +102,7 @@ export interface CarritoFiltros {
 }
 
 /**
- * 🔸 Información de ordenamiento aplicada al listado de carritos (index admin).
+ * 🔸 Orden aplicado al listado de carritos (solo admin)
  */
 export interface CarritoOrden {
   campo: string;
@@ -110,7 +110,7 @@ export interface CarritoOrden {
 }
 
 /**
- * ✅ Respuesta del endpoint index() → lista paginada (solo admin).
+ * ✅ Respuesta del endpoint GET /api/carritos (index admin)
  */
 export interface CarritoIndexResponse {
   filtros: CarritoFiltros;

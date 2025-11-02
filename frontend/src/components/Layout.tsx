@@ -1,8 +1,8 @@
-// src/components/Layout.tsx
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "../styles/layout.css";
+import CarritoButton from "./carrito/CarritoButton"; // <-- botón del carrito
 
 const Layout: React.FC = () => {
   const { user, logout } = useAuth();
@@ -16,6 +16,11 @@ const Layout: React.FC = () => {
           <nav className="flex items-center gap-4">
             <Link to="/productos" className="text-sm">Productos</Link>
             <Link to="/categorias" className="text-sm">Categorías</Link>
+
+            {/* Carrito siempre visible en el header */}
+            <div className="ml-2">
+              <CarritoButton />
+            </div>
 
             {user ? (
               <>
