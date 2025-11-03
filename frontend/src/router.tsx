@@ -53,6 +53,12 @@ import CarritoVacio from "./pages/carritos/CarritoVacio";
 import CarritoList from "./pages/carritos/CarritoList";
 import CarritoDetail from "./pages/carritos/CarritoDetail";
 
+// 🗣️ Reseñas (usuarios y admin)
+import ResenasList from "./pages/resenas/ResenasList";
+import ResenaDetalle from "./pages/resenas/ResenaDetalle";
+import ResenaForm from "./pages/resenas/ResenaForm";
+import ResenasPublicList from "./pages/resenas/ResenasPublicList";
+
 export default function Router() {
   return (
     // Proveedor global del carrito (disponible en toda la app)
@@ -72,9 +78,23 @@ export default function Router() {
           <Route path="/carrito/checkout" element={<CarritoCheckout />} />
           <Route path="/carrito/vacio" element={<CarritoVacio />} />
 
+          {/* Rutas de productos (públicas, accesibles tanto por invitados como por usuarios) */}
+          <Route path="/productos" element={<ProductosList />} />
+          <Route path="/productos/:id" element={<ProductoDetail />} />
+
+          {/* Rutas de promocion (públicas, accesibles tanto por invitados como por usuarios) */}
+          <Route path="/promociones" element={<PromocionList />} />
+          <Route path="/promociones/:id" element={<PromocionDetail />} />
+
+          {/* 🗣️ Rutas de reseñas (públicas y privadas según acción) */}
+          <Route path="/resenas" element={<ResenasList />} />
+          <Route path="/resenas/:id" element={<ResenaDetalle />} />
+          <Route path="/resenas-public" element={<ResenasPublicList />} />
+        
           {/* Rutas protegidas (usuarios autenticados) */}
           <Route element={<ProtectedRoute />}>
             <Route path="/profile" element={<Profile />} />
+            
           </Route>
 
           {/* Rutas de administración */}
@@ -85,9 +105,7 @@ export default function Router() {
             <Route path="/categorias/editar/:id" element={<CategoriaEdit />} />
 
             {/* Productos */}
-            <Route path="/productos" element={<ProductosList />} />
             <Route path="/productos/crear" element={<ProductoCreate />} />
-            <Route path="/productos/:id" element={<ProductoDetail />} />
             <Route path="/productos/editar/:id" element={<ProductoEdit />} />
 
             {/* Imágenes de productos */}
@@ -97,9 +115,7 @@ export default function Router() {
             <Route path="/imagenes/:id" element={<ImagenesShow />} />
 
             {/* Promociones */}
-            <Route path="/promociones" element={<PromocionList />} />
             <Route path="/promociones/crear" element={<PromocionCreate />} />
-            <Route path="/promociones/:id" element={<PromocionDetail />} />
             <Route path="/promociones/editar/:id" element={<PromocionEdit />} />
 
             {/* Usuarios */}

@@ -1,0 +1,126 @@
+@import "../theme.css";
+@import "./resena.shared.css";
+
+.container {
+  background: var(--biker-white);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  margin: 1.5rem auto;
+  max-width: 1100px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--biker-black);
+}
+
+.searchInput {
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--biker-dark-gray);
+  width: 260px;
+  background: var(--biker-white);
+  color: var(--biker-black);
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: var(--biker-light-gray);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cardHeader h3 {
+  font-size: 1.1rem;
+  color: var(--biker-black);
+  font-weight: 600;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  color: var(--biker-yellow);
+  font-size: 1.1rem;
+}
+
+.ratingValue {
+  margin-left: 6px;
+  color: var(--biker-dark-gray);
+  font-size: 0.9rem;
+}
+
+.comentario {
+  margin-top: 0.6rem;
+  font-style: italic;
+  color: var(--biker-black);
+}
+
+.user {
+  margin-top: 0.8rem;
+  font-weight: 500;
+  color: var(--biker-dark-gray);
+  font-size: 0.9rem;
+}
+
+.loading,
+.empty {
+  text-align: center;
+  color: var(--biker-dark-gray);
+  padding: 1.2rem;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1.5rem;
+  gap: 1rem;
+}
+
+.pagination button {
+  border: none;
+  background: var(--biker-blue);
+  color: var(--biker-white);
+  border-radius: 6px;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.pagination button:hover {
+  background: #125ca3;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

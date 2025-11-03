@@ -33,20 +33,13 @@ export interface ResenaQueryParams {
 }
 
 export const resenaService = {
-  /**
-   * 📋 Listar reseñas (con filtros, paginación y visibilidad por rol)
-   * - Admin ve todas
-   * - Usuario/visitante solo las aprobadas
-   */
+  /** 📋 Listar reseñas (públicas o admin) */
   async getAll(params?: ResenaQueryParams) {
     const { data } = await api.get("/resenas", { params });
     return data;
   },
 
-  /**
-   * 🧾 Crear una nueva reseña
-   * Requiere usuario autenticado
-   */
+  /** 🧾 Crear una nueva reseña (usuario autenticado) */
   async create(payload: {
     producto_id: number;
     rating: number;
@@ -57,17 +50,13 @@ export const resenaService = {
     return data;
   },
 
-  /**
-   * 🔍 Mostrar una reseña individual
-   */
+  /** 🔍 Mostrar una reseña específica */
   async getById(id: number) {
     const { data } = await api.get(`/resenas/${id}`);
     return data;
   },
 
-  /**
-   * ✏️ Actualizar reseña (solo admin/moderador)
-   */
+  /** ✏️ Actualizar reseña (solo admin) */
   async update(
     id: number,
     payload: {
@@ -81,11 +70,10 @@ export const resenaService = {
     return data;
   },
 
-  /**
-   * 🗑️ Eliminar reseña (solo admin)
-   */
+  /** 🗑️ Eliminar reseña (solo admin) */
   async delete(id: number) {
     const { data } = await api.delete(`/resenas/${id}`);
     return data;
   },
 };
+

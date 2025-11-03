@@ -11,20 +11,24 @@ class ReseñaController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-
+    
         $reseñas = Reseña::with(['producto', 'user'])
-            ->when($request->filled('estado'), fn($q) =>
-                $q->where('estado', strtoupper($request->estado))
-            )
+            // 🔹 Filtro por estado, insensible a mayúsculas/minúsculas
+            ->when($request->filled('estado'), function ($q) use ($request) {
+                $estado = $request->estado;
+                $q->whereRaw('UPPER(estado) = ?', [strtoupper($estado)]);
+            })
+            // 🔹 Filtro por producto
             ->when($request->filled('producto_id'), fn($q) =>
                 $q->where('producto_id', $request->producto_id)
             )
-            ->when(!$user || $user->rol !== 'admin', fn($q) =>
-                $q->where('estado', 'APROBADO')
+            // 🔹 Solo mostrar APROBADO a usuarios no admin si no hay filtro de estado
+            ->when((!$user || $user->rol !== 'admin') && !$request->filled('estado'), fn($q) =>
+                $q->whereRaw('UPPER(estado) = ?', ['APROBADO'])
             )
             ->orderBy($request->get('sort_by', 'created_at'), $request->get('order', 'desc'))
             ->paginate($request->get('per_page', 10));
-
+        
         return response()->json([
             'total' => $reseñas->total(),
             'current_page' => $reseñas->currentPage(),
@@ -36,6 +40,10 @@ class ReseñaController extends Controller
     // 🧾 Crear nueva reseña
     public function store(Request $request)
     {
+        if (!$request->user()) {
+            return response()->json(['message' => 'Usuario no autenticado.'], 401);
+        }
+
         $validated = $request->validate([
             'producto_id' => 'required|exists:productos,id',
             'rating'      => 'required|integer|min:1|max:5',

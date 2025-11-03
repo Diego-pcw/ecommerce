@@ -120,7 +120,7 @@ export const useCarrito = () => {
   const calcularTotal = useCallback((): number => {
     if (!carrito?.detalles) return 0;
     return carrito.detalles.reduce(
-      (acc, item) => acc + item.cantidad * item.precio_unitario,
+      (acc, item) => acc + Number(item.cantidad) * Number(item.precio_unitario),
       0
     );
   }, [carrito]);

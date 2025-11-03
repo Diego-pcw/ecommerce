@@ -51,8 +51,8 @@ Route::middleware('api')->group(function () {
     Route::get('/carrito/{id}', [CarritoController::class, 'mostrar']);
 
     /** 🔸 📦 Reseñas públicas (ver reseñas de productos) */
-    Route::get('/reseñas', [ReseñaController::class, 'index']);
-    Route::get('/reseñas/{id}', [ReseñaController::class, 'show']);
+    Route::get('/resenas', [ReseñaController::class, 'index']);
+    Route::get('/resenas/{id}', [ReseñaController::class, 'show']);
 
     /** 🔹 Rutas protegidas (requieren autenticación con Sanctum) */
     Route::middleware('auth:sanctum')->group(function () {
@@ -68,7 +68,7 @@ Route::middleware('api')->group(function () {
         Route::post('/contact-messages', [ContactMessageController::class, 'store']);
 
         /** 🔸 📦 Reseñas (usuarios autenticados pueden crear) */
-        Route::post('/reseñas', [ReseñaController::class, 'store']);
+        Route::post('/resenas', [ReseñaController::class, 'store']);
 
         /** 📦 Pedidos (Autenticados pueden crear y ver los suyos) */
         Route::get('/pedidos', [PedidoController::class, 'index']);
@@ -112,8 +112,8 @@ Route::middleware('api')->group(function () {
             Route::get('/carritos', [CarritoController::class, 'index']);
 
             /** 📦 Reseñas (admin puede gestionar todas) */
-            Route::put('/reseñas/{id}', [ReseñaController::class, 'update']); // aprobar/rechazar
-            Route::delete('/reseñas/{id}', [ReseñaController::class, 'destroy']);
+            Route::put('/resenas/{id}', [ReseñaController::class, 'update']); // aprobar/rechazar
+            Route::delete('/resenas/{id}', [ReseñaController::class, 'destroy']);
 
             /** 💬 Mensajes de contacto (admin puede ver y responder) */
             Route::put('/contact-messages/{id}', [ContactMessageController::class, 'update']); // Responder / cambiar estado

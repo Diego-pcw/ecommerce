@@ -4,7 +4,7 @@ import { type Producto } from "./Producto";
 /**
  * Representa una reseña o calificación de un producto.
  */
-export interface Reseña {
+export interface Resena {
   id: number;
   user_id: number;
   producto_id: number;
@@ -24,7 +24,7 @@ export interface Reseña {
 /**
  * Datos enviados al crear una nueva reseña.
  */
-export interface ReseñaCreateData {
+export interface ResenaCreateData {
   producto_id: number;
   rating: number;
   titulo?: string | null;
@@ -33,9 +33,8 @@ export interface ReseñaCreateData {
 
 /**
  * Datos enviados al actualizar una reseña.
- * (Solo accesible por admin/moderador o propietario según caso)
  */
-export interface ReseñaUpdateData {
+export interface ResenaUpdateData {
   estado?: "PENDIENTE" | "APROBADO" | "RECHAZADO";
   titulo?: string | null;
   comentario?: string;
@@ -45,17 +44,17 @@ export interface ReseñaUpdateData {
 /**
  * Estructura estándar de respuesta para creación o actualización.
  */
-export interface ReseñaResponse {
+export interface ResenaResponse {
   message: string;
-  data: Reseña;
+  data: Resena;
 }
 
 /**
  * Estructura paginada para listar reseñas.
  */
-export interface ReseñaIndexResponse {
+export interface ResenaIndexResponse {
   total: number;
   current_page: number;
   last_page: number;
-  data: Reseña[];
+  data: Resena[];
 }

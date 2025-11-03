@@ -1,0 +1,24 @@
+.resenaCard {
+  border: 1px solid var(--biker-gray);
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 0.8rem 0;
+  background: var(--biker-white);
+}
+
+.resenaHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+}
+
+.resenaComentario {
+  margin-top: 0.6rem;
+  color: var(--biker-dark-gray);
+}
+
+.resenaPuntuacion {
+  color: var(--biker-yellow);
+  font-size: 1.2rem;
+}

@@ -2,12 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { productoService } from "../../services/producto.service";
 import type { Producto } from "../../types/Producto";
+import { useAuth } from "../../context/AuthContext";
+import ResenaForm from "../resenas/ResenaForm";
 
 const ProductoDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [producto, setProducto] = useState<Producto | null>(null);
   const [error, setError] = useState("");
+  const [mostrarFormResena, setMostrarFormResena] = useState(false);
 
   useEffect(() => {
     const fetchProducto = async () => {
@@ -27,16 +31,12 @@ const ProductoDetail: React.FC = () => {
   if (error) return <p className="text-red-600">{error}</p>;
   if (!producto) return <p>Cargando producto...</p>;
 
-  // 💰 Precio final (si no hay, usa 0)
   const precio = producto.precio_final ?? 0;
-
-  // 📦 Nombre de categoría (string u objeto)
   const categoriaNombre =
     typeof producto.categoria === "string"
       ? producto.categoria
       : producto.categoria?.nombre ?? "—";
 
-  // ⚙️ Estado (ya viene del backend)
   const estado =
     producto.estado?.toLowerCase() === "activo"
       ? "🟢 Activo"
@@ -105,15 +105,29 @@ const ProductoDetail: React.FC = () => {
         </div>
       )}
 
-      {/* 🔙 Botón volver */}
-      <div className="mt-6">
+      {/* 🧭 Acciones */}
+      <div className="mt-6 flex flex-wrap gap-3">
         <button
           onClick={() => navigate("/productos")}
           className="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800"
         >
           ← Volver a la lista
         </button>
+
+        {/* ✍️ Dejar reseña */}
+        <button
+          onClick={() => {
+            if (!user) return navigate("/login");
+            setMostrarFormResena(!mostrarFormResena);
+          }}
+          className="bg-biker-yellow text-biker-black px-4 py-2 rounded hover:opacity-90 transition"
+        >
+          ✍️ Dejar reseña
+        </button>
       </div>
+
+      {/* 📝 Formulario de reseña (solo se muestra si el usuario está logueado y activó el botón) */}
+      {mostrarFormResena && <ResenaForm productoId={Number(id)} />}
     </div>
   );
 };

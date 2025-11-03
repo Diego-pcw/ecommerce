@@ -31,6 +31,15 @@ const UserHome: React.FC = () => {
           <Link to="/admin/usuarios" className="btn-home-secondary">
             Gestión de usuarios
           </Link>
+
+          {/* 🔹 Enlaces para reseñas */}
+          <Link to="/resenas" className="btn-home-secondary">
+            Ver todas las reseñas
+          </Link>
+          {/* 🔹 Enlace directo a la nueva página pública de reseñas */}
+          <Link to="/resenas-public" className="btn-home-secondary">
+            Ver reseñas de productos
+          </Link>
         </div>
       </div>
     </section>
