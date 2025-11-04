@@ -14,6 +14,7 @@ const UserHome: React.FC = () => {
         </p>
 
         <div className="home-actions">
+          {/* 🛍️ Productos y categorías */}
           <Link to="/productos" className="btn-home-primary">
             Ver productos
           </Link>
@@ -27,18 +28,30 @@ const UserHome: React.FC = () => {
             Explorar promociones
           </Link>
 
-          {/* 🔹 Enlace al módulo de gestión de usuarios */}
+          {/* 👥 Administración */}
           <Link to="/admin/usuarios" className="btn-home-secondary">
             Gestión de usuarios
           </Link>
 
-          {/* 🔹 Enlaces para reseñas */}
+          {/* 🗣️ Reseñas */}
           <Link to="/resenas" className="btn-home-secondary">
             Ver todas las reseñas
           </Link>
-          {/* 🔹 Enlace directo a la nueva página pública de reseñas */}
           <Link to="/resenas-public" className="btn-home-secondary">
             Ver reseñas de productos
+          </Link>
+
+          {/* 💬 Contacto (cliente) */}
+          <Link to="/contacto" className="btn-home-secondary">
+            Enviar mensaje de contacto
+          </Link>
+          <Link to="/contacto/mis-mensajes" className="btn-home-secondary">
+            Mis mensajes enviados
+          </Link>
+
+          {/* 👨‍💼 Contactos (vista admin) */}
+          <Link to="/admin/contactos" className="btn-home-secondary">
+            Mensajes de contacto (admin)
           </Link>
         </div>
       </div>

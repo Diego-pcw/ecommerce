@@ -59,6 +59,14 @@ import ResenaDetalle from "./pages/resenas/ResenaDetalle";
 import ResenaForm from "./pages/resenas/ResenaForm";
 import ResenasPublicList from "./pages/resenas/ResenasPublicList";
 
+// 📬 Mensajes de contacto
+// 📬 Mensajes de contacto
+import ContactForm from "./components/contactos/ContactForm";
+import ContactListUser from "./components/contactos/ContactListUser";
+import ContactDetailUser from "./components/contactos/ContactDetailUser";
+import ContactListAdmin from "./pages/contactos/ContactListAdmin";
+import ContactDetail from "./pages/contactos/ContactDetail"; 
+
 export default function Router() {
   return (
     // Proveedor global del carrito (disponible en toda la app)
@@ -94,6 +102,11 @@ export default function Router() {
           {/* Rutas protegidas (usuarios autenticados) */}
           <Route element={<ProtectedRoute />}>
             <Route path="/profile" element={<Profile />} />
+
+            {/* 📬 Rutas de contacto */}
+            <Route path="/contacto" element={<ContactForm />} />
+            <Route path="/contacto/mis-mensajes" element={<ContactListUser />} />
+            <Route path="/contacto/:id" element={<ContactDetailUser />} />
             
           </Route>
 
@@ -124,6 +137,10 @@ export default function Router() {
             {/* Admin: listado y detalle de carritos */}
             <Route path="/carritos" element={<CarritoList />} />
             <Route path="/carritos/:id" element={<CarritoDetail />} />
+
+            {/* Contactos (solo admin) */}
+            <Route path="/admin/contactos" element={<ContactListAdmin />} />
+            <Route path="/admin/contactos/:id" element={<ContactDetail />} />
           </Route>
         </Route>
 

@@ -1,20 +1,11 @@
-//contact.service.ts → mensajes de contacto.
 import api from "./api";
-
-export interface ContactMessage {
-  id: number;
-  user_id: number;
-  nombre: string;
-  email: string;
-  telefono?: string | null;
-  mensaje: string;
-  canal_preferido: "EMAIL" | "WHATSAPP" | "TELEFONO";
-  estado: "NUEVO" | "RESPONDIDO" | "CERRADO";
-  respuesta?: string | null;
-  fecha_respuesta?: string | null;
-  created_at?: string;
-  updated_at?: string;
-}
+import {
+  type ContactMessage,
+  type ContactMessageCreateData,
+  type ContactMessageUpdateData,
+  type ContactMessageIndexResponse,
+  type ContactMessageResponse,
+} from "../types/ContactMessage";
 
 export interface ContactQueryParams {
   estado?: string;
@@ -25,52 +16,32 @@ export interface ContactQueryParams {
 }
 
 export const contactService = {
-  /**
-   * 📋 Listar mensajes de contacto (admin ve todos / usuario solo los suyos)
-   */
-  async getAll(params?: ContactQueryParams) {
+  /** 📋 Listar mensajes (admin ve todos / usuario ve los suyos) */
+  async getAll(params?: ContactQueryParams): Promise<ContactMessageIndexResponse> {
     const { data } = await api.get("/contact-messages", { params });
     return data;
   },
 
-  /**
-   * 🧾 Enviar nuevo mensaje de contacto
-   */
-  async createMessage(payload: {
-    mensaje: string;
-    telefono?: string;
-    canal_preferido?: "EMAIL" | "WHATSAPP" | "TELEFONO";
-  }) {
+  /** 🧾 Crear un nuevo mensaje */
+  async create(payload: ContactMessageCreateData): Promise<ContactMessageResponse> {
     const { data } = await api.post("/contact-messages", payload);
     return data;
   },
 
-  /**
-   * 🔍 Mostrar mensaje individual
-   */
-  async getMessageById(id: number) {
+  /** 🔍 Mostrar un mensaje */
+  async getById(id: number): Promise<ContactMessage> {
     const { data } = await api.get(`/contact-messages/${id}`);
     return data;
   },
 
-  /**
-   * ✏️ Actualizar o responder mensaje (solo admin)
-   */
-  async updateMessage(
-    id: number,
-    payload: {
-      estado?: "NUEVO" | "RESPONDIDO" | "CERRADO";
-      respuesta?: string;
-    }
-  ) {
+  /** ✏️ Actualizar o responder mensaje (solo admin) */
+  async update(id: number, payload: ContactMessageUpdateData): Promise<ContactMessageResponse> {
     const { data } = await api.put(`/contact-messages/${id}`, payload);
     return data;
   },
 
-  /**
-   * 🗑️ Eliminar mensaje (solo admin)
-   */
-  async deleteMessage(id: number) {
+  /** 🗑️ Eliminar mensaje (solo admin) */
+  async delete(id: number): Promise<{ message: string }> {
     const { data } = await api.delete(`/contact-messages/${id}`);
     return data;
   },
