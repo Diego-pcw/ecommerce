@@ -22,6 +22,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import CategoriaList from "./pages/categorias/CategoriaList";
 import CategoriaCreate from "./pages/categorias/CategoriaCreate";
 import CategoriaEdit from "./pages/categorias/CategoriaEdit";
+import CategoriaDetail from "./pages/categorias/CategoriaDetail";
 
 // 📦 Productos (solo admin)
 import ProductosList from "./pages/productos/ProductosList";
@@ -56,10 +57,8 @@ import CarritoDetail from "./pages/carritos/CarritoDetail";
 // 🗣️ Reseñas (usuarios y admin)
 import ResenasList from "./pages/resenas/ResenasList";
 import ResenaDetalle from "./pages/resenas/ResenaDetalle";
-import ResenaForm from "./pages/resenas/ResenaForm";
 import ResenasPublicList from "./pages/resenas/ResenasPublicList";
 
-// 📬 Mensajes de contacto
 // 📬 Mensajes de contacto
 import ContactForm from "./components/contactos/ContactForm";
 import ContactListUser from "./components/contactos/ContactListUser";
@@ -95,8 +94,6 @@ export default function Router() {
           <Route path="/promociones/:id" element={<PromocionDetail />} />
 
           {/* 🗣️ Rutas de reseñas (públicas y privadas según acción) */}
-          <Route path="/resenas" element={<ResenasList />} />
-          <Route path="/resenas/:id" element={<ResenaDetalle />} />
           <Route path="/resenas-public" element={<ResenasPublicList />} />
         
           {/* Rutas protegidas (usuarios autenticados) */}
@@ -114,6 +111,7 @@ export default function Router() {
           <Route element={<ProtectedRoute requiredRole="admin" />}>
             {/* Categorías */}
             <Route path="/categorias" element={<CategoriaList />} />
+            <Route path="/categorias/:id" element={<CategoriaDetail />} />
             <Route path="/categorias/crear" element={<CategoriaCreate />} />
             <Route path="/categorias/editar/:id" element={<CategoriaEdit />} />
 
@@ -130,6 +128,10 @@ export default function Router() {
             {/* Promociones */}
             <Route path="/promociones/crear" element={<PromocionCreate />} />
             <Route path="/promociones/editar/:id" element={<PromocionEdit />} />
+
+            {/* Resenas */}
+            <Route path="/resenas" element={<ResenasList />} />
+            <Route path="/resenas/:id" element={<ResenaDetalle />} />
 
             {/* Usuarios */}
             <Route path="/admin/usuarios" element={<UsuarioList />} />

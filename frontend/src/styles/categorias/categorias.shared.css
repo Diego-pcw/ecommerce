@@ -1,0 +1,324 @@
+/* ================================
+🎨 CATEGORÍAS (shared)
+Modern UI + biker palette
+Archivo: src/styles/categorias/categorias.shared.css
+================================ */
+
+/* ----------- Contenedor general ----------- */
+.categoria-list-container,
+.categoria-form-container {
+  background-color: var(--biker-white);
+  padding: 2.2rem;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  max-width: 960px;
+  margin: 2rem auto;
+  transition: box-shadow 0.3s ease;
+}
+
+.categoria-list-container:hover,
+.categoria-form-container:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* ----------- Títulos ----------- */
+.categoria-title {
+  color: var(--biker-dark-gray);
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.3px;
+}
+
+/* ----------- Loader ----------- */
+.categoria-loader {
+  text-align: center;
+  color: var(--biker-dark-gray);
+  font-size: 1.1rem;
+  padding: 2rem;
+}
+
+/* ----------- Encabezado Listado ----------- */
+.categoria-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Botón principal */
+.btn-crear {
+  background-color: var(--biker-black);
+  color: var(--biker-white);
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.btn-crear:hover {
+  background-color: var(--biker-yellow);
+  color: var(--biker-black);
+  transform: translateY(-1px);
+}
+
+/* ----------- Filtros ----------- */
+.categoria-filtros {
+  display: flex;
+  gap: 1rem;
+  margin: 1.8rem 0;
+  flex-wrap: wrap;
+}
+
+.categoria-filtros input,
+.categoria-filtros select {
+  flex: 1;
+  min-width: 220px;
+  padding: 0.7rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid #d1d1d1;
+  font-size: 0.95rem;
+  background-color: var(--biker-white);
+  color: var(--biker-dark-gray);
+  transition: all 0.2s ease;
+}
+
+.categoria-filtros input:focus,
+.categoria-filtros select:focus {
+  border-color: var(--biker-black);
+  box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.15);
+  outline: none;
+}
+
+/* ----------- Listado ----------- */
+.categoria-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.categoria-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid #eee;
+  border-radius: 8px;
+  background-color: #fff;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.categoria-item:hover {
+  background-color: var(--biker-gray);
+  transform: translateY(-1px);
+}
+
+/* ----------- Información ----------- */
+.categoria-info h3 {
+  margin: 0 0 0.3rem;
+  font-size: 1.1rem;
+  color: var(--biker-dark-gray);
+  font-weight: 600;
+}
+
+.categoria-info p {
+  margin: 0 0 0.3rem;
+  color: #555;
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+/* Estado visual */
+.estado {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  text-transform: capitalize;
+}
+
+.estado.activo {
+  background-color: #d7f8df;
+  color: #1b7b2c;
+}
+
+.estado.inactivo {
+  background-color: #fde3e3;
+  color: #a12b2b;
+}
+
+/* ----------- Acciones ----------- */
+.categoria-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.categoria-actions button {
+  border: none;
+  border-radius: 6px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Detalle / Editar */
+.btn-detalle,
+.btn-editar {
+  background-color: var(--biker-black);
+  color: var(--biker-white);
+}
+
+.btn-detalle:hover,
+.btn-editar:hover {
+  background-color: var(--biker-yellow);
+  color: var(--biker-black);
+}
+
+/* Eliminar */
+.btn-eliminar {
+  background-color: #e53935;
+  color: #fff;
+}
+
+.btn-eliminar:hover {
+  background-color: #c62828;
+  transform: translateY(-1px);
+}
+
+/* ----------- Paginación ----------- */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1.8rem;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.pagination button {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  background-color: var(--biker-black);
+  color: var(--biker-white);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: var(--biker-yellow);
+  color: var(--biker-black);
+  transform: translateY(-1px);
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-weight: 500;
+  color: var(--biker-dark-gray);
+}
+
+/* ----------- Formulario Crear / Editar ----------- */
+.categoria-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.categoria-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  color: var(--biker-dark-gray);
+  font-weight: 500;
+}
+
+.categoria-form input,
+.categoria-form textarea,
+.categoria-form select {
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background-color: var(--biker-white);
+  color: var(--biker-dark-gray);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.categoria-form input:focus,
+.categoria-form textarea:focus,
+.categoria-form select:focus {
+  border-color: var(--biker-black);
+  box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.15);
+  outline: none;
+}
+
+.categoria-form textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+/* ----------- Botones del formulario ----------- */
+.categoria-form-actions,
+.categoria-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.categoria-form-actions button,
+.categoria-buttons button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Guardar */
+.btn-guardar,
+.categoria-form-actions button[type="submit"] {
+  background-color: var(--biker-black);
+  color: var(--biker-white);
+}
+
+.btn-guardar:hover,
+.categoria-form-actions button[type="submit"]:hover {
+  background-color: var(--biker-yellow);
+  color: var(--biker-black);
+}
+
+/* Cancelar */
+.btn-cancelar,
+.categoria-form-actions button[type="button"] {
+  background-color: #ddd;
+  color: var(--biker-dark-gray);
+}
+
+.btn-cancelar:hover,
+.categoria-form-actions button[type="button"]:hover {
+  background-color: #ccc;
+}
+
+/* ----------- Sin resultados ----------- */
+.categoria-empty {
+  text-align: center;
+  color: #777;
+  font-size: 1rem;
+  margin-top: 2rem;
+}

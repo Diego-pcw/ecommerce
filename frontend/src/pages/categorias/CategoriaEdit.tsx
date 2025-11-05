@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { categoriaService } from "../../services/categoria.service";
 import type { CategoriaUpdateData, Categoria } from "../../types/Categoria";
-import "../../styles/categorias.shared.css";
+import "../../styles/categorias/categorias.shared.css";
 
 const CategoriaEdit: React.FC = () => {
   const { id } = useParams<{ id: string }>();

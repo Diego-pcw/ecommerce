@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { categoriaService } from "../../services/categoria.service";
 import type { CategoriaCreateData } from "../../types/Categoria";
-import "../../styles/categorias.shared.css";
+import "../../styles/categorias/categorias.shared.css";
 
 const CategoriaCreate: React.FC = () => {
   const navigate = useNavigate();

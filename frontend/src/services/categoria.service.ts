@@ -1,4 +1,3 @@
-// src/services/categoria.service.ts
 import api from "./api";
 import type { AxiosResponse } from "axios";
 import type {
@@ -13,8 +12,11 @@ import type {
  */
 class CategoriaService {
   /** 🔹 Obtener todas las categorías (público o admin) */
-  async obtenerTodas(page = 1): Promise<CategoriaListResponse> {
-    const res: AxiosResponse<CategoriaListResponse> = await api.get(`/categorias?page=${page}`);
+  async obtenerTodas(page = 1, estado: string = "todos"): Promise<CategoriaListResponse> {
+    const params = new URLSearchParams({ page: String(page) });
+    if (estado !== "todos") params.append("estado", estado);
+
+    const res: AxiosResponse<CategoriaListResponse> = await api.get(`/categorias?${params.toString()}`);
     return res.data;
   }
 
