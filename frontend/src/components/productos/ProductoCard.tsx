@@ -9,9 +9,10 @@ import type { ProductoListItem } from "../../types/Producto";
  */
 interface Props {
   producto: ProductoListItem;
+  mostrarPrecio?: boolean; // ✅ Nueva prop opcional
 }
 
-const ProductoCard: React.FC<Props> = ({ producto }) => {
+const ProductoCard: React.FC<Props> = ({ producto, mostrarPrecio = true }) => {
   const { agregarProducto } = useCarritoContext();
   const { push } = useToast();
   const [adding, setAdding] = useState(false);
@@ -45,9 +46,14 @@ const ProductoCard: React.FC<Props> = ({ producto }) => {
         )}
         <h2 className="font-bold text-lg">{producto.nombre}</h2>
         <p className="text-sm text-gray-600">{producto.categoria}</p>
-        <p className="text-green-700 font-semibold mt-2">
-          S/ {Number(producto.precio_final).toFixed(2)}
-        </p>
+
+        {/* ✅ Mostrar el precio solo si mostrarPrecio es true */}
+        {mostrarPrecio && (
+          <p className="text-green-700 font-semibold mt-2">
+            S/ {Number(producto.precio_final).toFixed(2)}
+          </p>
+        )}
+
         {producto.promocion_vigente && (
           <span className="text-sm text-blue-600 block mt-1">
             {producto.promocion_vigente.titulo} 🔖

@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import type { CarritoDetalle } from "../../types/CarritoDetalle";
 import { useCarritoContext } from "../../context/CarritoContext";
 import { useToast } from "../../context/ToastContext";
+import styles from "../../styles/carritos/Carrito.module.css";
 
 interface Props {
   detalle: CarritoDetalle;
@@ -12,7 +13,7 @@ interface Props {
 
 const CarritoItem: React.FC<Props> = ({ detalle }) => {
   const { actualizarCantidad, eliminarProducto } = useCarritoContext();
-  const { push } = useToast(); // ✅ feedback visual con toasts
+  const { push } = useToast();
   const [cantidad, setCantidad] = useState<number>(Number(detalle.cantidad));
   const [updating, setUpdating] = useState(false);
 
@@ -45,9 +46,12 @@ const CarritoItem: React.FC<Props> = ({ detalle }) => {
     }
   };
 
-  // 🔧 Aseguramos que siempre sean números
   const precioUnit = Number(detalle.precio_unitario);
   const subtotal = Number(detalle.cantidad) * precioUnit;
+
+  // 🟢 Nuevo: detectar si hay descuento activo
+  const tieneDescuento =
+    detalle.precio_original && detalle.precio_original > detalle.precio_unitario;
 
   return (
     <tr>
@@ -57,6 +61,7 @@ const CarritoItem: React.FC<Props> = ({ detalle }) => {
           <div className="producto-marca text-muted">{detalle.producto?.marca}</div>
         </div>
       </td>
+
       <td>
         <div className="cantidad-control flex items-center gap-2">
           <button
@@ -82,8 +87,20 @@ const CarritoItem: React.FC<Props> = ({ detalle }) => {
           </button>
         </div>
       </td>
-      <td>S/ {precioUnit.toFixed(2)}</td>
+
+      <td>
+        {tieneDescuento ? (
+          <div>
+            <p className={styles["precio-original"]}>S/ {Number(detalle.precio_original).toFixed(2)}</p>
+            <p className={styles["precio-final"]}>S/ {precioUnit.toFixed(2)}</p>
+          </div>
+        ) : (
+          <p className="precio-final">S/ {precioUnit.toFixed(2)}</p>
+        )}
+      </td>
+
       <td>S/ {subtotal.toFixed(2)}</td>
+
       <td>
         <button className="btn btn-danger btn-sm" onClick={handleEliminar}>
           Eliminar

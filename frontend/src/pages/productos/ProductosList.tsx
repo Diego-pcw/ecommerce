@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { productoService } from "../../services/producto.service";
 import type { ProductoListItem } from "../../types/Producto";
 import ProductoCard from "../../components/productos/ProductoCard";
+import styles from "../../styles/carritos/Carrito.module.css"; // ✅ reutilizamos los estilos de precio
 
 const ProductosList: React.FC = () => {
   const [productos, setProductos] = useState<ProductoListItem[]>([]);
@@ -31,7 +32,9 @@ const ProductosList: React.FC = () => {
   const handleEdit = (id: number) => navigate(`/productos/editar/${id}`);
   const handleDetail = (id: number) => navigate(`/productos/${id}`);
   const handleDelete = async (id: number) => {
-    const ok = confirm("¿Seguro que deseas eliminar este producto? Esta acción no se puede deshacer.");
+    const ok = confirm(
+      "¿Seguro que deseas eliminar este producto? Esta acción no se puede deshacer."
+    );
     if (!ok) return;
     try {
       setDeletingId(id);
@@ -75,7 +78,8 @@ const ProductosList: React.FC = () => {
                 key={prod.id}
                 className="border p-4 rounded-xl shadow-sm hover:shadow-md transition flex flex-col justify-between"
               >
-                <ProductoCard producto={prod} />
+                {/* ✅ ProductoCard ya no muestra precio */}
+                <ProductoCard producto={prod} mostrarPrecio={false} />
 
                 {tieneDescuento && (
                   <p className="mt-2 text-sm text-green-600 font-semibold">
@@ -83,21 +87,22 @@ const ProductosList: React.FC = () => {
                   </p>
                 )}
 
-                <p className="mt-1 text-gray-800">
-                  💰 Precio:{" "}
+                <div className="mt-2">
                   {tieneDescuento ? (
                     <>
-                      <span className="line-through text-gray-400 mr-2">
+                      <p className={styles["precio-original"]}>
                         S/ {Number(prod.precio_original).toFixed(2)}
-                      </span>
-                      <span className="text-green-600 font-bold">
+                      </p>
+                      <p className={styles["precio-final"]}>
                         S/ {Number(prod.precio_final).toFixed(2)}
-                      </span>
+                      </p>
                     </>
                   ) : (
-                    <span>S/ {Number(prod.precio_final ?? prod.precio_original).toFixed(2)}</span>
+                    <p className={styles["precio-final"]}>
+                      S/ {Number(prod.precio_final ?? prod.precio_original).toFixed(2)}
+                    </p>
                   )}
-                </p>
+                </div>
 
                 <div className="flex gap-2 mt-4">
                   <button

@@ -56,6 +56,11 @@ const UserHome: React.FC = () => {
           <Link to="/admin/contactos" className="btn-home-secondary">
             Mensajes de contacto (admin)
           </Link>
+
+          {/* 👨‍💼 Contactos (vista admin) */}
+          <Link to="/carritos" className="btn-home-secondary">
+            Mensajes de contacto (admin)
+          </Link>
         </div>
       </div>
     </section>

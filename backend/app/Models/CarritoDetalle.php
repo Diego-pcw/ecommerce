@@ -19,6 +19,8 @@ class CarritoDetalle extends Model
         'precio_unitario' => 'decimal:2',
     ];
 
+    protected $appends = ['precio_original']; // ✅ importante
+
     // 🔗 Relaciones
     public function carrito()
     {

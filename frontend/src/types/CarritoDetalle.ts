@@ -8,24 +8,15 @@ import { type Producto } from "./Producto";
  */
 export interface CarritoDetalle {
   id: number;
-
-  /** ID del carrito al que pertenece */
   carrito_id: number;
-
-  /** ID del producto agregado */
   producto_id: number;
-
-  /** Cantidad de unidades agregadas */
   cantidad: number;
-
-  /** Precio unitario al momento de agregar el producto */
   precio_unitario: number;
-
-  /** Subtotal calculado (cantidad × precio_unitario) */
   subtotal?: number;
-
-  /** Producto completo (si se carga con with('producto')) */
   producto?: Producto;
+
+  /** Nuevo campo para mostrar precio original tachado */
+  precio_original?: number;
 
   created_at?: string | null;
   updated_at?: string | null;
