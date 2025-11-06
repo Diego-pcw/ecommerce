@@ -96,6 +96,13 @@ const PromocionList: React.FC = () => {
                   >
                     Editar
                   </Link>
+                  {/* 🧩 Nuevo botón para asignar productos */}
+                  <Link
+                    to={`/promociones/${p.id}/asignar/`}
+                    className="btn btn-sm btn-success me-2"
+                  >
+                    Asignar productos
+                  </Link>
                   <button
                     onClick={() => handleDelete(p.id)}
                     className="btn btn-sm btn-danger"

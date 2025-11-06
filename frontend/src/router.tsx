@@ -41,6 +41,7 @@ import PromocionList from "./pages/promociones/PromocionList";
 import PromocionDetail from "./pages/promociones/PromocionDetail";
 import PromocionCreate from "./pages/promociones/PromocionCreate";
 import PromocionEdit from "./pages/promociones/PromocionEdit";
+import PromocionAsignarProductos from "./pages/promociones/PromocionAsignarProductos";
 
 // 👥 Usuarios (solo admin)
 import UsuarioList from "./pages/admin/usuarios/UsuarioList";
@@ -128,6 +129,7 @@ export default function Router() {
             {/* Promociones */}
             <Route path="/promociones/crear" element={<PromocionCreate />} />
             <Route path="/promociones/editar/:id" element={<PromocionEdit />} />
+            <Route path="/promociones/:id/asignar" element={<PromocionAsignarProductos />} />
 
             {/* Resenas */}
             <Route path="/resenas" element={<ResenasList />} />

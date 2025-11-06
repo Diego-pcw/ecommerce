@@ -151,9 +151,35 @@ class PromocionController extends Controller
 
         $promocion->productos()->sync($validated['productos']);
 
+        // 🔹 Refrescamos el modelo para traer datos actualizados
+        $promocion->load(['productos.categoria']);
+
+        $productos = $promocion->productos->map(function ($producto) {
+            return [
+                'id' => $producto->id,
+                'nombre' => $producto->nombre,
+                'precio' => (float) $producto->precio,
+                'stock' => $producto->stock,
+                'estado' => strtoupper($producto->estado),
+                'categoria_id' => $producto->categoria_id,
+                'categoria_nombre' => $producto->categoria?->nombre,
+                'precio_con_descuento' => $producto->precio_con_descuento,
+            ];
+        });
+
         return response()->json([
-            'message' => 'Productos asignados correctamente a la promoción',
-            'promocion' => $promocion->load('productos:id,nombre,precio')
+            'message' => '✅ Productos asignados correctamente a la promoción',
+            'promocion' => [
+                'id' => $promocion->id,
+                'titulo' => $promocion->titulo,
+                'descripcion' => $promocion->descripcion,
+                'descuento_tipo' => $promocion->descuento_tipo,
+                'descuento_valor' => $promocion->descuento_valor,
+                'fecha_inicio' => $promocion->fecha_inicio,
+                'fecha_fin' => $promocion->fecha_fin,
+                'estado' => strtolower($promocion->estado),
+                'productos' => $productos,
+            ],
         ]);
     }
 }

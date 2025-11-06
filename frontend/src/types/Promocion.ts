@@ -6,14 +6,18 @@ export interface Promocion {
   id: number;
   titulo: string;
   descripcion: string | null;
-  descuento_tipo: "percent" | "fixed"; // ← según backend
-  descuento_valor: number; // ← valor numérico (viene como string, pero lo tratamos como number)
+  descuento_tipo: "percent" | "fixed";
+  descuento_valor: number;
   fecha_inicio: string;
   fecha_fin: string;
-  estado: "activo" | "inactivo"; // ← coincide con Laravel
+  estado: "activo" | "inactivo";
   productos?: PromocionProducto[];
   created_at?: string;
   updated_at?: string;
+  pivot?: {
+    producto_id: number;
+    promocion_id: number;
+  };
 }
 
 /**
@@ -51,7 +55,7 @@ export interface PromocionUpdateData extends Partial<PromocionCreateData> {}
  * 🔸 Datos para asignar productos a una promoción
  */
 export interface AsignarProductosData {
-  producto_ids: number[];
+  productos: number[];
 }
 
 /**

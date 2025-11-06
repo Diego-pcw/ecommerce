@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { productoService } from "../../services/producto.service";
 import type { ProductoListItem } from "../../types/Producto";
-import ProductoCard from "../../components/productos/ProductoCard"; // ✅ importación añadida
+import ProductoCard from "../../components/productos/ProductoCard";
 
 const ProductosList: React.FC = () => {
   const [productos, setProductos] = useState<ProductoListItem[]>([]);
@@ -16,7 +16,6 @@ const ProductosList: React.FC = () => {
       try {
         setLoading(true);
         const res = await productoService.obtenerTodos();
-        // El servicio devuelve un objeto paginado con "data" (array de productos)
         setProductos(res.data ?? []);
       } catch (err) {
         console.error("Error al cargar productos:", err);
@@ -31,13 +30,9 @@ const ProductosList: React.FC = () => {
   const handleCreate = () => navigate("/productos/crear");
   const handleEdit = (id: number) => navigate(`/productos/editar/${id}`);
   const handleDetail = (id: number) => navigate(`/productos/${id}`);
-
   const handleDelete = async (id: number) => {
-    const ok = confirm(
-      "¿Seguro que deseas eliminar este producto? Esta acción no se puede deshacer."
-    );
+    const ok = confirm("¿Seguro que deseas eliminar este producto? Esta acción no se puede deshacer.");
     if (!ok) return;
-
     try {
       setDeletingId(id);
       await productoService.eliminar(id);
@@ -69,38 +64,65 @@ const ProductosList: React.FC = () => {
         <p>No hay productos registrados.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {productos.map((prod) => (
-            <div
-              key={prod.id}
-              className="border p-4 rounded-xl shadow-sm hover:shadow-md transition flex flex-col justify-between"
-            >
-              {/* ✅ Sección visual del producto (tu ProductoCard) */}
-              <ProductoCard producto={prod} />
+          {productos.map((prod) => {
+            const tieneDescuento =
+              prod.promocion_vigente &&
+              prod.promocion_vigente.tipo === "percent" &&
+              prod.promocion_vigente.valor > 0;
 
-              {/* ✅ Sección administrativa (Ver / Editar / Eliminar) */}
-              <div className="flex gap-2 mt-4">
-                <button
-                  onClick={() => handleDetail(prod.id)}
-                  className="flex-1 bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition"
-                >
-                  🔍 Ver
-                </button>
-                <button
-                  onClick={() => handleEdit(prod.id)}
-                  className="flex-1 bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600 transition"
-                >
-                  ✏️ Editar
-                </button>
-                <button
-                  onClick={() => handleDelete(prod.id)}
-                  className="flex-1 bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 transition"
-                  disabled={deletingId === prod.id}
-                >
-                  {deletingId === prod.id ? "Eliminando..." : "🗑️ Eliminar"}
-                </button>
+            return (
+              <div
+                key={prod.id}
+                className="border p-4 rounded-xl shadow-sm hover:shadow-md transition flex flex-col justify-between"
+              >
+                <ProductoCard producto={prod} />
+
+                {tieneDescuento && (
+                  <p className="mt-2 text-sm text-green-600 font-semibold">
+                    🏷️ {prod.promocion_vigente?.valor}% de descuento
+                  </p>
+                )}
+
+                <p className="mt-1 text-gray-800">
+                  💰 Precio:{" "}
+                  {tieneDescuento ? (
+                    <>
+                      <span className="line-through text-gray-400 mr-2">
+                        S/ {Number(prod.precio_original).toFixed(2)}
+                      </span>
+                      <span className="text-green-600 font-bold">
+                        S/ {Number(prod.precio_final).toFixed(2)}
+                      </span>
+                    </>
+                  ) : (
+                    <span>S/ {Number(prod.precio_final ?? prod.precio_original).toFixed(2)}</span>
+                  )}
+                </p>
+
+                <div className="flex gap-2 mt-4">
+                  <button
+                    onClick={() => handleDetail(prod.id)}
+                    className="flex-1 bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition"
+                  >
+                    🔍 Ver
+                  </button>
+                  <button
+                    onClick={() => handleEdit(prod.id)}
+                    className="flex-1 bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600 transition"
+                  >
+                    ✏️ Editar
+                  </button>
+                  <button
+                    onClick={() => handleDelete(prod.id)}
+                    className="flex-1 bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 transition"
+                    disabled={deletingId === prod.id}
+                  >
+                    {deletingId === prod.id ? "Eliminando..." : "🗑️ Eliminar"}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

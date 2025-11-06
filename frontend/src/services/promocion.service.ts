@@ -18,16 +18,26 @@ export const promocionService = {
    * 🔹 Obtener todas las promociones (paginadas o completas)
    */
   async listar(params?: Record<string, any>): Promise<PromocionListResponse> {
-    const { data } = await api.get("/promociones", { params });
-    return data;
+    try {
+      const { data } = await api.get("/promociones", { params });
+      return data;
+    } catch (err: any) {
+      console.error("❌ Error al listar promociones:", err.response?.data || err);
+      throw err;
+    }
   },
 
   /**
    * 🔹 Obtener una promoción específica por ID
    */
   async obtener(id: number): Promise<Promocion> {
-    const { data } = await api.get(`/promociones/${id}`);
-    return data;
+    try {
+      const { data } = await api.get(`/promociones/${id}`);
+      return data.promocion ?? data; // Soporta respuesta directa o anidada
+    } catch (err: any) {
+      console.error("❌ Error al obtener promoción:", err.response?.data || err);
+      throw err;
+    }
   },
 
   /**
@@ -64,8 +74,13 @@ export const promocionService = {
     id: number,
     payload: AsignarProductosData
   ): Promise<AsignarProductosResponse> {
-    const { data } = await api.post(`/promociones/${id}/asignar`, payload);
-    return data;
+    try {
+      const { data } = await api.post(`/promociones/${id}/asignar`, payload);
+      return data;
+    } catch (err: any) {
+      console.error("❌ Error al asignar productos a la promoción:", err.response?.data || err);
+      throw err;
+    }
   },
 };
 
