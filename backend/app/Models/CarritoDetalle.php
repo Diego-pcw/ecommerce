@@ -35,4 +35,10 @@ class CarritoDetalle extends Model
     {
         return $this->cantidad * $this->precio_unitario;
     }
+
+    // 🧾 Precio original del producto (sin descuento)
+    public function getPrecioOriginalAttribute(): float
+    {
+        return $this->producto->precio;
+    }
 }

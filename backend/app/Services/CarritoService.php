@@ -49,7 +49,8 @@ class CarritoService
     {
         return DB::transaction(function () use ($cart, $productoId, $cantidad) {
             $producto = Producto::findOrFail($productoId);
-            $precio = $producto->precio;
+            // ✅ Usar precio con descuento si existe promoción vigente
+            $precio = $producto->precio_con_descuento ?? $producto->precio;
 
             $detalle = CarritoDetalle::where('carrito_id', $cart->id)
                 ->where('producto_id', $productoId)

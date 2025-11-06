@@ -45,6 +45,7 @@ import PromocionAsignarProductos from "./pages/promociones/PromocionAsignarProdu
 
 // 👥 Usuarios (solo admin)
 import UsuarioList from "./pages/admin/usuarios/UsuarioList";
+import ProductosOfertas from "./pages/admin/productos/ProductosOfertas";
 
 // 🛒 Carrito (usuario)
 import CarritoUserView from "./pages/carritos/CarritoUserView";
@@ -137,6 +138,7 @@ export default function Router() {
 
             {/* Usuarios */}
             <Route path="/admin/usuarios" element={<UsuarioList />} />
+            <Route path="/admin/productos" element={<ProductosOfertas />} />
 
             {/* Admin: listado y detalle de carritos */}
             <Route path="/carritos" element={<CarritoList />} />
