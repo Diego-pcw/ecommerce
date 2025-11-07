@@ -8,48 +8,91 @@ use Illuminate\Support\Str;
 
 class CarritoService
 {
-    // 🔹 Obtener o crear carrito (usuario o invitado)
+    /** 🔹 Obtener o crear carrito (usuario autenticado o invitado) */
     public function getOrCreateCart($user, ?string $sessionId): Carrito
     {
         if ($user) {
+            // ✅ Buscar carrito del usuario (activo o pendiente)
             $carrito = Carrito::where('user_id', $user->id)
-                ->where('estado', 'activo')
+                ->whereIn('estado', ['activo', 'pendiente'])
+                ->latest('updated_at')
                 ->first();
 
-            if ($carrito) return $carrito;
+            // 🔁 Fusionar carrito de invitado si existe
+            if ($sessionId) {
+                $guestCart = Carrito::where('session_id', $sessionId)
+                    ->whereNull('user_id')
+                    ->where('estado', 'activo')
+                    ->first();
 
-            $guestCart = Carrito::where('session_id', $sessionId)
-                ->where('estado', 'activo')
-                ->first();
-
-            if ($guestCart) {
-                $guestCart->update(['user_id' => $user->id, 'session_id' => null]);
-                return $guestCart;
+                if ($guestCart) {
+                    if ($carrito) {
+                        $this->mergeGuestCart($carrito, $guestCart);
+                        $guestCart->delete();
+                        return $carrito->fresh();
+                    } else {
+                        $guestCart->update([
+                            'user_id' => $user->id,
+                            'session_id' => null,
+                        ]);
+                        return $guestCart;
+                    }
+                }
             }
 
+            // ✅ Si ya existía el carrito, renovar expiración
+            if ($carrito) {
+                $carrito->update(['expires_at' => now()->addDays(7)]);
+                return $carrito;
+            }
+
+            // ✅ Crear nuevo carrito si no existe
             return Carrito::create([
                 'user_id' => $user->id,
                 'estado' => 'activo',
-                'expires_at' => now()->addDays(7)
+                'expires_at' => now()->addDays(7),
             ]);
         }
 
+        // 🧑‍💻 Usuario invitado
         if (!$sessionId) {
             $sessionId = Str::uuid()->toString();
         }
 
+        // ✅ Crear o devolver carrito invitado
         return Carrito::firstOrCreate(
             ['session_id' => $sessionId, 'estado' => 'activo'],
             ['expires_at' => now()->addDays(7)]
         );
     }
 
-    // 🔹 Agregar o actualizar producto
+    /** 🔹 Fusionar carrito invitado con el del usuario autenticado */
+    protected function mergeGuestCart(Carrito $userCart, Carrito $guestCart)
+    {
+        foreach ($guestCart->detalles as $detalle) {
+            $existing = $userCart->detalles()
+                ->where('producto_id', $detalle->producto_id)
+                ->first();
+
+            if ($existing) {
+                $existing->update([
+                    'cantidad' => $existing->cantidad + $detalle->cantidad,
+                ]);
+            } else {
+                $detalle->replicate()
+                    ->fill(['carrito_id' => $userCart->id])
+                    ->save();
+            }
+        }
+
+        $guestCart->delete();
+    }
+
+    /** 🔹 Agregar o actualizar producto */
     public function addOrUpdateItem(Carrito $cart, int $productoId, int $cantidad = 1)
     {
         return DB::transaction(function () use ($cart, $productoId, $cantidad) {
             $producto = Producto::findOrFail($productoId);
-            // ✅ Usar precio con descuento si existe promoción vigente
             $precio = $producto->precio_con_descuento ?? $producto->precio;
 
             $detalle = CarritoDetalle::where('carrito_id', $cart->id)
@@ -65,7 +108,7 @@ class CarritoService
                     'carrito_id' => $cart->id,
                     'producto_id' => $productoId,
                     'cantidad' => $cantidad,
-                    'precio_unitario' => $precio
+                    'precio_unitario' => $precio,
                 ]);
             }
 
@@ -74,7 +117,7 @@ class CarritoService
         });
     }
 
-    // 🔹 Cambiar cantidad
+    /** 🔹 Cambiar cantidad */
     public function setQuantity(Carrito $cart, int $productoId, int $cantidad)
     {
         $detalle = CarritoDetalle::where('carrito_id', $cart->id)
@@ -92,7 +135,7 @@ class CarritoService
         return $detalle->refresh();
     }
 
-    // 🔹 Eliminar producto
+    /** 🔹 Eliminar producto */
     public function removeItem(Carrito $cart, int $productoId)
     {
         return CarritoDetalle::where('carrito_id', $cart->id)
@@ -100,7 +143,7 @@ class CarritoService
             ->delete();
     }
 
-    // 🔹 Vaciar carrito
+    /** 🔹 Vaciar carrito */
     public function clearCart(Carrito $cart)
     {
         $cart->detalles()->delete();

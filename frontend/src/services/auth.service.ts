@@ -1,4 +1,3 @@
-// src/services/auth.service.ts
 import api, { setAuthToken } from "./api";
 import { type AxiosResponse } from "axios";
 import type {
@@ -19,7 +18,26 @@ class AuthService {
   /** 🔹 Login */
   async login(data: LoginData): Promise<AuthResponse> {
     const res: AxiosResponse<AuthResponse> = await api.post("/login", data);
-    if (res.data.token) this.setSession(res.data);
+
+    if (res.data.token) {
+      // ✅ Guardar sesión primero
+      this.setSession(res.data);
+
+      // ✅ Intentar fusión del carrito de invitado si existe session_id
+      const sessionId = localStorage.getItem("session_id");
+      if (sessionId) {
+        try {
+          await api.post("/carrito/fusionar", { session_id: sessionId });
+          console.info("🛒 Carrito invitado fusionado correctamente");
+        } catch (e) {
+          console.warn("⚠️ No se pudo fusionar carrito invitado:", e);
+        }
+
+        // ✅ Finalmente eliminar session_id (ya fusionado)
+        localStorage.removeItem("session_id");
+      }
+    }
+
     return res.data;
   }
 
@@ -31,6 +49,11 @@ class AuthService {
       console.warn("⚠️ Error al cerrar sesión:", error);
     } finally {
       this.clearSession();
+
+      // 🧩 Generar nuevo session_id para el próximo carrito de invitado
+      const newSession = crypto.randomUUID();
+      localStorage.setItem("session_id", newSession);
+      console.info("🧾 Nuevo session_id generado:", newSession);
     }
   }
 
@@ -46,7 +69,10 @@ class AuthService {
     password?: string;
     password_confirmation?: string;
   }): Promise<User> {
-    const res: AxiosResponse<{ user: User }> = await api.put("/profile/actualizar", data);
+    const res: AxiosResponse<{ user: User }> = await api.put(
+      "/profile/actualizar",
+      data
+    );
     return res.data.user;
   }
 

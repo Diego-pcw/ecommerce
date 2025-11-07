@@ -16,114 +16,133 @@ use App\Http\Controllers\DetallePedidoController;
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
-| Rutas agrupadas bajo el middleware "api" (definido en bootstrap/app.php)
+| Rutas agrupadas bajo el middleware "api"
 | Se usa Sanctum para autenticación con tokens.
 |--------------------------------------------------------------------------
 */
 
 Route::middleware('api')->group(function () {
     
-    /** 🔹 Rutas públicas (sin autenticación) */
+    /** 🔹 RUTAS PÚBLICAS (sin autenticación) */
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 
-    // 🔸 Categorías públicas
+    // 🗂️ Categorías públicas
     Route::get('/categorias', [CategoriaController::class, 'index']);
     Route::get('/categorias/{id}', [CategoriaController::class, 'show']);
 
-    // 🔸 Productos públicos
+    // 🛍️ Productos públicos
     Route::get('/productos', [ProductoController::class, 'index']);
     Route::get('/productos/{id}', [ProductoController::class, 'show']);
 
-    // 🔸 Imágenes públicas (por producto)
+    // 🖼️ Imágenes públicas (por producto)
     Route::get('/imagenes/producto/{producto_id}', [ImagenProductoController::class, 'showByProducto']);
 
-    // 🔸 Promociones públicas
+    // 🎯 Promociones públicas
     Route::get('/promociones', [PromocionController::class, 'index']);
     Route::get('/promociones/{id}', [PromocionController::class, 'show']);
 
-    // 🔸 Carrito (API pública, usa session_id en header)
-    Route::get('/carrito', [CarritoController::class, 'obtenerCarrito']);
-    Route::post('/carrito/agregar', [CarritoController::class, 'agregarProducto']);
-    Route::put('/carrito/{id}/actualizar', [CarritoController::class, 'actualizarCantidad']);
-    Route::delete('/carrito/{id}/eliminar/{producto_id}', [CarritoController::class, 'eliminarProducto']);
-    Route::delete('/carrito/{id}/vaciar', [CarritoController::class, 'vaciarCarrito']);
-    Route::get('/carrito/{id}', [CarritoController::class, 'mostrar']);
-
-    /** 🔸 📦 Reseñas públicas (ver reseñas de productos) */
+    // 💬 Reseñas públicas
     Route::get('/resenas', [ReseñaController::class, 'index']);
     Route::get('/resenas/{id}', [ReseñaController::class, 'show']);
 
-    /** 🔹 Rutas protegidas (requieren autenticación con Sanctum) */
+
+    /* -----------------------------------------------------------------
+    | 🛒 CARRITO DE INVITADO (sin autenticación - usa header X-Session-Id)
+    ------------------------------------------------------------------ */
+    Route::prefix('carrito')->group(function () {
+        Route::get('/', [CarritoController::class, 'obtenerCarrito']); // Obtener carrito actual
+        Route::post('/agregar', [CarritoController::class, 'agregarProducto']); // Agregar producto
+        Route::put('/{id}/actualizar', [CarritoController::class, 'actualizarCantidad']); // Cambiar cantidad
+        Route::delete('/{id}/eliminar/{producto_id}', [CarritoController::class, 'eliminarProducto']); // Eliminar producto
+        Route::delete('/{id}/vaciar', [CarritoController::class, 'vaciarCarrito']); // Vaciar carrito
+        Route::get('/{id}', [CarritoController::class, 'mostrar']); // Mostrar carrito completo
+    });
+
+    /** 🔹 RUTAS PROTEGIDAS (usuarios autenticados con Sanctum) */
     Route::middleware('auth:sanctum')->group(function () {
 
-        // 🔸 Usuario autenticado
+        // 👤 Usuario autenticado
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/profile', [AuthController::class, 'profile']);
         Route::put('/profile/actualizar', [AuthController::class, 'actualizarPerfil']);
 
-        /** 🔸 💬 Mensajes de contacto (Autenticados puede enviar) */
+        // 💬 Contactos
         Route::get('/contact-messages', [ContactMessageController::class, 'index']);
         Route::get('/contact-messages/{id}', [ContactMessageController::class, 'show']);
         Route::post('/contact-messages', [ContactMessageController::class, 'store']);
 
-        /** 🔸 📦 Reseñas (usuarios autenticados pueden crear) */
+        // ⭐ Reseñas autenticadas
         Route::post('/resenas', [ReseñaController::class, 'store']);
 
-        /** 📦 Pedidos (Autenticados pueden crear y ver los suyos) */
+        // 📦 Pedidos (solo propios)
         Route::get('/pedidos', [PedidoController::class, 'index']);
         Route::post('/pedidos', [PedidoController::class, 'store']);
         Route::get('/pedidos/{id}', [PedidoController::class, 'show']);
-
-        /** 🧾 Detalles de pedidos (Autenticados pueden consultar sus pedidos) */
         Route::get('/pedidos/{pedido}/detalles', [DetallePedidoController::class, 'index']);
 
-        /** 🔸 Rutas exclusivas para administradores */
+        /* -----------------------------------------------------------------
+        | 🛒 CARRITO AUTENTICADO (usuario con token Bearer)
+        | Usa el mismo controlador, pero permite fusión y persistencia en DB
+        ------------------------------------------------------------------ */
+        Route::prefix('user/carrito')->group(function () {
+            Route::get('/', [CarritoController::class, 'obtenerCarrito']); // Obtener carrito del usuario
+            Route::post('/agregar', [CarritoController::class, 'agregarProducto']); // Agregar producto
+            Route::put('/{id}/actualizar', [CarritoController::class, 'actualizarCantidad']); // Cambiar cantidad
+            Route::delete('/{id}/eliminar/{producto_id}', [CarritoController::class, 'eliminarProducto']); // Eliminar producto
+            Route::delete('/{id}/vaciar', [CarritoController::class, 'vaciarCarrito']); // Vaciar carrito
+            Route::get('/{id}', [CarritoController::class, 'mostrar']); // Mostrar carrito completo
+        });
+
+        Route::middleware('auth:sanctum')->post('/carrito/fusionar', [CarritoController::class, 'fusionarCarrito']);
+
+
+        /** 🔸 RUTAS ADMINISTRATIVAS (solo admin) */
         Route::middleware('admin')->group(function () {
 
-            /** 🧍‍♂️ Usuarios (solo admin) */
+            // 🧍 Usuarios
             Route::get('/usuarios', [AuthController::class, 'index']);
             Route::put('/usuarios/{id}/estado', [AuthController::class, 'cambiarEstado']); 
 
-            /** 📦 Categorías (CRUD) */
+            // 🗂️ Categorías CRUD
             Route::post('/categorias', [CategoriaController::class, 'store']);
             Route::put('/categorias/{id}', [CategoriaController::class, 'update']);
             Route::delete('/categorias/{id}', [CategoriaController::class, 'destroy']);
 
-            /** 🛒 Productos (CRUD) */
+            // 🛒 Productos CRUD
             Route::post('/productos', [ProductoController::class, 'store']);
             Route::put('/productos/{id}', [ProductoController::class, 'update']);
             Route::delete('/productos/{id}', [ProductoController::class, 'destroy']);
 
-            /** 🖼️ Imágenes (CRUD) */
+            // 🖼️ Imágenes
             Route::get('/imagenes', [ImagenProductoController::class, 'index']);
             Route::post('/imagenes', [ImagenProductoController::class, 'store']);
             Route::put('/imagenes/{id}', [ImagenProductoController::class, 'update']);
             Route::delete('/imagenes/{id}', [ImagenProductoController::class, 'destroy']);
 
-            /** 🎯 Promociones (CRUD + asignar productos) */
+            // 🎯 Promociones
             Route::post('/promociones', [PromocionController::class, 'store']);
             Route::put('/promociones/{id}', [PromocionController::class, 'update']);
             Route::delete('/promociones/{id}', [PromocionController::class, 'destroy']);
             Route::post('/promociones/{id}/asignar', [PromocionController::class, 'asignarProductos']);
             Route::get('/ofertas', [ProductoController::class, 'productosConOfertas']);
 
-            /** 🛒 Carritos (solo debug o administración) */
+            // 🛒 Carritos (solo admin/debug)
             Route::get('/carritos', [CarritoController::class, 'index']);
 
-            /** 📦 Reseñas (admin puede gestionar todas) */
-            Route::put('/resenas/{id}', [ReseñaController::class, 'update']); // aprobar/rechazar
+            // 📦 Reseñas (gestión total)
+            Route::put('/resenas/{id}', [ReseñaController::class, 'update']); 
             Route::delete('/resenas/{id}', [ReseñaController::class, 'destroy']);
 
-            /** 💬 Mensajes de contacto (admin puede ver y responder) */
-            Route::put('/contact-messages/{id}', [ContactMessageController::class, 'update']); // Responder / cambiar estado
+            // 💬 Mensajes (admin responde/elimina)
+            Route::put('/contact-messages/{id}', [ContactMessageController::class, 'update']); 
             Route::delete('/contact-messages/{id}', [ContactMessageController::class, 'destroy']);
 
-            /** 📦 Pedidos (admin puede gestionar todos) */
+            // 📦 Pedidos (admin gestiona todos)
             Route::put('/pedidos/{id}', [PedidoController::class, 'update']);
             Route::delete('/pedidos/{id}', [PedidoController::class, 'destroy']);
 
-            /** 🧾 Detalles de pedidos (admin puede administrar ítems) */
+            // 🧾 Detalles de pedidos (admin puede modificar ítems)
             Route::post('/pedidos/{pedido}/detalles', [DetallePedidoController::class, 'store']);
             Route::put('/pedidos/detalles/{id}', [DetallePedidoController::class, 'update']);
             Route::delete('/pedidos/detalles/{id}', [DetallePedidoController::class, 'destroy']);
