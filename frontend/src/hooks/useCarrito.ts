@@ -1,18 +1,17 @@
-// src/hooks/useCarrito.ts
 import { useState, useEffect, useCallback } from "react";
 import carritoService from "../services/carrito.service";
+import authService from "../services/auth.service";
 import type {
   Carrito,
-  CarritoDetalle,
   AgregarProductoData,
   ActualizarCantidadData,
 } from "../types/Carrito";
 
 /**
  * 🧠 Hook personalizado para manejar el carrito de compras.
- * - Controla sesión (user_id o session_id)
- * - Sincroniza con backend
- * - Mantiene estado en memoria y localStorage
+ * - Distingue entre usuario autenticado e invitado
+ * - Sincroniza automáticamente con el backend
+ * - Guarda y limpia session_id según corresponda
  */
 export const useCarrito = () => {
   const [carrito, setCarrito] = useState<Carrito | null>(null);
@@ -21,14 +20,21 @@ export const useCarrito = () => {
   );
   const [loading, setLoading] = useState(false);
 
+  const isAuthenticated = authService.isAuthenticated();
+
   /** 🔹 Obtener o crear carrito actual */
   const obtenerCarrito = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await carritoService.obtenerCarrito(sessionId || undefined);
+
+      const res = isAuthenticated
+        ? await carritoService.obtenerCarritoUsuario()
+        : await carritoService.obtenerCarrito();
+
       setCarrito(res.carrito);
 
-      if (res.session_id) {
+      // Si el backend devolvió un nuevo session_id (para invitado)
+      if (res.session_id && !isAuthenticated) {
         setSessionId(res.session_id);
         localStorage.setItem("session_id", res.session_id);
       }
@@ -37,16 +43,20 @@ export const useCarrito = () => {
     } finally {
       setLoading(false);
     }
-  }, [sessionId]);
+  }, [isAuthenticated]);
 
   /** 🔹 Agregar producto */
   const agregarProducto = async (data: AgregarProductoData) => {
     try {
       setLoading(true);
-      const res = await carritoService.agregarProducto(data, sessionId || undefined);
+
+      const res = isAuthenticated
+        ? await carritoService.agregarProductoUsuario(data)
+        : await carritoService.agregarProducto(data);
+
       setCarrito(res.carrito);
 
-      if (res.session_id) {
+      if (res.session_id && !isAuthenticated) {
         setSessionId(res.session_id);
         localStorage.setItem("session_id", res.session_id);
       }
@@ -63,9 +73,13 @@ export const useCarrito = () => {
     try {
       setLoading(true);
       const data: ActualizarCantidadData = { producto_id: productoId, cantidad };
-      const res = await carritoService.actualizarCantidad(carrito.id, data);
 
-      // Actualiza el detalle dentro del carrito
+      if (isAuthenticated)
+        await carritoService.actualizarCantidadUsuario(carrito.id, data);
+      else
+        await carritoService.actualizarCantidad(carrito.id, data);
+
+      // Refrescar datos locales
       setCarrito((prev) => {
         if (!prev) return prev;
         const nuevosDetalles = prev.detalles?.map((d) =>
@@ -73,8 +87,6 @@ export const useCarrito = () => {
         );
         return { ...prev, detalles: nuevosDetalles };
       });
-
-      return res.detalle;
     } catch (err) {
       console.error("❌ Error al actualizar cantidad:", err);
     } finally {
@@ -87,7 +99,12 @@ export const useCarrito = () => {
     if (!carrito) return;
     try {
       setLoading(true);
-      await carritoService.eliminarProducto(carrito.id, productoId);
+
+      if (isAuthenticated)
+        await carritoService.eliminarProductoUsuario(carrito.id, productoId);
+      else
+        await carritoService.eliminarProducto(carrito.id, productoId);
+
       setCarrito((prev) => {
         if (!prev) return prev;
         const nuevosDetalles = prev.detalles?.filter(
@@ -107,7 +124,12 @@ export const useCarrito = () => {
     if (!carrito) return;
     try {
       setLoading(true);
-      await carritoService.vaciarCarrito(carrito.id);
+
+      if (isAuthenticated)
+        await carritoService.vaciarCarritoUsuario(carrito.id);
+      else
+        await carritoService.vaciarCarrito(carrito.id);
+
       setCarrito({ ...carrito, detalles: [], total: 0, esta_vacio: true });
     } catch (err) {
       console.error("❌ Error al vaciar carrito:", err);
@@ -125,6 +147,7 @@ export const useCarrito = () => {
     );
   }, [carrito]);
 
+  /** 🧩 Inicializar */
   useEffect(() => {
     void obtenerCarrito();
   }, [obtenerCarrito]);
@@ -134,6 +157,7 @@ export const useCarrito = () => {
     detalles: carrito?.detalles || [],
     sessionId,
     loading,
+    isAuthenticated,
     obtenerCarrito,
     agregarProducto,
     actualizarCantidad,

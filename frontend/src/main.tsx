@@ -4,16 +4,20 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { AuthProvider } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
+import { CarritoProvider } from "./context/CarritoContext";
 import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
+  // 🔧 En producción puedes quitar StrictMode para evitar dobles efectos
   <React.StrictMode>
     <BrowserRouter>
-      <AuthProvider>
-        <ToastProvider>
-          <App />
-        </ToastProvider>
-      </AuthProvider>
+      <CarritoProvider>
+        <AuthProvider>
+          <ToastProvider>
+            <App />
+          </ToastProvider>
+        </AuthProvider>
+      </CarritoProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

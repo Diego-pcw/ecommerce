@@ -1,4 +1,3 @@
-// src/context/CarritoContext.tsx
 import React, { createContext, useContext } from "react";
 import { useCarrito } from "../hooks/useCarrito";
 import type { ReactNode } from "react";
@@ -25,9 +24,7 @@ export const CarritoProvider = ({ children }: CarritoProviderProps) => {
 export const useCarritoContext = () => {
   const context = useContext(CarritoContext);
   if (!context) {
-    throw new Error(
-      "useCarritoContext debe usarse dentro de un CarritoProvider."
-    );
+    throw new Error("useCarritoContext debe usarse dentro de un CarritoProvider.");
   }
   return context;
 };

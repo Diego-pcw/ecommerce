@@ -6,6 +6,8 @@ import type {
   RegisterData,
   LoginData,
 } from "../types/User";
+import carritoService from "./carrito.service";
+
 
 class AuthService {
   /** 🔹 Registro */
@@ -20,24 +22,17 @@ class AuthService {
     const res: AxiosResponse<AuthResponse> = await api.post("/login", data);
 
     if (res.data.token) {
-      // ✅ Guardar sesión primero
-      this.setSession(res.data);
-
-      // ✅ Intentar fusión del carrito de invitado si existe session_id
-      const sessionId = localStorage.getItem("session_id");
-      if (sessionId) {
-        try {
-          await api.post("/carrito/fusionar", { session_id: sessionId });
-          console.info("🛒 Carrito invitado fusionado correctamente");
-        } catch (e) {
-          console.warn("⚠️ No se pudo fusionar carrito invitado:", e);
-        }
-
-        // ✅ Finalmente eliminar session_id (ya fusionado)
-        localStorage.removeItem("session_id");
-      }
+  this.setSession(res.data);
+  const sessionId = localStorage.getItem("session_id");
+  if (sessionId) {
+    try {
+      await carritoService.fusionarCarrito(sessionId);
+      console.info("🛒 Carrito invitado fusionado correctamente");
+    } catch (e) {
+      console.warn("⚠️ No se pudo fusionar carrito invitado:", e);
     }
-
+  }
+}
     return res.data;
   }
 

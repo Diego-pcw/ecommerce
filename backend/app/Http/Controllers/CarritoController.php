@@ -97,7 +97,7 @@ class CarritoController extends Controller
     // 🔹 Mostrar carrito completo con total
     public function mostrar($id)
     {
-        $carrito = Carrito::with('detalles.producto')->findOrFail($id);
+        $carrito = Carrito::with(['detalles.producto', 'usuario'])->findOrFail($id);
 
         return response()->json([
             'carrito' => $carrito,
