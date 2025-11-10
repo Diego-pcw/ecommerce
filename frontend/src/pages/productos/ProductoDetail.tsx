@@ -1,133 +1,200 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { productoService } from "../../services/producto.service";
-import type { Producto } from "../../types/Producto";
-import { useAuth } from "../../context/AuthContext";
-import ResenaForm from "../resenas/ResenaForm";
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { productoService } from '../../services/producto.service.ts';
+import type { Producto } from '../../types/Producto.ts';
+import { useAuth } from '../../context/AuthContext.tsx';
+import ResenaForm from '../resenas/ResenaForm.tsx';
+import { useToast } from '../../context/ToastContext.tsx';
+import styles from '../../styles/carritos/Carrito.module.css';
+import '../../styles/productos/productos.shared.css';
+import {
+  ArrowLeft,
+  MessageSquare,
+  Package,
+  Tag,
+  Hash,
+  Type,
+  FileText,
+  CheckCircle,
+  Box,
+  CircleDollarSign,
+  Loader2,
+} from 'lucide-react';
 
 const ProductoDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
   const [producto, setProducto] = useState<Producto | null>(null);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(''); // Mantenemos tu lógica de error
   const [mostrarFormResena, setMostrarFormResena] = useState(false);
+  const [loading, setLoading] = useState(true); // ✨ Loading state
+  const { push } = useToast(); // ✨ Toast
 
   useEffect(() => {
     const fetchProducto = async () => {
       try {
+        setLoading(true); // ✨
         if (id) {
           const data = await productoService.obtenerPorId(Number(id));
           setProducto(data);
+          document.title = `Detalle: ${data.nombre} | Panel`; // ✨
         }
       } catch (err) {
-        console.error("Error al obtener producto:", err);
-        setError("Error al obtener los detalles del producto ❌");
+        console.error('Error al obtener producto:', err);
+        const errorMsg = 'Error al obtener los detalles del producto ❌';
+        setError(errorMsg);
+        push(errorMsg, 'error'); // ✨
+      } finally {
+        setLoading(false); // ✨
       }
     };
     fetchProducto();
-  }, [id]);
+  }, [id, push]); // ✨
 
-  if (error) return <p className="text-red-600">{error}</p>;
-  if (!producto) return <p>Cargando producto...</p>;
+  if (loading) // ✨
+    return (
+      <div className="loader-container">
+        <Loader2 className="animate-spin" size={32} />
+        Cargando producto...
+      </div>
+    );
+  
+  if (error) return <p className="admin-list-empty">{error}</p>; // ✨
+  if (!producto) return <p className="admin-list-empty">No se encontró el producto.</p>; // ✨
 
   const precio = producto.precio_final ?? 0;
   const categoriaNombre =
-    typeof producto.categoria === "string"
+    typeof producto.categoria === 'string'
       ? producto.categoria
-      : producto.categoria?.nombre ?? "—";
+      : producto.categoria?.nombre ?? '—';
 
+  // Mantenemos tu lógica de estado
   const estado =
-    producto.estado?.toLowerCase() === "activo"
-      ? "🟢 Activo"
-      : producto.estado?.toLowerCase() === "inactivo"
-      ? "🔴 Inactivo"
-      : "⚪ No especificado";
+    producto.estado?.toLowerCase() === 'activo'
+      ? 'activo'
+      : producto.estado?.toLowerCase() === 'inactivo'
+      ? 'inactivo'
+      : 'INACTIVO'; // fallback
+
+  const tieneDescuento =
+    producto.promocion_vigente &&
+    Number(producto.promocion_vigente.valor || 0) > 0;
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold mb-4">{producto.nombre}</h1>
+    <div className="admin-detail-container">
+      <div className="admin-detail-header">
+        <h2>{producto.nombre}</h2>
+        <div className="admin-detail-actions">
+          <button
+            onClick={() => navigate('/productos')}
+            className="btn btn-outline"
+          >
+            <ArrowLeft size={16} />
+            Volver a la lista
+          </button>
+        </div>
+      </div>
 
       {/* 🖼️ Galería de imágenes */}
       {producto.imagenes && producto.imagenes.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
+        <div className="product-gallery">
           {producto.imagenes.map((img) => (
-            <img
-              key={img.id}
-              src={img.url}
-              alt={producto.nombre}
-              className="rounded border object-cover w-full h-40"
-            />
+            <img key={img.id} src={img.url} alt={producto.nombre} />
           ))}
         </div>
       ) : (
-        <p className="text-gray-500 mb-4">No hay imágenes disponibles.</p>
+        <p className="product-gallery-empty">No hay imágenes disponibles.</p>
       )}
 
       {/* 📋 Detalles del producto */}
-      <div className="space-y-2 text-gray-700">
-        <p>
-          <strong>Marca:</strong> {producto.marca ?? "Sin marca"}
-        </p>
-        <p>
-          <strong>Categoría:</strong> {categoriaNombre}
-        </p>
-        <p>
-          <strong>Descripción:</strong> {producto.descripcion ?? "Sin descripción"}
-        </p>
-        <p>
-          <strong>Stock:</strong> {producto.stock ?? 0}
-        </p>
-        <p>
-          <strong>Estado:</strong> {estado}
-        </p>
-      </div>
-
-      {/* 💰 Precio final */}
-      <p className="text-lg font-semibold text-green-600 mt-4">
-        💰 S/ {precio.toFixed(2)}
-      </p>
-
-      {/* 🎟️ Promoción vigente */}
-      {producto.promocion_vigente && (
-        <div className="mt-3 bg-blue-50 p-2 rounded">
-          <p className="text-sm text-blue-700">
-            🔖 Promoción: {producto.promocion_vigente.titulo} (
-            {producto.promocion_vigente.tipo === "percent"
-              ? `${producto.promocion_vigente.valor}%`
-              : `S/ ${producto.promocion_vigente.valor}`}
-            )
-          </p>
-          <p className="text-xs text-blue-500">
-            Vigencia: {producto.promocion_vigente.fecha_inicio} –{" "}
-            {producto.promocion_vigente.fecha_fin}
-          </p>
+      <div className="admin-detail-box">
+        <div className="admin-detail-item">
+          <strong><Hash size={14} /> ID</strong>
+          <span>{producto.id}</span>
         </div>
-      )}
+        <div className="admin-detail-item">
+          <strong><Type size={14} /> Marca</strong>
+          <span>{producto.marca ?? 'Sin marca'}</span>
+        </div>
+        <div className="admin-detail-item">
+          <strong><Package size={14} /> Categoría</strong>
+          <span>{categoriaNombre}</span>
+        </div>
+        <div className="admin-detail-item">
+          <strong><Box size={14} /> Stock</strong>
+          <span>{producto.stock ?? 0}</span>
+        </div>
+        <div className="admin-detail-item">
+          <strong><CheckCircle size={14} /> Estado</strong>
+          <span className={`status-badge ${estado}`}>
+            {producto.estado}
+          </span>
+        </div>
 
-      {/* 🧭 Acciones */}
-      <div className="mt-6 flex flex-wrap gap-3">
-        <button
-          onClick={() => navigate("/productos")}
-          className="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800"
-        >
-          ← Volver a la lista
-        </button>
+        {/* Precio */}
+        <div className="admin-detail-item product-price-detail">
+          <strong><CircleDollarSign size={14} /> Precio</strong>
+          {tieneDescuento ? (
+            <>
+              <p className={styles.priceOriginal} style={{ color: '#fff', opacity: 0.8 }}>
+                S/ {Number(producto.precio_original).toFixed(2)}
+              </p>
+              <span>S/ {precio.toFixed(2)}</span>
+            </>
+          ) : (
+            <span>S/ {precio.toFixed(2)}</span>
+          )}
+        </div>
 
-        {/* ✍️ Dejar reseña */}
-        <button
-          onClick={() => {
-            if (!user) return navigate("/login");
-            setMostrarFormResena(!mostrarFormResena);
-          }}
-          className="bg-biker-yellow text-biker-black px-4 py-2 rounded hover:opacity-90 transition"
-        >
-          ✍️ Dejar reseña
-        </button>
+        {/* Descripción */}
+        <div className="admin-detail-item" style={{ gridColumn: '1 / -1' }}>
+          <strong><FileText size={14} /> Descripción</strong>
+          <span>{producto.descripcion ?? 'Sin descripción'}</span>
+        </div>
+
+        {/* 🎟️ Promoción vigente */}
+        {producto.promocion_vigente && (
+          <div className="admin-detail-item product-promo-info" style={{ gridColumn: '1 / -1' }}>
+            <strong><Tag size={14} /> Promoción Vigente</strong>
+            <span>
+              {producto.promocion_vigente.titulo} (
+              {producto.promocion_vigente.tipo === 'percent'
+                ? `${producto.promocion_vigente.valor}%`
+                : `S/ ${producto.promocion_vigente.valor}`}
+              )
+            </span>
+            <p>
+              Vigencia: {new Date(producto.promocion_vigente.fecha_inicio).toLocaleDateString()} –{' '}
+              {new Date(producto.promocion_vigente.fecha_fin).toLocaleDateString()}
+            </p>
+          </div>
+        )}
+
+        {/* 🧭 Acciones */}
+        <div className="admin-form-actions" style={{ borderTop: 'none', marginTop: 0, gridColumn: '1 / -1' }}>
+          <button
+            onClick={() => {
+              if (!user) {
+                push("Debes iniciar sesión para dejar una reseña", "warning"); // ✨
+                return navigate('/login');
+              }
+              setMostrarFormResena(!mostrarFormResena);
+            }}
+            className="btn btn-primary" // Botón amarillo
+          >
+            <MessageSquare size={16} />
+            {mostrarFormResena ? "Ocultar reseña" : "✍️ Dejar reseña"}
+          </button>
+        </div>
+
+        {/* 📝 Formulario de reseña (solo se muestra si el usuario está logueado y activó el botón) */}
+        {mostrarFormResena && (
+          <div style={{ gridColumn: '1 / -1' }}>
+            <ResenaForm productoId={Number(id)} />
+          </div>
+        )}
       </div>
-
-      {/* 📝 Formulario de reseña (solo se muestra si el usuario está logueado y activó el botón) */}
-      {mostrarFormResena && <ResenaForm productoId={Number(id)} />}
     </div>
   );
 };

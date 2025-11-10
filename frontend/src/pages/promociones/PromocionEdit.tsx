@@ -1,13 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { promocionService } from "../../services/promocion.service";
-import type { Promocion, PromocionUpdateData } from "../../types/Promocion";
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { promocionService } from '../../services/promocion.service';
+import type { Promocion, PromocionUpdateData } from '../../types/Promocion';
+import { useToast } from '../../context/ToastContext';
+import { Save, X, Loader2 } from 'lucide-react';
+import '../../styles/promociones/promocion.shared.css';
 
 const PromocionEdit: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { push } = useToast();
   const [promocion, setPromocion] = useState<Promocion | null>(null);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     const fetchPromocion = async () => {
@@ -16,15 +21,19 @@ const PromocionEdit: React.FC = () => {
         setPromocion({
           ...data,
           descuento_valor: Number(data.descuento_valor).toFixed(2),
+          fecha_inicio: data.fecha_inicio?.slice(0, 10) ?? '',
+          fecha_fin: data.fecha_fin?.slice(0, 10) ?? '',
         });
+        document.title = `Editar: ${data.titulo} | Panel`;
       } catch (error) {
-        console.error("❌ Error al cargar promoción:", error);
+        console.error('❌ Error al cargar promoción:', error);
+        push('Error al cargar la promoción.', 'error');
       } finally {
         setLoading(false);
       }
     };
-    fetchPromocion();
-  }, [id]);
+    if (id) fetchPromocion();
+  }, [id, push]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -37,7 +46,9 @@ const PromocionEdit: React.FC = () => {
         ? {
             ...prev,
             [name]:
-              name === "descuento_valor" ? value.replace(/[^0-9.]/g, "") : value,
+              name === 'descuento_valor'
+                ? value.replace(/[^0-9.]/g, '')
+                : value,
           }
         : prev
     );
@@ -46,10 +57,12 @@ const PromocionEdit: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!promocion) return;
+    setSaving(true);
 
     const valor = parseFloat(promocion.descuento_valor as unknown as string);
     if (isNaN(valor) || valor < 0.01) {
-      alert("El valor del descuento debe ser mayor a 0.01.");
+      push('El valor del descuento debe ser mayor a 0.01.', 'warning');
+      setSaving(false);
       return;
     }
 
@@ -65,50 +78,60 @@ const PromocionEdit: React.FC = () => {
       };
 
       await promocionService.actualizar(Number(id), payload);
-      alert("✅ Promoción actualizada correctamente.");
-      navigate("/promociones");
+      push('✅ Promoción actualizada correctamente.', 'success');
+      navigate('/promociones');
     } catch (error) {
-      console.error("❌ Error al actualizar promoción:", error);
-      alert("No se pudo actualizar la promoción.");
+      console.error('❌ Error al actualizar promoción:', error);
+      push('No se pudo actualizar la promoción.', 'error');
+    } finally {
+      setSaving(false);
     }
   };
 
-  if (loading) return <p>Cargando promoción...</p>;
-  if (!promocion) return <p>No se encontró la promoción.</p>;
+  if (loading)
+    return (
+      <div className="loader-container">
+        <Loader2 className="animate-spin" size={32} />
+        Cargando promoción...
+      </div>
+    );
+
+  if (!promocion)
+    return <p className="admin-list-empty">No se encontró la promoción.</p>;
 
   return (
-    <div className="container mt-4">
-      <h2>✏️ Editar Promoción</h2>
-      <form onSubmit={handleSubmit} className="mt-3">
-        <div className="mb-3">
-          <label className="form-label">Título</label>
+    <div className="admin-form-container">
+      <h2 className="admin-form-title">✏️ Editar Promoción</h2>
+      <form onSubmit={handleSubmit} className="admin-form">
+        <div className="admin-form-group">
+          <label htmlFor="titulo">Título</label>
           <input
+            id="titulo"
             type="text"
             name="titulo"
-            className="form-control"
             value={promocion.titulo}
             onChange={handleChange}
             required
           />
         </div>
 
-        <div className="mb-3">
-          <label className="form-label">Descripción</label>
+        <div className="admin-form-group">
+          <label htmlFor="descripcion">Descripción</label>
           <textarea
+            id="descripcion"
             name="descripcion"
-            className="form-control"
-            value={promocion.descripcion ?? ""}
+            value={promocion.descripcion ?? ''}
             onChange={handleChange}
             rows={3}
           />
         </div>
 
-        <div className="row">
-          <div className="col-md-6 mb-3">
-            <label className="form-label">Tipo de Descuento</label>
+        <div className="admin-form-row">
+          <div className="admin-form-group">
+            <label htmlFor="descuento_tipo">Tipo de Descuento</label>
             <select
+              id="descuento_tipo"
               name="descuento_tipo"
-              className="form-select"
               value={promocion.descuento_tipo}
               onChange={handleChange}
             >
@@ -117,52 +140,52 @@ const PromocionEdit: React.FC = () => {
             </select>
           </div>
 
-          <div className="col-md-6 mb-3">
-            <label className="form-label">
-              Valor ({promocion.descuento_tipo === "percent" ? "%" : "S/"})
+          <div className="admin-form-group">
+            <label htmlFor="descuento_valor">
+              Valor ({promocion.descuento_tipo === 'percent' ? '%' : 'S/'})
             </label>
             <input
+              id="descuento_valor"
               type="text"
               name="descuento_valor"
-              className="form-control"
-              value={promocion.descuento_valor ?? ""}
+              value={promocion.descuento_valor ?? ''}
               onChange={handleChange}
               required
             />
           </div>
         </div>
 
-        <div className="row">
-          <div className="col-md-6 mb-3">
-            <label className="form-label">Fecha Inicio</label>
+        <div className="admin-form-row">
+          <div className="admin-form-group">
+            <label htmlFor="fecha_inicio">Fecha Inicio</label>
             <input
+              id="fecha_inicio"
               type="date"
               name="fecha_inicio"
-              className="form-control"
-              value={promocion.fecha_inicio?.slice(0, 10) ?? ""}
+              value={promocion.fecha_inicio}
               onChange={handleChange}
               required
             />
           </div>
 
-          <div className="col-md-6 mb-3">
-            <label className="form-label">Fecha Fin</label>
+          <div className="admin-form-group">
+            <label htmlFor="fecha_fin">Fecha Fin</label>
             <input
+              id="fecha_fin"
               type="date"
               name="fecha_fin"
-              className="form-control"
-              value={promocion.fecha_fin?.slice(0, 10) ?? ""}
+              value={promocion.fecha_fin}
               onChange={handleChange}
               required
             />
           </div>
         </div>
 
-        <div className="mb-3">
-          <label className="form-label">Estado</label>
+        <div className="admin-form-group">
+          <label htmlFor="estado">Estado</label>
           <select
+            id="estado"
             name="estado"
-            className="form-select"
             value={promocion.estado}
             onChange={handleChange}
           >
@@ -171,9 +194,25 @@ const PromocionEdit: React.FC = () => {
           </select>
         </div>
 
-        <button type="submit" className="btn btn-primary">
-          Actualizar
-        </button>
+        <div className="admin-form-actions">
+          <button
+            type="button"
+            className="btn btn-outline"
+            onClick={() => navigate('/promociones')}
+            disabled={saving}
+          >
+            <X size={18} />
+            Cancelar
+          </button>
+          <button type="submit" className="btn btn-primary" disabled={saving}>
+            {saving ? (
+              <Loader2 size={18} className="animate-spin" />
+            ) : (
+              <Save size={18} />
+            )}
+            {saving ? 'Actualizando...' : 'Actualizar'}
+          </button>
+        </div>
       </form>
     </div>
   );

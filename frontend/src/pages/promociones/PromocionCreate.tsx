@@ -1,18 +1,23 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { promocionService } from "../../services/promocion.service";
-import type { PromocionCreateData } from "../../types/Promocion";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { promocionService } from '../../services/promocion.service';
+import type { PromocionCreateData } from '../../types/Promocion';
+import { useToast } from '../../context/ToastContext';
+import { Save, X, Loader2 } from 'lucide-react';
+import '../../styles/promociones/promocion.shared.css';
 
 const PromocionCreate: React.FC = () => {
   const navigate = useNavigate();
+  const { push } = useToast();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<PromocionCreateData>({
-    titulo: "",
-    descripcion: "",
-    descuento_tipo: "percent",
-    descuento_valor: "0.01",
-    fecha_inicio: "",
-    fecha_fin: "",
-    estado: "ACTIVO",
+    titulo: '',
+    descripcion: '',
+    descuento_tipo: 'percent',
+    descuento_valor: '0.01',
+    fecha_inicio: '',
+    fecha_fin: '',
+    estado: 'ACTIVO',
   });
 
   const handleChange = (
@@ -24,16 +29,18 @@ const PromocionCreate: React.FC = () => {
     setFormData((prev) => ({
       ...prev,
       [name]:
-        name === "descuento_valor" ? value.replace(/[^0-9.]/g, "") : value,
+        name === 'descuento_valor' ? value.replace(/[^0-9.]/g, '') : value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     const valor = parseFloat(formData.descuento_valor);
 
     if (isNaN(valor) || valor < 0.01) {
-      alert("El valor del descuento debe ser mayor a 0.01.");
+      push('El valor del descuento debe ser mayor a 0.01.', 'warning');
+      setLoading(false);
       return;
     }
 
@@ -42,47 +49,49 @@ const PromocionCreate: React.FC = () => {
         ...formData,
         descuento_valor: valor.toFixed(2),
       });
-      alert("✅ Promoción creada correctamente.");
-      navigate("/promociones");
+      push('✅ Promoción creada correctamente.', 'success');
+      navigate('/promociones');
     } catch (error) {
-      console.error("❌ Error al crear promoción:", error);
-      alert("Error al crear promoción.");
+      console.error('❌ Error al crear promoción:', error);
+      push('Error al crear promoción.', 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="container mt-4">
-      <h2>➕ Nueva Promoción</h2>
-      <form onSubmit={handleSubmit} className="mt-3">
-        <div className="mb-3">
-          <label className="form-label">Título</label>
+    <div className="admin-form-container">
+      <h2 className="admin-form-title">➕ Nueva Promoción</h2>
+      <form onSubmit={handleSubmit} className="admin-form">
+        <div className="admin-form-group">
+          <label htmlFor="titulo">Título</label>
           <input
+            id="titulo"
             type="text"
             name="titulo"
-            className="form-control"
             value={formData.titulo}
             onChange={handleChange}
             required
           />
         </div>
 
-        <div className="mb-3">
-          <label className="form-label">Descripción</label>
+        <div className="admin-form-group">
+          <label htmlFor="descripcion">Descripción</label>
           <textarea
+            id="descripcion"
             name="descripcion"
-            className="form-control"
             value={formData.descripcion}
             onChange={handleChange}
             rows={3}
           />
         </div>
 
-        <div className="row">
-          <div className="col-md-6 mb-3">
-            <label className="form-label">Tipo de Descuento</label>
+        <div className="admin-form-row">
+          <div className="admin-form-group">
+            <label htmlFor="descuento_tipo">Tipo de Descuento</label>
             <select
+              id="descuento_tipo"
               name="descuento_tipo"
-              className="form-select"
               value={formData.descuento_tipo}
               onChange={handleChange}
             >
@@ -91,14 +100,14 @@ const PromocionCreate: React.FC = () => {
             </select>
           </div>
 
-          <div className="col-md-6 mb-3">
-            <label className="form-label">
-              Valor ({formData.descuento_tipo === "percent" ? "%" : "S/"})
+          <div className="admin-form-group">
+            <label htmlFor="descuento_valor">
+              Valor ({formData.descuento_tipo === 'percent' ? '%' : 'S/'})
             </label>
             <input
+              id="descuento_valor"
               type="text"
               name="descuento_valor"
-              className="form-control"
               value={formData.descuento_valor}
               onChange={handleChange}
               required
@@ -106,25 +115,25 @@ const PromocionCreate: React.FC = () => {
           </div>
         </div>
 
-        <div className="row">
-          <div className="col-md-6 mb-3">
-            <label className="form-label">Fecha Inicio</label>
+        <div className="admin-form-row">
+          <div className="admin-form-group">
+            <label htmlFor="fecha_inicio">Fecha Inicio</label>
             <input
+              id="fecha_inicio"
               type="date"
               name="fecha_inicio"
-              className="form-control"
               value={formData.fecha_inicio}
               onChange={handleChange}
               required
             />
           </div>
 
-          <div className="col-md-6 mb-3">
-            <label className="form-label">Fecha Fin</label>
+          <div className="admin-form-group">
+            <label htmlFor="fecha_fin">Fecha Fin</label>
             <input
+              id="fecha_fin"
               type="date"
               name="fecha_fin"
-              className="form-control"
               value={formData.fecha_fin}
               onChange={handleChange}
               required
@@ -132,11 +141,11 @@ const PromocionCreate: React.FC = () => {
           </div>
         </div>
 
-        <div className="mb-3">
-          <label className="form-label">Estado</label>
+        <div className="admin-form-group">
+          <label htmlFor="estado">Estado</label>
           <select
+            id="estado"
             name="estado"
-            className="form-select"
             value={formData.estado}
             onChange={handleChange}
           >
@@ -145,9 +154,25 @@ const PromocionCreate: React.FC = () => {
           </select>
         </div>
 
-        <button type="submit" className="btn btn-success">
-          Guardar
-        </button>
+        <div className="admin-form-actions">
+          <button
+            type="button"
+            className="btn btn-outline"
+            onClick={() => navigate('/promociones')}
+            disabled={loading}
+          >
+            <X size={18} />
+            Cancelar
+          </button>
+          <button type="submit" className="btn btn-primary" disabled={loading}>
+            {loading ? (
+              <Loader2 size={18} className="animate-spin" />
+            ) : (
+              <Save size={18} />
+            )}
+            {loading ? 'Guardando...' : 'Guardar'}
+          </button>
+        </div>
       </form>
     </div>
   );

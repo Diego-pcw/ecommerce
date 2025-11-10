@@ -1,15 +1,15 @@
 // src/context/ToastContext.tsx
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, { createContext, useContext, useState, useCallback } from 'react';
 
 type Toast = {
   id: string;
   message: string;
-  type?: "info" | "success" | "error" | "warning";
+  type?: 'info' | 'success' | 'error' | 'warning';
 };
 
 type ToastContextType = {
   toasts: Toast[];
-  push: (message: string, type?: Toast["type"]) => void;
+  push: (message: string, type?: Toast['type']) => void;
   remove: (id: string) => void;
 };
 
@@ -20,7 +20,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const push = useCallback((message: string, type: Toast["type"] = "info") => {
+  const push = useCallback((message: string, type: Toast['type'] = 'info') => {
     const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     const t: Toast = { id, message, type };
     setToasts((s) => [...s, t]);
@@ -41,6 +41,6 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
 
 export const useToast = (): ToastContextType => {
   const ctx = useContext(ToastContext);
-  if (!ctx) throw new Error("useToast must be used inside ToastProvider");
+  if (!ctx) throw new Error('useToast must be used inside ToastProvider');
   return ctx;
 };

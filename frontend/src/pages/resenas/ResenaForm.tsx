@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import styles from "../../styles/resenas/ResenaForm.module.css";
-import { useToast } from "../../context/ToastContext";
-import { useAuth } from "../../context/AuthContext";
-import { resenaService } from "../../services/resena.service";
+import React, { useState } from 'react';
+import { useToast } from '../../context/ToastContext';
+import { useAuth } from '../../context/AuthContext';
+import { resenaService } from '../../services/resena.service';
+import '../../styles/resenas/resena.shared.css';
+import { Loader2, Send } from 'lucide-react';
 
 interface ResenaFormProps {
   productoId: number;
@@ -13,24 +14,22 @@ const ResenaForm: React.FC<ResenaFormProps> = ({ productoId, onSuccess }) => {
   const { user } = useAuth();
   const { push } = useToast();
   const [puntuacion, setPuntuacion] = useState(5);
-  const [comentario, setComentario] = useState("");
+  const [comentario, setComentario] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!user) {
-      push("Debes iniciar sesión para dejar una reseña.", "warning");
+      push('Debes iniciar sesión para dejar una reseña.', 'warning');
       return;
     }
-
     if (!productoId) {
-      push("Error: producto no identificado.", "error");
+      push('Error: producto no identificado.', 'error');
       return;
     }
-
     if (!comentario.trim()) {
-      push("Por favor, escribe un comentario.", "warning");
+      push('Por favor, escribe un comentario.', 'warning');
       return;
     }
 
@@ -42,31 +41,31 @@ const ResenaForm: React.FC<ResenaFormProps> = ({ productoId, onSuccess }) => {
         comentario: comentario.trim(),
       });
 
-      push("✅ Reseña enviada. Espera aprobación del administrador.", "success");
-      setComentario("");
+      push('✅ Reseña enviada. Espera aprobación del administrador.', 'success');
+      setComentario('');
       setPuntuacion(5);
       onSuccess?.();
     } catch (err: any) {
-      console.error("❌ Error al enviar reseña:", err);
+      console.error('❌ Error al enviar reseña:', err);
       const mensaje =
         err.response?.data?.message ||
-        "No se pudo enviar la reseña debido a un error de validación o conexión.";
-      push(mensaje, "error");
+        'No se pudo enviar la reseña. Es posible que ya hayas enviado una para este producto.';
+      push(mensaje, 'error');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form className={styles.formContainer} onSubmit={handleSubmit}>
+    <form className="review-form-container" onSubmit={handleSubmit}>
       <h3>Escribe una reseña</h3>
 
-      <div className={styles.rating}>
+      <div className="star-rating">
         {[1, 2, 3, 4, 5].map((n) => (
           <span
             key={n}
-            className={`${styles.star} ${puntuacion >= n ? styles.active : ""}`}
-            onClick={() => setPuntuacion(n)}
+            className={`star ${puntuacion >= n ? 'active' : ''}`}
+            onClick={() => !loading && setPuntuacion(n)}
             role="button"
             aria-label={`Puntuación ${n}`}
           >
@@ -76,16 +75,22 @@ const ResenaForm: React.FC<ResenaFormProps> = ({ productoId, onSuccess }) => {
       </div>
 
       <textarea
-        className={styles.textarea}
+        className="review-form-textarea" // Hereda estilos base de theme.css
         placeholder="Comparte tu experiencia..."
         value={comentario}
         onChange={(e) => setComentario(e.target.value)}
         rows={4}
         maxLength={500}
+        disabled={loading}
       />
 
-      <button className={styles.btnEnviar} type="submit" disabled={loading}>
-        {loading ? "Enviando..." : "Enviar reseña"}
+      <button className="btn btn-primary" type="submit" disabled={loading}>
+        {loading ? (
+          <Loader2 size={18} className="animate-spin" />
+        ) : (
+          <Send size={18} />
+        )}
+        {loading ? 'Enviando...' : 'Enviar reseña'}
       </button>
     </form>
   );

@@ -29,6 +29,7 @@ import ProductosList from "./pages/productos/ProductosList";
 import ProductoDetail from "./pages/productos/ProductoDetail";
 import ProductoCreate from "./pages/productos/ProductoCreate";
 import ProductoEdit from "./pages/productos/ProductoEdit";
+import CatalogoProduct from "./pages/productos/CatalogoProduct";
 
 // 🖼️ Imágenes de productos (solo admin)
 import ImagenesIndex from "./pages/imagenes/ImagenesIndex";
@@ -46,6 +47,7 @@ import PromocionAsignarProductos from "./pages/promociones/PromocionAsignarProdu
 // 👥 Usuarios (solo admin)
 import UsuarioList from "./pages/admin/usuarios/UsuarioList";
 import ProductosOfertas from "./pages/admin/productos/ProductosOfertas";
+import DashboardAdmin from "./pages/admin/DashboardAdmin";
 
 // 🛒 Carrito (usuario)
 import CarritoUserView from "./pages/carritos/CarritoUserView";
@@ -81,6 +83,7 @@ export default function Router() {
         <Route element={<Layout />}>
           {/* Página principal */}
           <Route path="/" element={<UserHome />} />
+          <Route path="/catalogo" element={<CatalogoProduct />} />
 
           {/* Rutas del carrito (públicas, accesibles tanto por invitados como por usuarios) */}
           <Route path="/carrito" element={<CarritoUserView />} />
@@ -137,6 +140,7 @@ export default function Router() {
             <Route path="/resenas/:id" element={<ResenaDetalle />} />
 
             {/* Usuarios */}
+            <Route path="/admin/dashboard" element={<DashboardAdmin />} />
             <Route path="/admin/usuarios" element={<UsuarioList />} />
             <Route path="/admin/productos" element={<ProductosOfertas />} />
 

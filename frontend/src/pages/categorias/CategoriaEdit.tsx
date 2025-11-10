@@ -1,88 +1,121 @@
-// src/pages/categorias/CategoriaEdit.tsx
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { categoriaService } from "../../services/categoria.service";
-import type { CategoriaUpdateData, Categoria } from "../../types/Categoria";
-import "../../styles/categorias/categorias.shared.css";
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { categoriaService } from '../../services/categoria.service';
+import type { CategoriaUpdateData, Categoria } from '../../types/Categoria';
+import '../../styles/categorias/categorias.shared.css';
+
+// ✨ 1. Importamos iconos y el hook useToast
+import { useToast } from '../../context/ToastContext';
+import { Save, X, Loader2 } from 'lucide-react';
 
 const CategoriaEdit: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  // ✨ 2. Instanciamos el hook
+  const { push } = useToast();
 
   const [formData, setFormData] = useState<CategoriaUpdateData>({
-    nombre: "",
-    descripcion: "",
-    estado: "activo",
+    nombre: '',
+    descripcion: '',
+    estado: 'activo',
   });
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true); // Carga de datos
+  // ✨ 3. Estado separado para el guardado (mejor UX)
+  const [saving, setSaving] = useState<boolean>(false);
 
   useEffect(() => {
-    document.title = "Editar Categoría | Panel";
+    document.title = 'Editar Categoría | Panel';
     const fetchCategoria = async () => {
       try {
         setLoading(true);
         const data: Categoria = await categoriaService.obtenerPorId(Number(id));
         setFormData({
           nombre: data.nombre,
-          descripcion: data.descripcion,
+          // Aseguramos que descripción no sea null
+          descripcion: data.descripcion || '',
           estado: data.estado,
         });
       } catch (error) {
-        console.error("❌ Error al obtener la categoría:", error);
+        console.error('❌ Error al obtener la categoría:', error);
+        // ✨ 4. Usamos toast para el error
+        push('Error al cargar los datos de la categoría.', 'error');
+        navigate('/categorias');
       } finally {
         setLoading(false);
       }
     };
 
     if (id) fetchCategoria();
-  }, [id]);
+  }, [id, navigate, push]); // Agregamos push a las dependencias
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSaving(true); // Usamos el estado 'saving'
     try {
       await categoriaService.actualizar(Number(id), formData);
-      alert("✅ Categoría actualizada correctamente");
-      navigate("/categorias");
+      // ✨ 5. Reemplazamos alert con toast de éxito
+      push('Categoría actualizada correctamente', 'success');
+      navigate('/categorias');
     } catch (error) {
-      console.error("❌ Error al actualizar la categoría:", error);
-      alert("No se pudo actualizar la categoría, inténtalo más tarde.");
+      console.error('❌ Error al actualizar la categoría:', error);
+      // ✨ 6. Reemplazamos alert con toast de error
+      push('No se pudo actualizar la categoría, inténtalo más tarde.', 'error');
+    } finally {
+      setSaving(false);
     }
   };
 
-  if (loading) return <div className="categoria-loader">Cargando datos...</div>;
+  // ✨ 7. Loader principal
+  if (loading)
+    return (
+      <div className="loader-container">
+        <Loader2 className="animate-spin" size={32} />
+        Cargando datos...
+      </div>
+    );
 
+  // ✨ 8. Aplicamos todas las clases de CSS del shared.css
   return (
-    <div className="categoria-form-container">
-      <h2 className="categoria-title">Editar Categoría</h2>
-      <form onSubmit={handleSubmit} className="categoria-form">
-        <label>
-          Nombre:
+    <div className="admin-form-container">
+      <h2 className="admin-form-title">Editar Categoría (ID: {id})</h2>
+      <form onSubmit={handleSubmit} className="admin-form">
+        {/* ✨ 9. Estructura de "admin-form-group" */}
+        <div className="admin-form-group">
+          <label htmlFor="nombre">Nombre</label>
           <input
+            id="nombre"
             type="text"
             name="nombre"
             value={formData.nombre}
             onChange={handleChange}
             required
           />
-        </label>
+        </div>
 
-        <label>
-          Descripción:
+        <div className="admin-form-group">
+          <label htmlFor="descripcion">Descripción</label>
           <textarea
+            id="descripcion"
             name="descripcion"
-            value={formData.descripcion}
+            value={formData.descripcion || ''}
             onChange={handleChange}
+            placeholder="Breve descripción de la categoría (opcional)"
           />
-        </label>
+        </div>
 
-        <label>
-          Estado:
+        <div className="admin-form-group">
+          <label htmlFor="estado">Estado</label>
           <select
+            id="estado"
             name="estado"
             value={formData.estado}
             onChange={handleChange}
@@ -90,19 +123,26 @@ const CategoriaEdit: React.FC = () => {
             <option value="activo">Activo</option>
             <option value="inactivo">Inactivo</option>
           </select>
-        </label>
+        </div>
 
-        <div className="categoria-buttons">
-          <button type="submit" className="btn-guardar" disabled={loading}>
-            💾 Guardar
-          </button>
+        {/* ✨ 10. Aplicamos clases a los botones */}
+        <div className="admin-form-actions">
           <button
             type="button"
-            className="btn-cancelar"
-            onClick={() => navigate("/categorias")}
-            disabled={loading}
+            className="btn btn-outline"
+            onClick={() => navigate('/categorias')}
+            disabled={saving} // Deshabilitado mientras se guarda
           >
-            ✖ Cancelar
+            <X size={18} />
+            Cancelar
+          </button>
+          <button type="submit" className="btn btn-primary" disabled={saving}>
+            {saving ? (
+              <Loader2 size={18} className="animate-spin" />
+            ) : (
+              <Save size={18} />
+            )}
+            {saving ? 'Actualizando...' : 'Actualizar Categoría'}
           </button>
         </div>
       </form>

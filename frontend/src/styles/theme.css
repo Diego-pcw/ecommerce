@@ -1,8 +1,141 @@
 /* 🎨 src/styles/theme.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 :root {
-  --biker-yellow: #FFD700;
-  --biker-black: #1a1a1a;
-  --biker-white: #ffffff;
-  --biker-gray: #f5f5f5;
-  --biker-dark-gray: #333333;
+  /* ------------------------- */
+  /* FUENTES Y TIPOGRAFÍA
+  /* ------------------------- */
+  --font-family-base: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, Helvetica, Arial, sans-serif;
+  
+  /* Tamaños de fuente fluidos (ejemplo básico) */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-md: 1.125rem; /* 18px */
+  --font-size-lg: 1.25rem;  /* 20px */
+  --font-size-xl: 1.5rem;   /* 24px */
+  --font-size-xxl: 2.25rem; /* 36px */
+
+  /* ------------------------- */
+  /* PALETA DE COLORES SEMÁNTICA
+  /* ------------------------- */
+  
+  /* Primario (Amarillo Biker) */
+  --color-primary: #FFD700;        /* Tu amarillo original */
+  --color-primary-light: #ffeb80;  /* Para hover sutil */
+  --color-primary-dark: #e6c200;   /* Para hover/active más fuerte */
+  --color-primary-contrast: #1a1a1a; /* Texto sobre primario */
+
+  /* Secundario / Acento (Rojo Racing) */
+  --color-accent: #E53935;
+  --color-accent-dark: #C62828;
+
+  /* Fondos y Superficies */
+  --color-bg: #F9FAFB;           /* Un gris muy claro para el fondo (más suave que f5f5f5) */
+  --color-surface: #ffffff;      /* Para tarjetas, modales, inputs */
+  --color-surface-dark: #1f1f1f; /* Para modo oscuro */
+
+  /* Texto */
+  --color-text-primary: #111827; /* Casi negro, más suave que #1a1a1a */
+  --color-text-secondary: #6B7280; /* Gris para descripciones, placeholders */
+  --color-text-disabled: #9CA3AF;
+
+  /* Bordes */
+  --color-border: #E5E7EB; /* Borde sutil para inputs y tarjetas */
+  --color-border-hover: #D1D5DB;
+
+  /* Estado */
+  --color-success: #10B981;
+  --color-error: #EF4444;
+  --color-warning: #F59E0B;
+  --color-info: #3B82F6;
+
+  /* ------------------------- */
+  /* TOKENS DE DISEÑO
+  /* ------------------------- */
+
+  /* Radio de Bordes */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 16px;
+  --border-radius-full: 9999px; /* Para píldoras */
+
+  /* Sombras */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* Transiciones */
+  --transition-base: all 0.25s ease-in-out;
+  --transition-fast: all 0.15s ease-in-out;
+
+  /* ------------------------- */
+  /* ESTILOS GLOBALES BASE
+  /* ------------------------- */
+}
+
+/* Reset básico y aplicación de fuentes.
+  Considera usar un archivo 'reset.css' o 'base.css' por separado 
+  e importarlo en tu main.tsx
+*/
+body {
+  font-family: var(--font-family-base);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: 600;
+}
+
+p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* Estilos base para inputs y selects (los afinaremos por componente) */
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='search'],
+textarea, /* <-- AÑADE ESTO */
+select {
+  display: block;
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-fast);
+  box-sizing: border-box; /* Importante para que el padding no afecte el ancho */
+}
+
+input[type='text']:focus,
+input[type='email']:focus,
+input[type='password']:focus,
+input[type='search']:focus, /* <-- Corregí un '¡' que había aquí */
+textarea:focus, /* <-- AÑADE ESTO */
+select:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-light);
+}
+
+select {
+  cursor: pointer;
+}
+
+::placeholder {
+  color: var(--color-text-disabled);
 }

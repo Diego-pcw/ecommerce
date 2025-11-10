@@ -1,19 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { productoService } from "../../services/producto.service";
-import { categoriaService } from "../../services/categoria.service"; // ✅ Para obtener categorías
-import type { Producto, ProductoUpdateData } from "../../types/Producto";
-import type { Categoria } from "../../types/Categoria";
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { productoService } from '../../services/producto.service.ts';
+import { categoriaService } from '../../services/categoria.service.ts';
+import type { ProductoUpdateData } from '../../types/Producto';
+import type { Categoria } from '../../types/Categoria.ts';
+import { useToast } from '../../context/ToastContext.tsx';
+import { Save, X, Loader2 } from 'lucide-react';
+import '../../styles/productos/productos.shared.css';
 
 const ProductoEdit: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   const [form, setForm] = useState<ProductoUpdateData>({});
-  const [producto, setProducto] = useState<Producto | null>(null);
-  const [categorias, setCategorias] = useState<Categoria[]>([]); // ✅ Tipado correcto
-  const [mensaje, setMensaje] = useState("");
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false); // ✨ Estado de guardado
+  const { push } = useToast(); // ✨
 
   /* -------------------------------------------
    * 🔹 Cargar producto y categorías
@@ -21,45 +24,61 @@ const ProductoEdit: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (!id) return;
-
       try {
         setLoading(true);
 
-        // ✅ Cargar producto
-        const data = await productoService.obtenerPorId(Number(id));
-        setProducto(data);
+        const [data, resCategorias] = await Promise.all([ // ✨ Promise.all
+          productoService.obtenerPorId(Number(id)),
+          categoriaService.obtenerTodas(),
+        ]);
 
-        // ✅ Cargar categorías
-        const resCategorias = await categoriaService.obtenerTodas();
         const listaCategorias = Array.isArray(resCategorias)
           ? resCategorias
           : resCategorias.data ?? [];
-
         setCategorias(listaCategorias);
+        
+        document.title = `Editar: ${data.nombre} | Panel`; // ✨
 
-        // ✅ Prellenar formulario
         setForm({
           nombre: data.nombre,
-          marca: data.marca ?? "",
-          descripcion: data.descripcion ?? "",
+          marca: data.marca ?? '',
+          descripcion: data.descripcion ?? '',
           precio: parseFloat(data.precio_original) || data.precio_final || 0,
           stock: data.stock ?? 0,
           categoria_id:
             data.categoria_id ??
             data.categoria?.id ??
             (listaCategorias[0]?.id ?? 0),
-          estado: data.estado ?? "activo",
+          estado: data.estado ?? 'activo',
         });
       } catch (error) {
-        console.error("Error al cargar producto o categorías:", error);
-        setMensaje("❌ No se pudo cargar la información del producto.");
+        console.error('Error al cargar producto o categorías:', error);
+        push('❌ No se pudo cargar la información del producto.', 'error'); // ✨
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [id]);
+  }, [id, push]); // ✨
+
+  /* -------------------------------------------
+   * 🔹 Manejar cambios (tu lógica original, simplificada)
+   * ----------------------------------------- */
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]:
+        name === 'precio' || name === 'stock' || name === 'categoria_id'
+          ? Number(value)
+          : value,
+    }));
+  };
 
   /* -------------------------------------------
    * 🔹 Manejar envío del formulario
@@ -69,157 +88,156 @@ const ProductoEdit: React.FC = () => {
     if (!id) return;
 
     try {
+      setSaving(true); // ✨
       const res = await productoService.actualizar(Number(id), form);
-      setMensaje(res.message || "✅ Producto actualizado correctamente");
-
-      // Redirigir después de un pequeño retraso
-      setTimeout(() => navigate("/productos"), 1500);
+      push(res.message || '✅ Producto actualizado correctamente', 'success'); // ✨
+      setTimeout(() => navigate('/productos'), 1500);
     } catch (error) {
-      console.error("Error al actualizar producto:", error);
-      setMensaje("❌ Error al actualizar el producto.");
+      console.error('Error al actualizar producto:', error);
+      push('❌ Error al actualizar el producto.', 'error'); // ✨
+    } finally {
+      setSaving(false); // ✨
     }
   };
 
   /* -------------------------------------------
    * 🔹 Renderizado condicional
    * ----------------------------------------- */
-  if (loading) return <p className="text-center mt-6">Cargando producto...</p>;
-  if (!producto)
-    return <p className="text-center mt-6">No se encontró el producto.</p>;
+  if (loading) 
+    return (
+      <div className="loader-container">
+        <Loader2 className="animate-spin" size={32} />
+        Cargando producto...
+      </div>
+    );
 
   /* -------------------------------------------
    * 🔹 Vista principal del formulario
    * ----------------------------------------- */
   return (
-    <div className="p-6 max-w-lg mx-auto bg-white rounded-2xl shadow-md">
-      <h2 className="text-2xl font-bold mb-4 text-center">✏️ Editar Producto</h2>
+    <div className="admin-form-container">
+      <h2 className="admin-form-title">✏️ Editar Producto (ID: {id})</h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Nombre */}
-        <div>
-          <label className="block text-sm font-semibold mb-1">Nombre</label>
+      <form onSubmit={handleSubmit} className="admin-form">
+        <div className="admin-form-group">
+          <label htmlFor="nombre">Nombre</label>
           <input
+            id="nombre"
             type="text"
-            className="border p-2 w-full rounded"
-            value={form.nombre ?? ""}
-            onChange={(e) => setForm({ ...form, nombre: e.target.value })}
+            name="nombre"
+            value={form.nombre ?? ''}
+            onChange={handleChange}
             required
           />
         </div>
 
-        {/* Marca */}
-        <div>
-          <label className="block text-sm font-semibold mb-1">Marca</label>
+        <div className="admin-form-group">
+          <label htmlFor="marca">Marca</label>
           <input
+            id="marca"
             type="text"
-            className="border p-2 w-full rounded"
-            value={form.marca ?? ""}
-            onChange={(e) => setForm({ ...form, marca: e.target.value })}
+            name="marca"
+            value={form.marca ?? ''}
+            onChange={handleChange}
           />
         </div>
 
-        {/* Descripción */}
-        <div>
-          <label className="block text-sm font-semibold mb-1">Descripción</label>
+        <div className="admin-form-group">
+          <label htmlFor="descripcion">Descripción</label>
           <textarea
-            className="border p-2 w-full rounded resize-none"
+            id="descripcion"
+            name="descripcion"
             rows={3}
-            value={form.descripcion ?? ""}
-            onChange={(e) => setForm({ ...form, descripcion: e.target.value })}
+            value={form.descripcion ?? ''}
+            onChange={handleChange}
           />
         </div>
 
-        {/* Precio */}
-        <div>
-          <label className="block text-sm font-semibold mb-1">Precio (S/)</label>
-          <input
-            type="number"
-            className="border p-2 w-full rounded"
-            value={form.precio ?? 0}
-            min="0"
-            step="0.01"
-            onChange={(e) =>
-              setForm({ ...form, precio: parseFloat(e.target.value) || 0 })
-            }
-            required
-          />
+        <div className="admin-form-row">
+          <div className="admin-form-group">
+            <label htmlFor="precio">Precio (S/)</label>
+            <input
+              id="precio"
+              type="number"
+              name="precio"
+              value={form.precio ?? 0}
+              min="0"
+              step="0.01"
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="admin-form-group">
+            <label htmlFor="stock">Stock</label>
+            <input
+              id="stock"
+              type="number"
+              name="stock"
+              value={form.stock ?? 0}
+              min="0"
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
 
-        {/* Stock */}
-        <div>
-          <label className="block text-sm font-semibold mb-1">Stock</label>
-          <input
-            type="number"
-            className="border p-2 w-full rounded"
-            value={form.stock ?? 0}
-            min="0"
-            onChange={(e) =>
-              setForm({ ...form, stock: parseInt(e.target.value) || 0 })
-            }
-            required
-          />
+        <div className="admin-form-row">
+          <div className="admin-form-group">
+            <label htmlFor="categoria_id">Categoría</label>
+            <select
+              id="categoria_id"
+              name="categoria_id"
+              value={form.categoria_id ?? ''}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Selecciona una categoría</option>
+              {Array.isArray(categorias) &&
+                categorias.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.nombre}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div className="admin-form-group">
+            <label htmlFor="estado">Estado</label>
+            <select
+              id="estado"
+              name="estado"
+              value={form.estado ?? 'activo'}
+              onChange={handleChange}
+            >
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+          </div>
         </div>
 
-        {/* Categoría */}
-        <div>
-          <label className="block text-sm font-semibold mb-1">Categoría</label>
-          <select
-            className="border p-2 w-full rounded"
-            value={form.categoria_id ?? ""}
-            onChange={(e) =>
-              setForm({ ...form, categoria_id: Number(e.target.value) })
-            }
-            required
+        <div className="admin-form-actions">
+          <button
+            type="button"
+            className="btn btn-outline"
+            onClick={() => navigate('/productos')}
+            disabled={saving} // ✨
           >
-            <option value="">Selecciona una categoría</option>
-            {Array.isArray(categorias) &&
-              categorias.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.nombre}
-                </option>
-              ))}
-          </select>
-        </div>
-
-        {/* Estado */}
-        <div>
-          <label className="block text-sm font-semibold mb-1">Estado</label>
-          <select
-            className="border p-2 w-full rounded"
-            value={form.estado ?? "activo"}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                estado: e.target.value as "activo" | "inactivo",
-              })
-            }
+            <X size={18} />
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={saving} // ✨
           >
-            <option value="activo">🟢 Activo</option>
-            <option value="inactivo">🔴 Inactivo</option>
-          </select>
+            {saving ? (
+              <Loader2 size={18} className="animate-spin" />
+            ) : (
+              <Save size={18} />
+            )}
+            {saving ? 'Guardando...' : 'Guardar Cambios'}
+          </button>
         </div>
-
-        {/* Botón */}
-        <button
-          type="submit"
-          className="w-full bg-green-600 text-white font-semibold py-2 rounded hover:bg-green-700 transition-colors"
-        >
-          Guardar Cambios
-        </button>
       </form>
-
-      {/* Mensaje de estado */}
-      {mensaje && (
-        <p
-          className={`mt-4 text-center font-medium ${
-            mensaje.includes("Error") || mensaje.includes("❌")
-              ? "text-red-600"
-              : "text-green-600"
-          }`}
-        >
-          {mensaje}
-        </p>
-      )}
     </div>
   );
 };
