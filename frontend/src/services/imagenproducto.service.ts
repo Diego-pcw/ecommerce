@@ -1,7 +1,6 @@
 import api from "./api";
 import { type AxiosResponse } from "axios";
 import {
-  type ImagenProducto,
   type ImagenProductoCreateData,
   type ImagenProductoUpdateData,
   type ImagenProductoResponse,

@@ -20,7 +20,7 @@ const PromocionEdit: React.FC = () => {
         const data = await promocionService.obtener(Number(id));
         setPromocion({
           ...data,
-          descuento_valor: Number(data.descuento_valor).toFixed(2),
+          descuento_valor: data.descuento_valor,
           fecha_inicio: data.fecha_inicio?.slice(0, 10) ?? '',
           fecha_fin: data.fecha_fin?.slice(0, 10) ?? '',
         });
@@ -69,9 +69,9 @@ const PromocionEdit: React.FC = () => {
     try {
       const payload: PromocionUpdateData = {
         titulo: promocion.titulo,
-        descripcion: promocion.descripcion,
+        descripcion: promocion.descripcion ?? '',
         descuento_tipo: promocion.descuento_tipo,
-        descuento_valor: valor.toFixed(2),
+        descuento_valor: Number(valor.toFixed(2)),
         fecha_inicio: promocion.fecha_inicio,
         fecha_fin: promocion.fecha_fin,
         estado: promocion.estado,

@@ -1,6 +1,6 @@
 import { type Categoria } from "./Categoria";
 import { type ImagenProducto } from "./ImagenProducto";
-import { type DataResponse, type Paginated } from "./Common";
+import { type Paginated } from "./Common";
 
 /* -------------------------------------------
  * 🔹 Promoción vigente (accessor del modelo)

@@ -14,10 +14,10 @@ const PromocionCreate: React.FC = () => {
     titulo: '',
     descripcion: '',
     descuento_tipo: 'percent',
-    descuento_valor: '0.01',
+    descuento_valor: 0.01,
     fecha_inicio: '',
     fecha_fin: '',
-    estado: 'ACTIVO',
+    estado: "activo"
   });
 
   const handleChange = (
@@ -28,15 +28,14 @@ const PromocionCreate: React.FC = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]:
-        name === 'descuento_valor' ? value.replace(/[^0-9.]/g, '') : value,
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const valor = parseFloat(formData.descuento_valor);
+    const valor = Number(formData.descuento_valor);
 
     if (isNaN(valor) || valor < 0.01) {
       push('El valor del descuento debe ser mayor a 0.01.', 'warning');
@@ -47,7 +46,7 @@ const PromocionCreate: React.FC = () => {
     try {
       await promocionService.crear({
         ...formData,
-        descuento_valor: valor.toFixed(2),
+        descuento_valor: Number(valor.toFixed(2)),
       });
       push('✅ Promoción creada correctamente.', 'success');
       navigate('/promociones');

@@ -49,7 +49,9 @@ export interface PromocionCreateData {
 /**
  * 🔸 Datos para actualizar una promoción existente
  */
-export interface PromocionUpdateData extends Partial<PromocionCreateData> {}
+export interface PromocionUpdateData extends Partial<PromocionCreateData> {
+  
+}
 
 /**
  * 🔸 Datos para asignar productos a una promoción

@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 import Router from "./router";
 import ToastRoot from "./components/ToastRoot";
 import { useAuth } from "./context/AuthContext";

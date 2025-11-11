@@ -2,7 +2,6 @@
 
 import { type DetallePedido } from "./DetallePedido";
 import { type User } from "./User";
-import { Paginated } from "./Common";
 
 /**
  * 🔹 Representa un pedido realizado por un usuario.

@@ -5,7 +5,7 @@ import { CreditCard, Loader2, ShoppingCart } from 'lucide-react';
 import '../../styles/carritos/carrito.shared.css';
 
 const CarritoCheckout: React.FC = () => {
-  const { calcularTotal, carrito, vaciarCarrito } = useCarritoContext(); // ✨ Añadido vaciarCarrito
+  const { calcularTotal, carrito} = useCarritoContext(); // ✨ Añadido vaciarCarrito
   const { push } = useToast();
   const total = calcularTotal();
   const [loading, setLoading] = useState(false); // Para simular pago

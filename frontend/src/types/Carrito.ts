@@ -90,6 +90,7 @@ export interface CarritoResumen {
   activos: number;
   expirados: number;
   vacios: number;
+  fusionados?: number; // ✅ Agregado
 }
 
 /**

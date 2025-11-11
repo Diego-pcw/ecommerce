@@ -45,7 +45,7 @@ const ResenasList: React.FC = () => {
 
   const actualizarEstado = async (id: number, nuevoEstado: string) => {
     try {
-      await resenaService.update(id, { estado: nuevoEstado.toUpperCase() });
+      await resenaService.update(id, { estado: nuevoEstado as "PENDIENTE" | "APROBADO" | "RECHAZADO" });
       push(`Reseña ${nuevoEstado.toLowerCase()}.`, 'success');
       fetchResenas(pagina, filtroEstado);
     } catch (err) {

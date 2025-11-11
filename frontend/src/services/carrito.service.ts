@@ -1,7 +1,6 @@
 import api from "./api";
 import { type AxiosResponse } from "axios";
 import {
-  type Carrito,
   type CarritoObtenerResponse,
   type CarritoAgregarResponse,
   type CarritoActualizarResponse,

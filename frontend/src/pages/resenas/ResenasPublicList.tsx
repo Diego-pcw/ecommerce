@@ -18,7 +18,10 @@ const ResenasPublicList: React.FC = () => {
         page,
         estado: 'APROBADO',
       };
-      const data = await resenaService.getAll(params);
+      const data = await resenaService.getAll({
+    ...params,
+    estado: params.estado as "PENDIENTE" | "APROBADO" | "RECHAZADO" | undefined,
+    });
       setResenas(data.data ?? []);
       setPagina(data.current_page ?? 1);
       setTotalPaginas(data.last_page ?? 1);
