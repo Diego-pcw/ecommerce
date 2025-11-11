@@ -1,0 +1,337 @@
+/* 🎨 src/styles/layout.shared.css */
+/* Estilos para el Layout (Header, Main, Footer), 
+   Notificaciones (Toast) y Loader global.
+*/
+
+/* ------------------------- */
+/* LOADER (Para ProtectedRoute)
+/* ------------------------- */
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 5rem;
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+  gap: 1.5rem;
+  min-height: 50vh; /* Para que no quede pegado arriba */
+}
+
+/* ------------------------- */
+/* ESTRUCTURA DEL LAYOUT
+/* ------------------------- */
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+}
+
+.layout-main {
+  flex: 1; /* Crece para llenar el espacio */
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  box-sizing: border-box;
+}
+
+/* ------------------------- */
+/* HEADER (Layout.tsx)
+/* ------------------------- */
+.header {
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-md);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap; /* Para responsiveness */
+  gap: 1rem;
+}
+
+.header-logo {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.header-logo span {
+  color: var(--color-primary-dark);
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap; /* Para responsiveness */
+  gap: 1rem;
+}
+
+.header-nav-link {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: var(--transition-fast);
+  padding: 0.5rem;
+  border-radius: var(--border-radius-md);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.header-nav-link:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg);
+}
+
+.header-nav-link.admin-link {
+  color: var(--color-info);
+  font-weight: 600;
+}
+.header-nav-link.admin-link:hover {
+  background-color: #eff6ff; /* blue-50 */
+}
+
+.btn-logout {
+  /* Botón sutil de texto */
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-error);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  border-radius: var(--border-radius-md);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.btn-logout:hover {
+  background-color: #fee2e2; /* red-50 */
+}
+
+/* ------------------------- */
+/* FOOTER (Layout.tsx)
+/* ------------------------- */
+.footer {
+  background-color: var(--color-surface-dark);
+  color: var(--color-text-disabled);
+  border-top: 1px solid var(--color-border);
+  padding: 2rem 1.5rem;
+}
+
+.footer-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  text-align: center;
+  font-size: var(--font-size-sm);
+}
+.footer-content p {
+  color: var(--color-text-disabled);
+}
+
+/* ------------------------- */
+/* TOAST (ToastRoot.tsx)
+/* ------------------------- */
+.toast-root {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.toast-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: var(--border-radius-md);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 350px;
+
+  /* Animación */
+  opacity: 0;
+  transform: translateX(100%);
+  animation: toast-slide-in 0.3s ease-out forwards;
+}
+
+.toast-icon {
+  flex-shrink: 0;
+  font-size: 1.25rem;
+}
+.toast-icon.success {
+  color: var(--color-success);
+}
+.toast-icon.error {
+  color: var(--color-error);
+}
+.toast-icon.warning {
+  color: var(--color-warning);
+}
+.toast-icon.info {
+  color: var(--color-info);
+}
+
+.toast-message {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  flex-grow: 1; /* Ocupa el espacio */
+}
+
+.toast-close-btn {
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  color: var(--color-text-disabled);
+  transition: var(--transition-fast);
+  border-radius: var(--border-radius-full);
+}
+.toast-close-btn:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg);
+}
+
+@keyframes toast-slide-in {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ==========================
+NUEVO: BOTÓN FLOTANTE SOCIAL
+==========================
+*/
+.social-bubble-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 50; /* Por encima del contenido, debajo de los toasts */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.social-bubble-toggle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+  transition: var(--transition-base);
+  position: relative;
+}
+.social-bubble-toggle:hover {
+  transform: scale(1.05) rotate(10deg);
+  box-shadow: var(--shadow-xl);
+}
+
+/* Manejo de iconos Abierto/Cerrado */
+.social-bubble-toggle .icon-open,
+.social-bubble-toggle .icon-close {
+  position: absolute;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.social-bubble-toggle.closed .icon-close,
+.social-bubble-toggle.open .icon-open {
+  opacity: 0;
+  transform: scale(0.5);
+}
+.social-bubble-toggle.open .icon-close,
+.social-bubble-toggle.closed .icon-open {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Menú de enlaces */
+.social-bubble-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.social-bubble-menu.closed {
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+}
+.social-bubble-menu.open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.social-bubble-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-fast);
+  text-decoration: none;
+}
+.social-bubble-link:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Colores específicos */
+.social-bubble-link.whatsapp {
+  background-color: #25d366;
+  color: white;
+}
+.social-bubble-link.facebook {
+  background-color: #1877f2;
+  color: white;
+}
+.social-bubble-link.instagram {
+  background: #d6249f;
+  background: radial-gradient(
+    circle at 30% 107%,
+    #fdf497 0%,
+    #fdf497 5%,
+    #fd5949 45%,
+    #d6249f 60%,
+    #285aeb 90%
+  );
+  color: white;
+}
+.social-bubble-link.tiktok {
+  background-color: #000;
+  color: white;
+}

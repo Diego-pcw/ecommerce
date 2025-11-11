@@ -112,7 +112,9 @@ const ContactForm: React.FC = () => {
           <select
             id="canal"
             value={canal}
-            onChange={(e) => setCanal(e.target.value as any)}
+            onChange={(e) =>
+              setCanal(e.target.value as 'EMAIL' | 'WHATSAPP' | 'TELEFONO')
+            }
           >
             <option value="WHATSAPP">WhatsApp</option>
             <option value="EMAIL">Correo electrónico</option>

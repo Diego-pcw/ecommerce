@@ -1,25 +1,40 @@
-import React from "react";
+import React from 'react';
+import '../../styles/home.shared.css'; // Importamos el CSS
+import { Wrench, Shield, Heart } from 'lucide-react'; // Icons
+import { Link } from 'react-router-dom';
 
+// Datos simulados tematizados y con iconos
 const categorias = [
-  { nombre: "Herramientas eléctricas", icono: "⚡" },
-  { nombre: "Accesorios", icono: "🧰" },
-  { nombre: "Construcción", icono: "🏗️" },
-  { nombre: "Seguridad", icono: "🦺" },
+  {
+    nombre: 'Repuestos',
+    icono: <Wrench size={32} />,
+    link: '/categorias/repuestos',
+  },
+  {
+    nombre: 'Seguridad',
+    icono: <Shield size={32} />,
+    link: '/categorias/seguridad',
+  },
+  {
+    nombre: 'Accesorios',
+    icono: <Heart size={32} />,
+    link: '/categorias/accesorios',
+  },
 ];
 
 const CategoriasDestacadas: React.FC = () => {
   return (
-    <section className="categorias-section">
-      <h2 className="section-title">📦 Categorías destacadas</h2>
-      <div className="categorias-grid">
+    <>
+      <h2 className="home-section-title">📦 Explora <span>Categorías</span></h2>
+      <div className="home-grid" style={{maxWidth: '1000px'}}>
         {categorias.map((cat) => (
-          <div key={cat.nombre} className="categoria-card">
-            <span className="categoria-icon">{cat.icono}</span>
+          <Link to={cat.link} key={cat.nombre} className="category-card-simple">
+            <div className="category-card-icon-wrapper">{cat.icono}</div>
             <p>{cat.nombre}</p>
-          </div>
+          </Link>
         ))}
       </div>
-    </section>
+    </>
   );
 };
 

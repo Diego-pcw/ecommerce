@@ -36,6 +36,7 @@ export interface ContactMessageCreateData {
 export interface ContactMessageUpdateData {
   estado?: "NUEVO" | "RESPONDIDO" | "CERRADO" | "PENDIENTE";
   respuesta?: string | null;
+  fecha_respuesta?: string | null;
 }
 
 /** Estructura de respuesta estándar */

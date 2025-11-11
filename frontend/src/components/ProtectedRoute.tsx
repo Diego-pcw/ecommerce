@@ -1,18 +1,23 @@
-// src/components/ProtectedRoute.tsx
-import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import React from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { Loader2 } from 'lucide-react';
+import '../styles/layout.shared.css'; // Contiene el .loader-container
 
 type Props = {
-  requiredRole?: "admin" | "cliente";
+  requiredRole?: 'admin' | 'cliente';
 };
 
 export const ProtectedRoute: React.FC<Props> = ({ requiredRole }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    // small loading placeholder
-    return <div>Loading...</div>;
+    return (
+      <div className="loader-container">
+        <Loader2 className="animate-spin" size={32} />
+        Verificando sesión...
+      </div>
+    );
   }
 
   if (!user) {

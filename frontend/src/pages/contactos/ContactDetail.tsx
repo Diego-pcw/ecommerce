@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { contactService } from '../../services/contact.service.ts'; // Con .ts
-import type { ContactMessage } from '../../types/ContactMessage.ts'; // Con .ts
-import { useToast } from '../../context/ToastContext.tsx'; // Con .tsx
+import { contactService } from '../../services/contact.service.ts';
+import type { ContactMessage } from '../../types/ContactMessage.ts'; 
+import { useToast } from '../../context/ToastContext.tsx';
 import {
   Loader2,
   ArrowLeft,
@@ -65,12 +65,12 @@ const ContactDetail: React.FC = () => {
     fetchDetalle();
   }, [id]);
 
-  const formatDate = (dateString: string | undefined) => {
-    if (!dateString) return '—';
-    return new Date(dateString).toLocaleString('es-PE', {
-      dateStyle: 'long',
-      timeStyle: 'short',
-    });
+  const formatDate = (dateString?: string | null) => {
+  if (!dateString) return '—';
+  return new Date(dateString).toLocaleString('es-PE', {
+    dateStyle: 'long',
+    timeStyle: 'short',
+  });
   };
 
   if (loading)

@@ -3,7 +3,7 @@ import { contactService } from '../../services/contact.service';
 import type { ContactMessage } from '../../types/ContactMessage';
 import { useToast } from '../../context/ToastContext';
 import { Link } from 'react-router-dom';
-import { Loader2, RefreshCw, Eye, Trash2, Mail } from 'lucide-react';
+import { Loader2, RefreshCw, Eye, Trash2 } from 'lucide-react';
 import '../../styles/contactos/contacto.shared.css';
 
 const ContactListAdmin: React.FC = () => {

@@ -1,63 +1,94 @@
-import React from "react";
-import { Link, Outlet } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import "../styles/layout.css";
-import CarritoButton from "./carrito/CarritoButton"; // <-- botón del carrito
+import React from 'react';
+import { Link, Outlet } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import '../styles/layout.shared.css';
+import CarritoButton from './carrito/CarritoButton';
+import {
+  Store,
+  LayoutGrid,
+  User,
+  Shield,
+  LogOut,
+  LogIn,
+  UserPlus,
+  Rocket,
+} from 'lucide-react';
+import Footer from "../components/Footer"
+import SocialBubble from './SocialBubble';
 
 const Layout: React.FC = () => {
   const { user, logout } = useAuth();
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <Link to="/" className="text-lg font-semibold">Mi Tienda</Link>
+    <div className="layout-container">
+      <header className="header">
+        <div className="header-content">
+          <Link to="/" className="header-logo">
+            <Rocket size={28} />
+            Mi Tienda <span>Biker</span>
+          </Link>
 
-          <nav className="flex items-center gap-4">
-            <Link to="/productos" className="text-sm">Productos</Link>
-            <Link to="/categorias" className="text-sm">Categorías</Link>
-
-            {/* Carrito siempre visible en el header */}
-            <div className="ml-2">
-              <CarritoButton />
-            </div>
+          <nav className="header-nav">
+            <Link to="/productos" className="header-nav-link">
+              <Store size={16} />
+              Productos
+            </Link>
+            <Link to="/categorias" className="header-nav-link">
+              <LayoutGrid size={16} />
+              Categorías
+            </Link>
 
             {user ? (
               <>
-                <Link to="/profile" className="text-sm">
-                  {user.name ?? (user as any).name ?? "Perfil"}
+                <Link to="/profile" className="header-nav-link">
+                  <User size={16} />
+                  {user.name ?? (user as any).name ?? 'Perfil'}
                 </Link>
 
-                {user.rol === "admin" && (
-                  <Link to="/admin/dashboard" className="text-sm">Admin</Link>
+                {user.rol === 'admin' && (
+                  <Link
+                    to="/admin/dashboard"
+                    className="header-nav-link admin-link"
+                  >
+                    <Shield size={16} />
+                    Admin
+                  </Link>
                 )}
 
-                <button
-                  onClick={() => logout()}
-                  className="text-sm text-red-600 hover:underline"
-                >
+                <button onClick={() => logout()} className="btn-logout">
+                  <LogOut size={16} />
                   Cerrar sesión
                 </button>
               </>
             ) : (
               <>
-                <Link to="/login" className="text-sm">Iniciar sesión</Link>
-                <Link to="/register" className="text-sm">Registrarse</Link>
+                <Link to="/login" className="header-nav-link">
+                  <LogIn size={16} />
+                  Iniciar sesión
+                </Link>
+                <Link to="/register" className="header-nav-link">
+                  <UserPlus size={16} />
+                  Registrarse
+                </Link>
               </>
             )}
+
+            {/* Carrito siempre visible en el header */}
+            <div style={{ marginLeft: '0.5rem' }}>
+              <CarritoButton />
+            </div>
           </nav>
         </div>
       </header>
 
-      <main className="flex-1 container mx-auto px-4 py-6">
+      <main className="layout-main">
         <Outlet />
       </main>
 
-      <footer className="bg-gray-100">
-        <div className="container mx-auto px-4 py-4 text-sm text-gray-600">
-          © {new Date().getFullYear()} Mi Tienda - Todos los derechos reservados.
-        </div>
-      </footer>
+      <SocialBubble>
+      </SocialBubble>
+
+      <Footer />
     </div>
   );
 };
