@@ -1,28 +1,29 @@
-// -----------------------------------------------------------------------------
-// src/components/carrito/CarritoTotal.tsx
-// -----------------------------------------------------------------------------
-import React from "react";
-import { useCarritoContext } from "../../context/CarritoContext";
+import React from 'react';
+import { useCarritoContext } from '../../context/CarritoContext';
+import { Trash2, CreditCard } from 'lucide-react';
+import '../../styles/carritos/carrito.shared.css';
 
 const CarritoTotal: React.FC = () => {
-  const { calcularTotal, vaciarCarrito, carrito } = useCarritoContext();
+  const { calcularTotal, vaciarCarrito } = useCarritoContext();
   const total = calcularTotal();
 
   return (
-    <div className="carrito-total-card">
+    <div className="cart-summary-card">
       <h3>Resumen</h3>
-      <div className="line-item">
+      <div className="cart-summary-item">
         <span>Subtotal</span>
         <strong>S/ {total.toFixed(2)}</strong>
       </div>
 
       {/* Puedes añadir impuestos / envíos aquí */}
 
-      <div className="actions">
-        <a href="/carrito/checkout" className="btn btn-primary w-full">
+      <div className="cart-summary-actions">
+        <a href="/carrito/checkout" className="btn btn-primary">
+          <CreditCard size={18} />
           Ir a pagar
         </a>
-        <button className="btn btn-outline w-full mt-2" onClick={vaciarCarrito}>
+        <button className="btn btn-outline" onClick={vaciarCarrito}>
+          <Trash2 size={18} />
           Vaciar carrito
         </button>
       </div>

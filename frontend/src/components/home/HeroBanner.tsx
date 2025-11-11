@@ -20,6 +20,9 @@ const HeroBanner: React.FC = () => {
           <Link to="/admin/dashboard" className="btn-home-secondary">
             💥 Promociones
           </Link>
+          <Link to="/contacto/mis-mensajes" className="btn-home-secondary">
+            💥 Contacto
+          </Link>
         </div>
       </div>
     </section>

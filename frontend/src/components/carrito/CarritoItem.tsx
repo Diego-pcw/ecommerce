@@ -1,11 +1,10 @@
-// -----------------------------------------------------------------------------
-// src/components/carrito/CarritoItem.tsx
-// -----------------------------------------------------------------------------
-import React, { useState } from "react";
-import type { CarritoDetalle } from "../../types/CarritoDetalle";
-import { useCarritoContext } from "../../context/CarritoContext";
-import { useToast } from "../../context/ToastContext";
-import styles from "../../styles/carritos/Carrito.module.css";
+import React, { useState } from 'react';
+import type { CarritoDetalle } from '../../types/CarritoDetalle';
+import { useCarritoContext } from '../../context/CarritoContext';
+import { useToast } from '../../context/ToastContext';
+import styles from '../../styles/carritos/Carrito.module.css';
+import '../../styles/carritos/carrito.shared.css'; // Importamos el shared
+import { Trash2, Plus, Minus, Loader2 } from 'lucide-react';
 
 interface Props {
   detalle: CarritoDetalle;
@@ -24,13 +23,13 @@ const CarritoItem: React.FC<Props> = ({ detalle }) => {
     try {
       await actualizarCantidad(detalle.producto_id, value);
       push(
-        `Cantidad de ${detalle.producto?.nombre ?? "producto"} actualizada.`,
-        "success"
+        `Cantidad de ${detalle.producto?.nombre ?? 'producto'} actualizada.`,
+        'success'
       );
     } catch (err) {
       console.error(err);
-      setCantidad(Number(detalle.cantidad));
-      push("No se pudo actualizar la cantidad.", "error");
+      setCantidad(Number(detalle.cantidad)); // Revertir
+      push('No se pudo actualizar la cantidad.', 'error');
     } finally {
       setUpdating(false);
     }
@@ -39,51 +38,64 @@ const CarritoItem: React.FC<Props> = ({ detalle }) => {
   const handleEliminar = async () => {
     try {
       await eliminarProducto(detalle.producto_id);
-      push(`${detalle.producto?.nombre ?? "Producto"} eliminado del carrito.`, "warning");
+      push(
+        `${detalle.producto?.nombre ?? 'Producto'} eliminado del carrito.`,
+        'warning'
+      );
     } catch (err) {
       console.error(err);
-      push("Error al eliminar el producto.", "error");
+      push('Error al eliminar el producto.', 'error');
     }
   };
 
   const precioUnit = Number(detalle.precio_unitario);
   const subtotal = Number(detalle.cantidad) * precioUnit;
 
-  // 🟢 Nuevo: detectar si hay descuento activo
   const tieneDescuento =
     detalle.precio_original && detalle.precio_original > detalle.precio_unitario;
 
   return (
     <tr>
       <td>
-        <div className="producto-info">
-          <div className="producto-nombre">{detalle.producto?.nombre ?? "Sin nombre"}</div>
-          <div className="producto-marca text-muted">{detalle.producto?.marca}</div>
+        <div className="cart-item-info">
+          <img
+            src={
+              detalle.producto?.imagenes?.[0]?.url ||
+              'https://placehold.co/80x80/f3f4f6/9ca3af?text=Biker'
+            }
+            alt={detalle.producto?.nombre}
+            className="cart-item-image"
+            onError={(e) => (e.currentTarget.src = 'https://placehold.co/80x80/f3f4f6/9ca3af?text=Error')}
+          />
+          <div className="cart-item-details">
+            <h3>{detalle.producto?.nombre ?? 'Sin nombre'}</h3>
+            <p>{detalle.producto?.marca}</p>
+          </div>
         </div>
       </td>
 
       <td>
-        <div className="cantidad-control flex items-center gap-2">
+        <div className="cart-quantity-control">
           <button
-            className="btn btn-sm"
+            className="btn btn-outline btn-small"
             onClick={() => onChange(cantidad - 1)}
             disabled={cantidad <= 1 || updating}
           >
-            −
+            <Minus size={14} />
           </button>
           <input
             type="number"
             min={1}
             value={cantidad}
             onChange={(e) => onChange(Number(e.target.value))}
-            className="border rounded w-16 text-center"
+            disabled={updating}
           />
           <button
-            className="btn btn-sm"
+            className="btn btn-outline btn-small"
             onClick={() => onChange(cantidad + 1)}
             disabled={updating}
           >
-            +
+            <Plus size={14} />
           </button>
         </div>
       </td>
@@ -91,19 +103,29 @@ const CarritoItem: React.FC<Props> = ({ detalle }) => {
       <td>
         {tieneDescuento ? (
           <div>
-            <p className={styles["precio-original"]}>S/ {Number(detalle.precio_original).toFixed(2)}</p>
-            <p className={styles["precio-final"]}>S/ {precioUnit.toFixed(2)}</p>
+            <p className={styles.priceOriginal}>
+              S/ {Number(detalle.precio_original).toFixed(2)}
+            </p>
+            <p className={styles.priceFinalWithDiscount}>
+              S/ {precioUnit.toFixed(2)}
+            </p>
           </div>
         ) : (
-          <p className="precio-final">S/ {precioUnit.toFixed(2)}</p>
+          <p className={styles.priceFinal}>S/ {precioUnit.toFixed(2)}</p>
         )}
       </td>
 
-      <td>S/ {subtotal.toFixed(2)}</td>
+      <td>
+        <strong>S/ {subtotal.toFixed(2)}</strong>
+      </td>
 
       <td>
-        <button className="btn btn-danger btn-sm" onClick={handleEliminar}>
-          Eliminar
+        <button
+          className="btn btn-danger btn-small"
+          onClick={handleEliminar}
+          title="Eliminar"
+        >
+          {updating ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
         </button>
       </td>
     </tr>

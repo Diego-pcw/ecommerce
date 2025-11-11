@@ -1,74 +1,138 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import "../../styles/home.shared.css"; // reutilizamos estilos existentes
+import React from 'react';
+import { Link } from 'react-router-dom';
+import '../../styles/admin/dashboard.shared.css'; // ✅ Usamos el nuevo CSS
+import {
+  Package,
+  LayoutGrid,
+  Image,
+  Users,
+  MessageSquare,
+  ShoppingCart,
+  Tag,
+  Star,
+  MessageSquareText,
+  Settings,
+  ArrowLeft,
+} from 'lucide-react';
 
 const DashboardAdmin: React.FC = () => {
   return (
-    <section className="home-section">
-      <div className="home-content max-w-5xl mx-auto">
-        <h1 className="home-title text-center">
+    <div className="dashboard-container">
+      <div className="dashboard-header">
+        <h1 className="dashboard-title">
           Panel de <span>Administración</span>
         </h1>
-        <p className="home-subtitle text-center mb-8">
+        <p className="dashboard-subtitle">
           Gestiona usuarios, productos, categorías, promociones y más desde un
           solo lugar.
         </p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 home-actions">
-          {/* 🧾 Gestión principal */}
-        <Link to="/admin/productos" className="btn-home-primary">
-            🛍️ Productos y Ofertas
-        </Link>
-        <Link to="/productos" className="btn-home-secondary">
-                Ver productos
-        </Link>
-        <Link to="/categorias" className="btn-home-secondary">
-            🗂️ Categorías
-        </Link>
-        <Link to="/imagenes" className="btn-home-secondary">
-            🖼️ Imágenes
-          </Link>
-
-          {/* 🧑‍💼 Usuarios y contactos */}
-          <Link to="/admin/usuarios" className="btn-home-secondary">
-            👥 Usuarios
-          </Link>
-          <Link to="/admin/contactos" className="btn-home-secondary">
-            💬 Mensajes de Contacto
-          </Link>
-          <Link to="/carritos" className="btn-home-secondary">
-            🛒 Carritos de Clientes
-          </Link>
-
-          {/* 🏷️ Promociones */}
-          <Link to="/promociones" className="btn-home-secondary">
-            🎟️ Promociones Activas
-          </Link>
-
-          {/* ⭐ Reseñas */}
-          <Link to="/resenas" className="btn-home-secondary">
-            ⭐ Reseñas de Usuarios
-          </Link>
-          <Link to="/resenas-public" className="btn-home-secondary">
-            🗣️ Opiniones de Productos
-          </Link>
-
-          {/* ⚙️ Opcional: configuración futura */}
-          <Link to="/admin/configuracion" className="btn-home-secondary">
-            ⚙️ Configuración del Sistema
-          </Link>
-        </div>
-
-        <div className="text-center mt-10">
-          <Link
-            to="/"
-            className="inline-block bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition"
-          >
-            ⬅️ Volver al inicio público
-          </Link>
-        </div>
       </div>
-    </section>
+
+      <ul className="dashboard-grid">
+        {/* 🧾 Gestión principal */}
+        <li>
+          <Link to="/admin/productos" className="dashboard-card primary">
+            <span className="icon">
+              <Package />
+            </span>
+            <span>Productos y Ofertas</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/productos" className="dashboard-card">
+            <span className="icon">🛍️</span>
+            <span>Ver Tienda (Público)</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/categorias" className="dashboard-card">
+            <span className="icon">
+              <LayoutGrid />
+            </span>
+            <span>Categorías</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/imagenes" className="dashboard-card">
+            <span className="icon">
+              <Image />
+            </span>
+            <span>Imágenes</span>
+          </Link>
+        </li>
+
+        {/* 🧑‍💼 Usuarios y contactos */}
+        <li>
+          <Link to="/admin/usuarios" className="dashboard-card">
+            <span className="icon">
+              <Users />
+            </span>
+            <span>Usuarios</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/admin/contactos" className="dashboard-card">
+            <span className="icon">
+              <MessageSquare />
+            </span>
+            <span>Mensajes de Contacto</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/carritos" className="dashboard-card">
+            <span className="icon">
+              <ShoppingCart />
+            </span>
+            <span>Carritos de Clientes</span>
+          </Link>
+        </li>
+
+        {/* 🏷️ Promociones */}
+        <li>
+          <Link to="/promociones" className="dashboard-card">
+            <span className="icon">
+              <Tag />
+            </span>
+            <span>Promociones Activas</span>
+          </Link>
+        </li>
+
+        {/* ⭐ Reseñas */}
+        <li>
+          <Link to="/resenas" className="dashboard-card">
+            <span className="icon">
+              <Star />
+            </span>
+            <span>Moderar Reseñas</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/resenas-public" className="dashboard-card">
+            <span className="icon">
+              <MessageSquareText />
+            </span>
+            <span>Opiniones Públicas</span>
+          </Link>
+        </li>
+
+        {/* ⚙️ Opcional: configuración futura */}
+        <li>
+          <Link to="/admin/configuracion" className="dashboard-card">
+            <span className="icon">
+              <Settings />
+            </span>
+            <span>Configuración</span>
+          </Link>
+        </li>
+      </ul>
+
+      <div className="dashboard-footer">
+        <Link to="/" className="btn btn-outline">
+          <ArrowLeft size={16} />
+          Volver al inicio público
+        </Link>
+      </div>
+    </div>
   );
 };
 

@@ -1,0 +1,204 @@
+/* 🗂️ src/styles/admin/admin.shared.css */
+/* Estilos para el panel de administración.
+   Importa estilos de otras secciones para unificar.
+*/
+
+/* Importamos la base de las tablas de promociones */
+@import '../promociones/promocion.shared.css' layer(tables);
+/* Importamos la base de las tarjetas de productos */
+@import '../productos/productos.shared.css' layer(cards);
+
+/* ------------------------- */
+/* CONTENEDOR PRINCIPAL
+/* ------------------------- */
+.admin-list-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ------------------------- */
+/* CABECERA (Título y Botón)
+/* ------------------------- */
+.admin-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.admin-list-title {
+  font-size: var(--font-size-xl);
+  color: var(--color-text-primary);
+}
+
+/* ------------------------- */
+/* BARRA DE FILTROS (UsuarioList)
+/* ------------------------- */
+.admin-filter-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: var(--color-bg);
+  border-radius: var(--border-radius-md);
+}
+
+.admin-filter-bar input,
+.admin-filter-bar select {
+  width: 100%;
+}
+
+.admin-filter-bar .btn {
+  height: 100%;
+  padding: 0.65rem 1rem;
+}
+
+/* ------------------------- */
+/* LOADER (Cargando)
+/* ------------------------- */
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5rem;
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+  gap: 1rem;
+}
+
+/* ------------------------- */
+/* ACCESO DENEGADO
+/* ------------------------- */
+.access-denied-container {
+  max-width: 600px;
+  margin: 4rem auto;
+  padding: 2.5rem;
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  border: 1px solid var(--color-border);
+}
+
+.access-denied-container h3 {
+  font-size: var(--font-size-xl);
+  color: var(--color-error);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.access-denied-container p {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+/* ------------------------- */
+/* REUTILIZACIÓN DE CLASES
+/* (Botones, Badges, Tablas, Tarjetas)
+/* ------------------------- */
+
+/* Botones (reutilizados) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-family-base);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  padding: 0.6rem 1rem;
+  border: 1px solid transparent;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  box-shadow: var(--shadow-sm);
+}
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+  box-shadow: var(--shadow-md);
+}
+.btn-secondary {
+  background-color: var(--color-text-primary);
+  color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+.btn-secondary:hover {
+  background-color: #374151;
+  box-shadow: var(--shadow-md);
+}
+.btn-outline {
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+}
+.btn-outline:hover {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  border-color: var(--color-border-hover);
+}
+
+/* Badges de Estado (reutilizados) */
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-transform: capitalize;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.status-badge::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.status-badge.activo,
+.status-badge.ACTIVO {
+  color: var(--color-success);
+  background-color: #dbf7ee;
+}
+.status-badge.activo::before,
+.status-badge.ACTIVO::before {
+  background-color: var(--color-success);
+}
+.status-badge.inactivo,
+.status-badge.INACTIVO {
+  color: var(--color-text-secondary);
+  background-color: #f3f4f6;
+}
+.status-badge.inactivo::before,
+.status-badge.INACTIVO::before {
+  background-color: var(--color-text-secondary);
+}
+
+/* Tablas (importadas de promocion.shared.css) */
+/* .admin-table-wrapper, .admin-table, etc. */
+
+/* Tarjetas (importadas de productos.shared.css) */
+/* .admin-card-item, .product-card-content, etc. */

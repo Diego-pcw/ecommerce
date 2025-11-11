@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { contactService } from "../../services/contact.service";
-import { type ContactMessage } from "../../types/ContactMessage";
-import { useToast } from "../../context/ToastContext";
-import { Link } from "react-router-dom";
-import styles from "../../styles/contactos/ContactListAdmin.module.css";
+import React, { useEffect, useState } from 'react';
+import { contactService } from '../../services/contact.service';
+import type { ContactMessage } from '../../types/ContactMessage';
+import { useToast } from '../../context/ToastContext';
+import { Link } from 'react-router-dom';
+import { Loader2, RefreshCw, Eye, Trash2, Mail } from 'lucide-react';
+import '../../styles/contactos/contacto.shared.css';
 
 const ContactListAdmin: React.FC = () => {
   const { push } = useToast();
@@ -14,9 +15,8 @@ const ContactListAdmin: React.FC = () => {
   const [lastPage, setLastPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [perPage] = useState(10);
-  const [estadoFiltro, setEstadoFiltro] = useState<string>("");
+  const [estadoFiltro, setEstadoFiltro] = useState<string>('');
 
-  /** 🔄 Cargar mensajes con paginación y filtro */
   const fetchMensajes = async (page = 1, estado = estadoFiltro) => {
     try {
       setLoading(true);
@@ -28,180 +28,185 @@ const ContactListAdmin: React.FC = () => {
       setTotal(data.total);
     } catch (err) {
       console.error(err);
-      push("Error al cargar mensajes de contacto.", "error");
+      push('Error al cargar mensajes de contacto.', 'error');
     } finally {
       setLoading(false);
     }
   };
 
-  /** 🗑️ Eliminar mensaje */
   const handleDelete = async (id: number) => {
+    // Mantenemos tu lógica de window.confirm
     const confirmar = window.confirm(
-      "¿Seguro que deseas eliminar este mensaje? Esta acción no se puede deshacer."
+      '¿Seguro que deseas eliminar este mensaje? Esta acción no se puede deshacer.'
     );
     if (!confirmar) return;
 
     try {
       setDeletingId(id);
       await contactService.delete(id);
-      push("Mensaje eliminado correctamente.", "success");
+      push('Mensaje eliminado correctamente.', 'success');
       setMensajes((prev) => prev.filter((m) => m.id !== id));
+      if (mensajes.length === 1 && currentPage > 1) {
+        // Si borramos el último de una página, retrocedemos
+        fetchMensajes(currentPage - 1, estadoFiltro);
+      }
     } catch (err) {
       console.error(err);
-      push("No se pudo eliminar el mensaje.", "error");
+      push('No se pudo eliminar el mensaje.', 'error');
     } finally {
       setDeletingId(null);
     }
   };
 
-  /** 🎨 Estado visual */
-  const getEstadoClase = (estado: string) => {
-    switch (estado) {
-      case "RESPONDIDO":
-        return styles.estadoRespondido;
-      case "CERRADO":
-        return styles.estadoCerrado;
-      default:
-        return styles.estadoNuevo;
-    }
-  };
-
-  /** ⏩ Control de paginación */
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= lastPage) fetchMensajes(newPage);
   };
 
-  /** 🔍 Filtrar por estado */
   const handleFilterChange = (estado: string) => {
-    setEstadoFiltro(estado === estadoFiltro ? "" : estado); // alternar si se hace clic dos veces
-    fetchMensajes(1, estado === estadoFiltro ? "" : estado);
+    const nuevoEstado = estado === estadoFiltro ? '' : estado;
+    setEstadoFiltro(nuevoEstado);
+    fetchMensajes(1, nuevoEstado);
   };
 
   useEffect(() => {
+    document.title = 'Mensajes de Contacto | Panel';
     fetchMensajes();
   }, []);
 
-  if (loading) return <p className={styles.loading}>Cargando mensajes...</p>;
+  if (loading)
+    return (
+      <div className="loader-container">
+        <Loader2 className="animate-spin" size={32} />
+        Cargando mensajes...
+      </div>
+    );
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h2>Mensajes de Contacto</h2>
-        <div className={styles.actions}>
-          <button
-            className={styles.refreshBtn}
-            onClick={() => fetchMensajes(currentPage)}
-          >
-            🔄 Recargar
-          </button>
-          <span className={styles.totalInfo}>
+    <div className="admin-list-container">
+      <div className="admin-list-header">
+        <h2 className="admin-list-title">📬 Mensajes de Contacto</h2>
+        <div className="admin-list-actions">
+          <span className="admin-list-total">
             Total: <strong>{total}</strong> mensajes
           </span>
+          <button
+            className="btn btn-outline"
+            onClick={() => fetchMensajes(currentPage, estadoFiltro)}
+            disabled={loading}
+          >
+            <RefreshCw size={16} />
+            Recargar
+          </button>
         </div>
       </div>
 
       {/* 🔹 Filtros por estado */}
-      <div className={styles.filterContainer}>
+      <div className="contact-filter-container">
         <button
-          className={`${styles.filterBtn} ${!estadoFiltro ? styles.activeFilter : ""}`}
-          onClick={() => handleFilterChange("")}
+          className={`btn btn-filter ${!estadoFiltro ? 'active' : ''}`}
+          onClick={() => handleFilterChange('')}
         >
           Todos
         </button>
         <button
-          className={`${styles.filterBtn} ${styles.nuevoFilter} ${
-            estadoFiltro === "NUEVO" ? styles.activeFilter : ""
+          className={`btn btn-filter nuevo ${
+            estadoFiltro === 'NUEVO' ? 'active' : ''
           }`}
-          onClick={() => handleFilterChange("NUEVO")}
+          onClick={() => handleFilterChange('NUEVO')}
         >
-          Nuevo
+          Nuevos
         </button>
         <button
-          className={`${styles.filterBtn} ${styles.respondidoFilter} ${
-            estadoFiltro === "RESPONDIDO" ? styles.activeFilter : ""
+          className={`btn btn-filter respondido ${
+            estadoFiltro === 'RESPONDIDO' ? 'active' : ''
           }`}
-          onClick={() => handleFilterChange("RESPONDIDO")}
+          onClick={() => handleFilterChange('RESPONDIDO')}
         >
-          Respondido
+          Respondidos
         </button>
         <button
-          className={`${styles.filterBtn} ${styles.cerradoFilter} ${
-            estadoFiltro === "CERRADO" ? styles.activeFilter : ""
+          className={`btn btn-filter cerrado ${
+            estadoFiltro === 'CERRADO' ? 'active' : ''
           }`}
-          onClick={() => handleFilterChange("CERRADO")}
+          onClick={() => handleFilterChange('CERRADO')}
         >
-          Cerrado
+          Cerrados
         </button>
       </div>
 
       {mensajes.length === 0 ? (
-        <p>No hay mensajes disponibles.</p>
+        <p className="admin-list-empty">No hay mensajes disponibles.</p>
       ) : (
         <>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Correo</th>
-                <th>Canal</th>
-                <th>Estado</th>
-                <th>Fecha</th>
-                <th colSpan={2}></th>
-              </tr>
-            </thead>
-            <tbody>
-              {mensajes.map((m) => (
-                <tr key={m.id}>
-                  <td>{m.nombre}</td>
-                  <td>{m.email}</td>
-                  <td>{m.canal_preferido}</td>
-                  <td>
-                    <span
-                      className={`${styles.estadoBadge} ${getEstadoClase(m.estado)}`}
-                    >
-                      {m.estado}
-                    </span>
-                  </td>
-                  <td>
-                    {new Date(m.created_at ?? "").toLocaleDateString("es-PE")}
-                  </td>
-                  <td>
-                    <Link to={`/admin/contactos/${m.id}`} className={styles.btn}>
-                      Ver detalle
-                    </Link>
-                  </td>
-                  <td>
-                    <button
-                      className={styles.deleteBtn}
-                      onClick={() => handleDelete(m.id)}
-                      disabled={deletingId === m.id}
-                    >
-                      {deletingId === m.id ? "Eliminando..." : "🗑️ Borrar"}
-                    </button>
-                  </td>
+          <div className="admin-table-wrapper">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Correo</th>
+                  <th>Canal</th>
+                  <th>Estado</th>
+                  <th>Fecha</th>
+                  <th>Acciones</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {mensajes.map((m) => (
+                  <tr key={m.id}>
+                    <td>{m.nombre}</td>
+                    <td>{m.email}</td>
+                    <td>{m.canal_preferido}</td>
+                    <td>
+                      <span className={`status-badge ${m.estado.toLowerCase()}`}>
+                        {m.estado}
+                      </span>
+                    </td>
+                    <td>
+                      {new Date(m.created_at ?? '').toLocaleDateString('es-PE')}
+                    </td>
+                    <td className="actions-cell">
+                      <Link
+                        to={`/admin/contactos/${m.id}`}
+                        className="btn btn-secondary"
+                        title="Ver detalle"
+                      >
+                        <Eye size={16} />
+                      </Link>
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => handleDelete(m.id)}
+                        disabled={deletingId === m.id}
+                        title="Eliminar"
+                      >
+                        {deletingId === m.id ? (
+                          <Loader2 size={16} className="animate-spin" />
+                        ) : (
+                          <Trash2 size={16} />
+                        )}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           {/* 🔹 Paginación */}
-          <div className={styles.pagination}>
+          <div className="pagination-container">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className={styles.pageBtn}
+              className="btn"
             >
               ◀ Anterior
             </button>
-
-            <span className={styles.pageInfo}>
-              Página {currentPage} de {lastPage}
+            <span className="page-info">
+              Página <strong>{currentPage}</strong> de {lastPage}
             </span>
-
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === lastPage}
-              className={styles.pageBtn}
+              className="btn"
             >
               Siguiente ▶
             </button>

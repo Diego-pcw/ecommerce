@@ -1,0 +1,209 @@
+/* 🗂️ src/styles/users/user.shared.css */
+/* Estilos para Login, Registro y Perfil */
+
+/* ------------------------- */
+/* CONTENEDOR DE AUTENTICACIÓN
+/* (Centrado en la página)
+/* ------------------------- */
+.user-auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Alinea arriba en pantallas largas */
+  padding: 2rem 1rem;
+  min-height: 80vh; /* Altura mínima para centrar verticalmente */
+}
+
+@media (min-width: 640px) {
+  .user-auth-container {
+    align-items: center; /* Centra verticalmente en pantallas grandes */
+  }
+}
+
+/* ------------------------- */
+/* FORMULARIO (Login/Register)
+/* ------------------------- */
+.auth-form {
+  width: 100%;
+  max-width: 450px; /* Ancho máximo del formulario */
+  padding: 2.5rem;
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Espacio entre los .admin-form-group */
+}
+
+.auth-form-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: var(--color-text-primary);
+}
+
+.auth-form-header h2 {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+}
+
+/* Reutilizamos .admin-form-group de los otros CSS.
+  Si no, puedes copiar esta definición aquí:
+*/
+.admin-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-form-group label {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-form-group input {
+  width: 100%;
+}
+
+.auth-form .btn {
+  width: 100%;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  font-size: var(--font-size-base);
+}
+
+.auth-footer-link {
+  text-align: center;
+  font-size: var(--font-size-sm);
+  margin-top: 1rem;
+}
+
+.auth-footer-link a {
+  color: var(--color-primary-dark);
+  font-weight: 600;
+  text-decoration: none;
+}
+.auth-footer-link a:hover {
+  text-decoration: underline;
+}
+
+/* ------------------------- */
+/* PÁGINA DE PERFIL
+/* ------------------------- */
+.profile-container {
+  max-width: 900px; /* Más ancho que el login */
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.profile-header {
+  font-size: var(--font-size-xl);
+  color: var(--color-text-primary);
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.profile-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .profile-card {
+    grid-template-columns: 1fr 1.5fr; /* 40% info, 60% form */
+  }
+}
+
+.profile-info-display {
+  padding: 2rem;
+  background-color: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+@media (min-width: 768px) {
+  .profile-info-display {
+    border-bottom: 0;
+    border-right: 1px solid var(--color-border);
+  }
+}
+
+.profile-info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.profile-info-item:last-child {
+  border-bottom: 0;
+}
+
+.profile-info-item strong {
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-right: 1rem;
+}
+
+.profile-info-item span {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-align: right;
+}
+
+.profile-form {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.profile-form .btn {
+  margin-top: 1rem;
+}
+
+/* Reutilizamos el .status-badge de resenas.shared.css,
+   pero si no lo importas, puedes definirlo aquí.
+*/
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-transform: capitalize;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.status-badge::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.status-badge.activo {
+  color: var(--color-success);
+  background-color: #dbf7ee;
+}
+.status-badge.activo::before {
+  background-color: var(--color-success);
+}
+.status-badge.inactivo {
+  color: var(--color-text-secondary);
+  background-color: #f3f4f6;
+}
+.status-badge.inactivo::before {
+  background-color: var(--color-text-secondary);
+}

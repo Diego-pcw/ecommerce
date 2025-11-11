@@ -1,18 +1,26 @@
-import React, { useEffect, useState } from "react";
-import authService from "../../../services/auth.service";
-import { useToast } from "../../../context/ToastContext";
-import { useAuth } from "../../../context/AuthContext";
-import type { User } from "../../../types/User";
-//import "../../../styles/admin.shared.css";
+import React, { useEffect, useState } from 'react';
+import authService from '../../../services/auth.service.ts';
+import { useToast } from '../../../context/ToastContext.tsx';
+import { useAuth } from '../../../context/AuthContext.tsx';
+import type { User } from '../../../types/User.ts';
+import {
+  Loader2,
+  Search,
+  Users,
+  ToggleLeft,
+  ToggleRight,
+  ShieldAlert,
+} from 'lucide-react';
+import '../../../styles/admin/admin.shared.css'; // Ruta actualizada
 
 const UsuarioList: React.FC = () => {
   const { user } = useAuth();
   const { push } = useToast();
 
   const [usuarios, setUsuarios] = useState<User[]>([]);
-  const [buscar, setBuscar] = useState("");
-  const [rol, setRol] = useState<"admin" | "cliente" | "">("");
-  const [estado, setEstado] = useState<"activo" | "inactivo" | "">("");
+  const [buscar, setBuscar] = useState('');
+  const [rol, setRol] = useState<'admin' | 'cliente' | ''>('');
+  const [estado, setEstado] = useState<'activo' | 'inactivo' | ''>('');
   const [loading, setLoading] = useState(false);
 
   /** 🔹 Cargar usuarios */
@@ -23,11 +31,11 @@ const UsuarioList: React.FC = () => {
         buscar,
         rol: rol || undefined,
         estado: estado || undefined,
-        per_page: 10,
+        per_page: 10, // Tu lógica original
       });
       setUsuarios(res.usuarios);
     } catch (err: any) {
-      push(err?.response?.data?.message ?? "Error al cargar usuarios", "error");
+      push(err?.response?.data?.message ?? 'Error al cargar usuarios', 'error');
     } finally {
       setLoading(false);
     }
@@ -35,40 +43,50 @@ const UsuarioList: React.FC = () => {
 
   /** 🔹 Cambiar estado (activo/inactivo) */
   const handleCambiarEstado = async (id: number) => {
-    if (!window.confirm("¿Seguro que deseas cambiar el estado de este usuario?")) return;
+    if (!window.confirm('¿Seguro que deseas cambiar el estado de este usuario?'))
+      return;
     try {
       await authService.cambiarEstadoUsuario(id);
-      push("Estado actualizado correctamente", "success");
+      push('Estado actualizado correctamente', 'success');
       fetchUsuarios();
     } catch (err: any) {
-      push(err?.response?.data?.message ?? "Error al cambiar estado", "error");
+      push(err?.response?.data?.message ?? 'Error al cambiar estado', 'error');
     }
   };
 
   useEffect(() => {
-    if (user?.rol === "admin") fetchUsuarios();
-  }, [rol, estado]);
+    if (user?.rol === 'admin') {
+      fetchUsuarios();
+      document.title = 'Gestión de Usuarios | Panel';
+    }
+  }, [rol, estado]); // Tu lógica original de recarga
 
-  if (user?.rol !== "admin") {
+  if (user?.rol !== 'admin') {
     return (
-      <div className="auth-container">
-        <h3>Acceso denegado 🚫</h3>
+      <div className="access-denied-container">
+        <h3>
+          <ShieldAlert size={32} />
+          Acceso denegado
+        </h3>
         <p>No tienes permisos para ver esta sección.</p>
       </div>
     );
   }
 
   return (
-    <div className="admin-container">
-      <h2>Gestión de Usuarios</h2>
+    <div className="admin-list-container">
+      <div className="admin-list-header">
+        <h2 className="admin-list-title">Gestión de Usuarios</h2>
+      </div>
 
       {/* 🔍 Filtros */}
-      <div className="filter-bar">
+      <div className="admin-filter-bar">
         <input
-          type="text"
+          type="search"
           placeholder="Buscar por nombre o correo..."
           value={buscar}
           onChange={(e) => setBuscar(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && fetchUsuarios()} // Buscar al presionar Enter
         />
         <select value={rol} onChange={(e) => setRol(e.target.value as any)}>
           <option value="">Todos los roles</option>
@@ -76,58 +94,93 @@ const UsuarioList: React.FC = () => {
           <option value="cliente">Cliente</option>
         </select>
         <select value={estado} onChange={(e) => setEstado(e.target.value as any)}>
-          <option value="">Todos</option>
+          <option value="">Todos los estados</option>
           <option value="activo">Activos</option>
           <option value="inactivo">Inactivos</option>
         </select>
-        <button onClick={fetchUsuarios} disabled={loading}>
-          {loading ? "Cargando..." : "Buscar"}
+        <button
+          onClick={fetchUsuarios}
+          disabled={loading}
+          className="btn btn-primary"
+        >
+          {loading ? (
+            <Loader2 size={16} className="animate-spin" />
+          ) : (
+            <Search size={16} />
+          )}
+          Buscar
         </button>
       </div>
 
       {/* 📋 Tabla de usuarios */}
-      <table className="admin-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Rol</th>
-            <th>Estado</th>
-            <th>Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-          {usuarios.length > 0 ? (
-            usuarios.map((u) => (
-              <tr key={u.id}>
-                <td>{u.id}</td>
-                <td>{u.name}</td>
-                <td>{u.email}</td>
-                <td>{u.rol}</td>
-                <td>
-                  <span className={`status-badge ${u.estado === "activo" ? "active" : "inactive"}`}>
-                    {u.estado}
-                  </span>
-                </td>
-                <td>
-                  <button
-                    className="btn-small"
-                    onClick={() => handleCambiarEstado(u.id!)}
-                    disabled={loading}
-                  >
-                    Cambiar estado
-                  </button>
+      <div className="admin-table-wrapper">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr>
+                <td colSpan={6}>
+                  <div className="loader-container" style={{ padding: '2rem' }}>
+                    <Loader2 className="animate-spin" size={24} />
+                    Cargando...
+                  </div>
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={6}>No se encontraron usuarios.</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            ) : usuarios.length > 0 ? (
+              usuarios.map((u) => (
+                <tr key={u.id}>
+                  <td>{u.id}</td>
+                  <td>{u.name}</td>
+                  <td>{u.email}</td>
+                  <td>{u.rol}</td>
+                  <td>
+                    <span className={`status-badge ${u.estado}`}>
+                      {u.estado}
+                    </span>
+                  </td>
+                  <td>
+                    <button
+                      className="btn btn-outline"
+                      onClick={() => handleCambiarEstado(u.id!)}
+                      disabled={loading}
+                      title={
+                        u.estado === 'activo'
+                          ? 'Desactivar usuario'
+                          : 'Activar usuario'
+                      }
+                    >
+                      {u.estado === 'activo' ? (
+                        <ToggleLeft size={16} />
+                      ) : (
+                        <ToggleRight size={16} />
+                      )}
+                      {u.estado === 'activo' ? 'Desactivar' : 'Activar'}
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={6}>
+                  <p className="admin-list-empty" style={{ padding: '2rem' }}>
+                    <Users size={32} />
+                    No se encontraron usuarios.
+                  </p>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
