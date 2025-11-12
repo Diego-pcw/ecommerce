@@ -1,12 +1,13 @@
 <?php
-return [
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+return [
+    'paths' => ['api/*', 'sanctum/csrf-cookie', 'login', 'logout', 'register'],
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://ecommerce-frontend-three-steel.vercel.app/',
-        'http://localhost:5173', // opcional para desarrollo local
+    'allowed_origins' => [
+        'https://ecommerce-frontend-three-steel.vercel.app',
+        'http://localhost:5173', // para desarrollo local
     ],
 
     'allowed_origins_patterns' => [],
@@ -17,5 +18,5 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => true,
+    'supports_credentials' => true, // ✅ importante
 ];

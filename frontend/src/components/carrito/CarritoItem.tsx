@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { CarritoDetalle } from '../../types/CarritoDetalle';
 import { useCarritoContext } from '../../context/CarritoContext';
 import { useToast } from '../../context/ToastContext';
@@ -15,6 +15,14 @@ const CarritoItem: React.FC<Props> = ({ detalle }) => {
   const { push } = useToast();
   const [cantidad, setCantidad] = useState<number>(Number(detalle.cantidad));
   const [updating, setUpdating] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  if (!mounted) return null;
 
   const onChange = async (value: number) => {
     if (value < 1) return;
@@ -22,13 +30,10 @@ const CarritoItem: React.FC<Props> = ({ detalle }) => {
     setUpdating(true);
     try {
       await actualizarCantidad(detalle.producto_id, value);
-      push(
-        `Cantidad de ${detalle.producto?.nombre ?? 'producto'} actualizada.`,
-        'success'
-      );
+      push(`Cantidad de ${detalle.producto?.nombre ?? 'producto'} actualizada.`, 'success');
     } catch (err) {
       console.error(err);
-      setCantidad(Number(detalle.cantidad)); // Revertir
+      setCantidad(Number(detalle.cantidad));
       push('No se pudo actualizar la cantidad.', 'error');
     } finally {
       setUpdating(false);
@@ -38,10 +43,7 @@ const CarritoItem: React.FC<Props> = ({ detalle }) => {
   const handleEliminar = async () => {
     try {
       await eliminarProducto(detalle.producto_id);
-      push(
-        `${detalle.producto?.nombre ?? 'Producto'} eliminado del carrito.`,
-        'warning'
-      );
+      push(`${detalle.producto?.nombre ?? 'Producto'} eliminado del carrito.`, 'warning');
     } catch (err) {
       console.error(err);
       push('Error al eliminar el producto.', 'error');
@@ -125,7 +127,16 @@ const CarritoItem: React.FC<Props> = ({ detalle }) => {
           onClick={handleEliminar}
           title="Eliminar"
         >
-          {updating ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+          <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+            <Trash2 size={14} style={{ opacity: updating ? 0.4 : 1 }} />
+            {updating && (
+              <Loader2
+                size={12}
+                className="animate-spin"
+                style={{ position: 'absolute' }}
+              />
+            )}
+          </span>
         </button>
       </td>
     </tr>

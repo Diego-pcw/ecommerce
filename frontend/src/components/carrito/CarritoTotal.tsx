@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCarritoContext } from '../../context/CarritoContext';
 import { Trash2, CreditCard } from 'lucide-react';
 import '../../styles/carritos/carrito.shared.css';
 
 const CarritoTotal: React.FC = () => {
   const { calcularTotal, vaciarCarrito } = useCarritoContext();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  if (!mounted) return null;
+
   const total = calcularTotal();
 
   return (
@@ -14,8 +23,6 @@ const CarritoTotal: React.FC = () => {
         <span>Subtotal</span>
         <strong>S/ {total.toFixed(2)}</strong>
       </div>
-
-      {/* Puedes añadir impuestos / envíos aquí */}
 
       <div className="cart-summary-actions">
         <a href="/carrito/checkout" className="btn btn-primary">

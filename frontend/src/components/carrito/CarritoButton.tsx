@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCarritoContext } from '../../context/CarritoContext.tsx';
 import { ShoppingCart } from 'lucide-react';
 import '../../styles/carritos/carrito.shared.css';
@@ -6,8 +6,15 @@ import type { CarritoDetalle } from '../../types/CarritoDetalle.ts'; // Importam
 
 const CarritoButton: React.FC = () => {
   const { detalles } = useCarritoContext();
+  const [mounted, setMounted] = useState(false);
 
-  // ✨ Corregimos el tipo 'any' para que sea más estricto
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  if (!mounted) return null;
+
   const cantidadTotal = detalles.reduce(
     (acc: number, d: CarritoDetalle) => acc + d.cantidad,
     0

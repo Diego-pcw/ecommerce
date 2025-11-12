@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCarritoContext } from '../../context/CarritoContext';
 import { useToast } from '../../context/ToastContext';
 import type { ProductoListItem } from '../../types/Producto';
@@ -13,13 +13,21 @@ import '../../styles/productos/productos.shared.css';
  */
 interface Props {
   producto: ProductoListItem;
-  mostrarPrecio?: boolean; // ✅ Nueva prop opcional
+  mostrarPrecio?: boolean;
 }
 
 const ProductoCard: React.FC<Props> = ({ producto, mostrarPrecio = true }) => {
   const { agregarProducto } = useCarritoContext();
   const { push } = useToast();
   const [adding, setAdding] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  if (!mounted) return null;
 
   const handleAgregar = async () => {
     if (adding) return;
@@ -45,13 +53,13 @@ const ProductoCard: React.FC<Props> = ({ producto, mostrarPrecio = true }) => {
   return (
     <article className="admin-card-item">
       {tieneDescuento && (
-    <span className="product-discount-badge">
-      <Tag size={12} />
-      {producto.promocion_vigente?.tipo === 'percent'
-        ? `${producto.promocion_vigente?.valor}% OFF`
-        : `S/ ${producto.promocion_vigente?.valor} OFF`}
-    </span>
-  )}
+        <span className="product-discount-badge">
+          <Tag size={12} />
+          {producto.promocion_vigente?.tipo === 'percent'
+            ? `${producto.promocion_vigente?.valor}% OFF`
+            : `S/ ${producto.promocion_vigente?.valor} OFF`}
+        </span>
+      )}
 
       <div className="admin-card-info">
         <div className="product-card-content">
@@ -62,7 +70,6 @@ const ProductoCard: React.FC<Props> = ({ producto, mostrarPrecio = true }) => {
               className="product-card-image"
             />
           ) : (
-            // Placeholder si no hay imagen
             <div
               className="product-card-image"
               style={{
@@ -81,12 +88,10 @@ const ProductoCard: React.FC<Props> = ({ producto, mostrarPrecio = true }) => {
         </div>
       </div>
 
-      {/* ✅ Mostrar el precio solo si mostrarPrecio es true */}
       {mostrarPrecio && (
         <div className="product-price-container">
           {tieneDescuento ? (
             <>
-              {/* ✅ Clases del CSS Module corregido */}
               <p className={styles.priceOriginal}>
                 S/ {Number(producto.precio_original).toFixed(2)}
               </p>
@@ -117,14 +122,19 @@ const ProductoCard: React.FC<Props> = ({ producto, mostrarPrecio = true }) => {
         <button
           onClick={handleAgregar}
           disabled={adding}
-          className="btn btn-success" // Usamos btn-success para "Agregar"
+          className="btn btn-success"
         >
-          {adding ? (
-            <Loader2 size={16} className="animate-spin" />
-          ) : (
-            <ShoppingCart size={16} />
-          )}
-          {adding ? 'Agregando...' : 'Agregar'}
+          <span className="icon-wrapper" style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+            <ShoppingCart size={16} style={{ opacity: adding ? 0.4 : 1 }} />
+            {adding && (
+              <Loader2
+                size={14}
+                className="animate-spin"
+                style={{ position: 'absolute' }}
+              />
+            )}
+          </span>
+          {adding ? ' Agregando...' : ' Agregar'}
         </button>
       </div>
     </article>

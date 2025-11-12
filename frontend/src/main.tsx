@@ -1,4 +1,3 @@
-import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
@@ -9,16 +8,13 @@ import { CarritoProvider } from "./context/CarritoContext";
 import './styles/theme.css'; // ✅ AÑADIMOS NUESTRO TEMA GLOBAL
 
 createRoot(document.getElementById("root")!).render(
-  // 🔧 En producción puedes quitar StrictMode para evitar dobles efectos
-  <React.StrictMode>
-    <BrowserRouter>
-      <CarritoProvider>
-        <AuthProvider>
-          <ToastProvider>
-            <App />
-          </ToastProvider>
-        </AuthProvider>
-      </CarritoProvider>
-    </BrowserRouter>
-  </React.StrictMode>
+  <BrowserRouter>
+    <CarritoProvider>
+      <AuthProvider>
+        <ToastProvider>
+          <App />
+        </ToastProvider>
+      </AuthProvider>
+    </CarritoProvider>
+  </BrowserRouter>
 );

@@ -85,9 +85,7 @@ const Layout: React.FC = () => {
         <Outlet />
       </main>
 
-      <SocialBubble>
-      </SocialBubble>
-
+      <SocialBubble />
       <Footer />
     </div>
   );
