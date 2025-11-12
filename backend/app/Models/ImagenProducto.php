@@ -20,7 +20,7 @@ class ImagenProducto extends Model
         'estado',
     ];
 
-    // 🧩 Agregar 'url' automáticamente en las respuestas JSON
+    // 🔹 Agregar automáticamente 'url' en las respuestas JSON
     protected $appends = ['url'];
 
     protected $casts = [
@@ -38,16 +38,19 @@ class ImagenProducto extends Model
         return $this->belongsTo(Producto::class);
     }
 
-    // 🔹 URL pública de imagen
-    
+    /**
+     * 🔹 Accesor: URL pública completa de la imagen
+     * Se adapta automáticamente a la estructura en Hostinger (public_html/storage/productos)
+     */
     public function getUrlAttribute()
     {
         if ($this->path) {
-            // Retorna la URL completa a la imagen dentro de storage
+            // ✅ Si la imagen está en storage, devolver ruta pública completa
+            // Ejemplo: https://mediumspringgreen-koala-465676.hostingersite.com/storage/productos/imagen.jpg
             return asset('storage/' . ltrim($this->path, '/'));
         }
 
-        // Imagen por defecto si no existe
+        // 🔸 Si no hay imagen, mostrar una imagen por defecto
         return asset('images/default-product.jpg');
     }
 }

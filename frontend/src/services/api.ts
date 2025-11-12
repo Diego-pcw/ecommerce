@@ -12,7 +12,7 @@ import axios, { AxiosError, type AxiosInstance, type AxiosResponse } from "axios
  * - Errores centralizados
  */
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+const BASE_URL = import.meta.env.VITE_API_URL || "https://mediumspringgreen-koala-465676.hostingersite.com/api";
 
 // 🔹 Crear instancia de Axios
 const api: AxiosInstance = axios.create({

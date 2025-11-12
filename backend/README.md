@@ -18,7 +18,7 @@ El diseño está optimizado para integrarse con frontends en **React, Vue, Next.
 
 | Componente | Tecnología / Descripción |
 |-------------|--------------------------|
-| **Framework** | Laravel 11 |
+| **Framework** | Laravel 12 |
 | **Base de datos** | MySQL |
 | **Autenticación** | Laravel Sanctum (Tokens API) |
 | **Control de acceso** | Middleware `auth:sanctum` y `admin` |
