@@ -8,12 +8,15 @@ import type {
 } from "../types/User";
 import carritoService from "./carrito.service";
 
-
 class AuthService {
   /** 🔹 Registro */
   async register(data: RegisterData): Promise<AuthResponse> {
     const res: AxiosResponse<AuthResponse> = await api.post("/register", data);
-    if (res.data.token) this.setSession(res.data);
+
+    if (res.data.token) {
+      this.setSession(res.data);
+    }
+
     return res.data;
   }
 
@@ -22,17 +25,20 @@ class AuthService {
     const res: AxiosResponse<AuthResponse> = await api.post("/login", data);
 
     if (res.data.token) {
-  this.setSession(res.data);
-  const sessionId = localStorage.getItem("session_id");
-  if (sessionId) {
-    try {
-      await carritoService.fusionarCarrito(sessionId);
-      console.info("🛒 Carrito invitado fusionado correctamente");
-    } catch (e) {
-      console.warn("⚠️ No se pudo fusionar carrito invitado:", e);
+      this.setSession(res.data);
+
+      // 🔁 Manejo del carrito invitado → usuario
+      const sessionId = localStorage.getItem("session_id");
+      if (sessionId) {
+        try {
+          await carritoService.fusionarCarrito(sessionId);
+          console.info("🛒 Carrito invitado fusionado correctamente");
+        } catch (e) {
+          console.warn("⚠️ No se pudo fusionar carrito invitado:", e);
+        }
+      }
     }
-  }
-}
+
     return res.data;
   }
 
@@ -45,7 +51,7 @@ class AuthService {
     } finally {
       this.clearSession();
 
-      // 🧩 Generar nuevo session_id para el próximo carrito de invitado
+      // ✔ Nuevo session_id para el carrito invitado
       const newSession = crypto.randomUUID();
       localStorage.setItem("session_id", newSession);
       console.info("🧾 Nuevo session_id generado:", newSession);
@@ -95,18 +101,21 @@ class AuthService {
     return res.data.user;
   }
 
-  // =====================================================
-  // 🧩 GESTIÓN LOCAL DE SESIÓN
-  // =====================================================
+  // ==============================
+  // 🔐 GESTIÓN LOCAL DE SESIÓN
+  // ==============================
   private setSession(auth: AuthResponse): void {
     localStorage.setItem("token", auth.token);
     localStorage.setItem("user", JSON.stringify(auth.user));
+
+    // ✔ Token Bearer global para Axios
     setAuthToken(auth.token);
   }
 
   private clearSession(): void {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+
     setAuthToken(null);
   }
 

@@ -1,11 +1,11 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
-  useMemo,
-} from "react";
+import React,
+  { createContext,
+    useContext,
+    useEffect,
+    useState,
+    useCallback,
+    useMemo
+  } from "react";
 import { useNavigate } from "react-router-dom";
 import authService from "../services/auth.service";
 import { useCarritoContext } from "./CarritoContext";
@@ -26,16 +26,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // 🛒 Integración directa con el carrito global
+  // 🛒 Integración con carrito
   const { obtenerCarrito, vaciarCarrito } = useCarritoContext();
 
-  /** 🔹 Refresca perfil del usuario actual */
+  /** 🔹 Refrescar perfil */
   const refreshProfile = useCallback(async (): Promise<void> => {
     setLoading(true);
     try {
       const userData = await authService.profile();
       setUser(userData);
     } catch {
+      // Token inválido → limpiar sesión
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       setUser(null);
@@ -44,12 +45,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  /** 🔹 Inicialización al cargar la app */
+  /** 🔹 Inicializar sesión al cargar la app */
   useEffect(() => {
     let mounted = true;
 
     const init = async () => {
       const token = localStorage.getItem("token");
+
       if (!token) {
         if (mounted) {
           setUser(null);
@@ -57,17 +59,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
         return;
       }
+
       await refreshProfile();
     };
 
     init();
 
-    // 🔸 Escucha logout desde otras pestañas
+    // 🔸 Logout sincronizado entre pestañas
     const handleExternalLogout = () => {
       localStorage.removeItem("token");
       setUser(null);
       setLoading(false);
     };
+
     window.addEventListener("auth:logout", handleExternalLogout);
 
     return () => {
@@ -76,17 +80,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, [refreshProfile]);
 
-  /** 🔹 Iniciar sesión */
+  /** 🔹 Login */
   const login = useCallback(
     async (email: string, password: string) => {
       setLoading(true);
       try {
         await authService.login({ email, password });
+
         await refreshProfile();
         await obtenerCarrito();
+
         navigate("/", { replace: true });
-      } catch (err) {
-        console.error("❌ Error en login:", err);
+      } catch (error) {
+        console.error("❌ Error en login:", error);
       } finally {
         setLoading(false);
       }
@@ -94,32 +100,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     [refreshProfile, obtenerCarrito, navigate]
   );
 
-  /** 🔹 Cerrar sesión */
+  /** 🔹 Logout */
   const logout = useCallback(async () => {
     try {
       await authService.logout();
     } catch {
-      console.warn("⚠️ Falló la desconexión remota, limpiando sesión local...");
+      console.warn("⚠️ Logout remoto falló. Limpiando sesión local...");
     } finally {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+
       window.dispatchEvent(new Event("auth:logout"));
+
       setUser(null);
       await vaciarCarrito();
       navigate("/login", { replace: true });
     }
   }, [navigate, vaciarCarrito]);
 
-  // ⚙️ Optimización: evita renders innecesarios del provider
   const value = useMemo(
-    () => ({ user, loading, login, logout, refreshProfile }),
+    () => ({
+      user,
+      loading,
+      login,
+      logout,
+      refreshProfile,
+    }),
     [user, loading, login, logout, refreshProfile]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-/** 🎯 Hook para consumir el contexto de autenticación */
+/** 🎯 Hook */
 export const useAuth = (): AuthContextType => {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth debe usarse dentro de un AuthProvider");

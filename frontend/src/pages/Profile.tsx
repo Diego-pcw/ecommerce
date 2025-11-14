@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import authService from '../services/auth.service';
 import { useToast } from '../context/ToastContext';
@@ -23,7 +23,16 @@ const Profile: React.FC = () => {
     password: '',
     password_confirmation: '',
   });
+
   const [saving, setSaving] = useState(false);
+
+  // ✅ Mantener sincronizado el formulario con el perfil actual
+  useEffect(() => {
+    setForm((prev) => ({
+      ...prev,
+      name: user?.name ?? '',
+    }));
+  }, [user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -45,8 +54,12 @@ const Profile: React.FC = () => {
         password: form.password || undefined,
         password_confirmation: form.password_confirmation || undefined,
       });
+
       push('✅ Perfil actualizado correctamente', 'success');
+
       await refreshProfile();
+
+      // 🔄 Limpiar contraseñas sin tocar el nombre
       setForm((prev) => ({
         ...prev,
         password: '',
@@ -73,6 +86,7 @@ const Profile: React.FC = () => {
             </strong>
             <span>{user?.email ?? 'No disponible'}</span>
           </div>
+
           <div className="profile-info-item">
             <strong>
               <Shield size={14} /> Rol
@@ -81,6 +95,7 @@ const Profile: React.FC = () => {
               {user?.rol ?? 'Usuario'}
             </span>
           </div>
+
           <div className="profile-info-item">
             <strong>
               <CheckCircle size={14} /> Estado
@@ -93,6 +108,7 @@ const Profile: React.FC = () => {
               {user?.estado ?? 'activo'}
             </span>
           </div>
+
           <div className="profile-info-item">
             <strong>
               <CalendarDays size={14} /> Registrado el

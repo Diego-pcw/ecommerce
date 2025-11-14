@@ -15,6 +15,7 @@ const Register: React.FC = () => {
     password: '',
     password_confirmation: '',
   });
+
   const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,19 +26,38 @@ const Register: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!form.name.trim() || !form.email.trim() || !form.password.trim()) {
+      push('Por favor completa todos los campos.', 'warning');
+      return;
+    }
+
+    if (form.password.length < 6) {
+      push('La contraseña debe tener mínimo 6 caracteres.', 'warning');
+      return;
+    }
+
     if (form.password !== form.password_confirmation) {
-      push('Las contraseñas no coinciden', 'error');
+      push('Las contraseñas no coinciden.', 'error');
       return;
     }
 
     setSubmitting(true);
+
     try {
-      await authService.register(form);
+      await authService.register({
+        name: form.name.trim(),
+        email: form.email.trim(),
+        password: form.password,
+        password_confirmation: form.password_confirmation,
+      });
+
       push('Registro exitoso 🎉 ¡Bienvenido!', 'success');
-      navigate('/', { replace: true });
+
+      navigate('/login', { replace: true });
     } catch (err: any) {
       const message =
-        err?.response?.data?.message ?? 'Error al registrar el usuario.';
+        err?.response?.data?.message ??
+        'Error al registrar el usuario. Intente nuevamente.';
       push(message, 'error');
     } finally {
       setSubmitting(false);
@@ -81,6 +101,7 @@ const Register: React.FC = () => {
             type="email"
             placeholder="ejemplo@correo.com"
             required
+            autoComplete="email"
           />
         </div>
 
@@ -98,6 +119,7 @@ const Register: React.FC = () => {
             placeholder="Mínimo 6 caracteres"
             required
             minLength={6}
+            autoComplete="new-password"
           />
         </div>
 
@@ -114,14 +136,11 @@ const Register: React.FC = () => {
             type="password"
             placeholder="Repite tu contraseña"
             required
+            autoComplete="new-password"
           />
         </div>
 
-        <button
-          type="submit"
-          disabled={submitting}
-          className="btn btn-primary"
-        >
+        <button type="submit" disabled={submitting} className="btn btn-primary">
           {submitting ? (
             <Loader2 size={18} className="animate-spin" />
           ) : (

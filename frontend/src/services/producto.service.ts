@@ -9,11 +9,6 @@ import {
   type ProductosOfertasResponse,
 } from "../types/Producto";
 
-/**
- * 🧠 Servicio centralizado de Productos
- * Controla la comunicación con el backend (Laravel)
- * según las rutas definidas en routes/api.php
- */
 class ProductoService {
   /* -------------------------------------------
    * 📋 Listar productos (paginado, búsqueda, filtros)
@@ -42,7 +37,7 @@ class ProductoService {
   }
 
   /* -------------------------------------------
-   * 🎯 Obtener productos con ofertas activas
+   * 🎯 Productos con ofertas activas
    * ----------------------------------------- */
   async obtenerConOfertas(): Promise<ProductosOfertasResponse> {
     const res: AxiosResponse<ProductosOfertasResponse> = await api.get("/ofertas");
@@ -50,24 +45,18 @@ class ProductoService {
   }
 
   /* -------------------------------------------
-   * 🧱 Crear un nuevo producto (solo admin)
+   * 🧱 Crear producto (solo admin)
    * ----------------------------------------- */
   async crear(data: ProductoCreateData): Promise<ProductoResponse> {
-    const token = localStorage.getItem("token");
-    const res: AxiosResponse<ProductoResponse> = await api.post("/productos", data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res: AxiosResponse<ProductoResponse> = await api.post("/productos", data);
     return res.data;
   }
 
   /* -------------------------------------------
-   * ✏️ Actualizar producto existente (solo admin)
+   * ✏️ Actualizar producto (solo admin)
    * ----------------------------------------- */
   async actualizar(id: number, data: ProductoUpdateData): Promise<ProductoResponse> {
-    const token = localStorage.getItem("token");
-    const res: AxiosResponse<ProductoResponse> = await api.put(`/productos/${id}`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res: AxiosResponse<ProductoResponse> = await api.put(`/productos/${id}`, data);
     return res.data;
   }
 
@@ -75,10 +64,7 @@ class ProductoService {
    * 🗑️ Eliminar producto (solo admin)
    * ----------------------------------------- */
   async eliminar(id: number): Promise<{ message: string }> {
-    const token = localStorage.getItem("token");
-    const res: AxiosResponse<{ message: string }> = await api.delete(`/productos/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res: AxiosResponse<{ message: string }> = await api.delete(`/productos/${id}`);
     return res.data;
   }
 }

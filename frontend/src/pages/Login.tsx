@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { LogIn, Loader2, KeyRound, Mail } from 'lucide-react';
@@ -8,7 +8,7 @@ import '../styles/users/user.shared.css';
 const Login: React.FC = () => {
   const { login } = useAuth();
   const { push } = useToast();
-  const navigate = useNavigate();
+
 
   const [form, setForm] = useState({ email: '', password: '' });
   const [submitting, setSubmitting] = useState(false);
@@ -29,7 +29,6 @@ const Login: React.FC = () => {
     try {
       await login(form.email, form.password);
       push('Inicio de sesión exitoso ✅', 'success');
-      navigate('/', { replace: true });
     } catch (err: any) {
       const message =
         err?.response?.data?.message ??

@@ -6,10 +6,8 @@ interface CarritoProviderProps {
   children: ReactNode;
 }
 
-// 🧩 Crear contexto
 const CarritoContext = createContext<ReturnType<typeof useCarrito> | null>(null);
 
-// 🏪 Proveedor global del carrito
 export const CarritoProvider = ({ children }: CarritoProviderProps) => {
   const carrito = useCarrito();
 
@@ -20,7 +18,6 @@ export const CarritoProvider = ({ children }: CarritoProviderProps) => {
   );
 };
 
-// 🎯 Hook para consumir el contexto del carrito
 export const useCarritoContext = () => {
   const context = useContext(CarritoContext);
   if (!context) {

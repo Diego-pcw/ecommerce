@@ -4,13 +4,9 @@ import { useToast } from '../../context/ToastContext';
 import type { ProductoListItem } from '../../types/Producto';
 import { Loader2, ShoppingCart, Tag } from 'lucide-react';
 
-import styles from '../../styles/carritos/Carrito.module.css'; // ✅ RUTA CORREGIDA
+import styles from '../../styles/carritos/Carrito.module.css';
 import '../../styles/productos/productos.shared.css';
 
-/**
- * 🧱 Tarjeta individual de producto con botón "Agregar al carrito"
- * Reutilizable en listados, secciones o vistas personalizadas.
- */
 interface Props {
   producto: ProductoListItem;
   mostrarPrecio?: boolean;
@@ -23,11 +19,10 @@ const ProductoCard: React.FC<Props> = ({ producto, mostrarPrecio = true }) => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    return () => setMounted(false);
+    // Evita hydration mismatch sin desmontar SVG
+    const t = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(t);
   }, []);
-
-  if (!mounted) return null;
 
   const handleAgregar = async () => {
     if (adding) return;
@@ -51,7 +46,7 @@ const ProductoCard: React.FC<Props> = ({ producto, mostrarPrecio = true }) => {
     Number(producto.promocion_vigente.valor || 0) > 0;
 
   return (
-    <article className="admin-card-item">
+    <article className="admin-card-item" style={{ opacity: mounted ? 1 : 0, transition: 'opacity .15s' }}>
       {tieneDescuento && (
         <span className="product-discount-badge">
           <Tag size={12} />
@@ -70,16 +65,7 @@ const ProductoCard: React.FC<Props> = ({ producto, mostrarPrecio = true }) => {
               className="product-card-image"
             />
           ) : (
-            <div
-              className="product-card-image"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'var(--color-bg)',
-                color: 'var(--color-text-disabled)',
-              }}
-            >
+            <div className="product-card-image placeholder">
               Sin imagen
             </div>
           )}
@@ -109,10 +95,7 @@ const ProductoCard: React.FC<Props> = ({ producto, mostrarPrecio = true }) => {
 
       {producto.promocion_vigente && (
         <div style={{ padding: '0 1.5rem 1rem' }}>
-          <span
-            className="status-badge"
-            style={{ backgroundColor: '#eff6ff', color: '#3b82f6' }}
-          >
+          <span className="status-badge" style={{ backgroundColor: '#eff6ff', color: '#3b82f6' }}>
             {producto.promocion_vigente.titulo} 🔖
           </span>
         </div>

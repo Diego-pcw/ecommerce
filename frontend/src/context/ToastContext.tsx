@@ -1,4 +1,3 @@
-// src/context/ToastContext.tsx
 import React, { createContext, useContext, useState, useCallback } from 'react';
 
 type Toast = {
@@ -24,7 +23,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
     const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     const t: Toast = { id, message, type };
     setToasts((s) => [...s, t]);
-    // auto-remove after 5s
+
     setTimeout(() => setToasts((s) => s.filter((x) => x.id !== id)), 5000);
   }, []);
 
