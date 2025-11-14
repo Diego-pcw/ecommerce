@@ -1,13 +1,14 @@
 <?php
 
 return [
-    'paths' => ['api/*', 'sanctum/csrf-cookie', 'login', 'logout', 'register'],
+    'paths' => ['api/*', 'login', 'logout', 'register'],
 
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
         'https://ecommerce-frontend-three-steel.vercel.app',
-        'http://localhost:5173', // para desarrollo local
+        'https://mediumspringgreen-koala-465676.hostingersite.com',
+        'http://localhost:5173',
     ],
 
     'allowed_origins_patterns' => [],
@@ -18,5 +19,6 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => true, // ✅ importante
+    // ❌ YA NO USAMOS COOKIES → DESACTIVAR
+    'supports_credentials' => false,
 ];
