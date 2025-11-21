@@ -164,16 +164,45 @@ class ProductoController extends Controller
      */
     public function destroy($id)
     {
-        $producto = Producto::find($id);
+        $producto = Producto::with(['imagenes', 'promociones'])->find($id);
+
         if (!$producto) {
             return response()->json(['message' => 'Producto no encontrado'], 404);
         }
 
-        $producto->delete();
+        try {
+            // 1️⃣ Eliminar imágenes
+            foreach ($producto->imagenes as $img) {
+                if ($img->url && Storage::exists($img->url)) {
+                    Storage::delete($img->url);
+                }
+                $img->delete();
+            }
 
-        return response()->json(['message' => '🗑️ Producto eliminado correctamente']);
+            // 2️⃣ Quitar promociones
+            if ($producto->promociones()->exists()) {
+                $producto->promociones()->detach();
+            }
+
+            // 3️⃣ Soft Delete
+            $producto->delete();
+
+            return response()->json(['message' => '🗑️ Producto eliminado correctamente'], 200);
+
+        } catch (\Throwable $e) {
+
+            Log::error('Error al eliminar producto:', [
+                'id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'message' => 'Error interno al eliminar producto'
+            ], 500);
+        }
     }
-
+    
     /**
      * 🔹 Listar solo productos con promociones vigentes
      */

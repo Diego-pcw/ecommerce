@@ -1,7 +1,7 @@
 # 🧱 E-Commerce Biker Wolf Perú — Backend (v1.2)
 
 > **Versión mejorada y optimizada** del sistema backend para la gestión del e-commerce y catálogo digital de **Biker Wolf Perú**.  
-> Desarrollado con **Laravel 11 + Sanctum** para autenticación segura y control de acceso basado en roles.
+> Desarrollado con **Laravel 12 + Sanctum** para autenticación segura y control de acceso basado en roles.
 
 ---
 
@@ -207,7 +207,7 @@ Descuento Manual	⚙️ Pendiente	- Para futuras versiones
 📅 Versión
 
 v1.2 — Octubre 2025
-Autores: Gonzalo & Diego (Desarrolladores Web e IA)
+Autores: Gonzalo & Diego (Desarrolladores Web)
 
 📜 Licencia
 
