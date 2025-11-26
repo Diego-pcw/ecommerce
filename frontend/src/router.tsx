@@ -29,6 +29,7 @@ import ProductoDetail from "./pages/productos/ProductoDetail";
 import ProductoCreate from "./pages/productos/ProductoCreate";
 import ProductoEdit from "./pages/productos/ProductoEdit";
 import CatalogoProduct from "./pages/productos/CatalogoProduct";
+import CatalogoProductDetail from "./pages/productos/CatalogoProductDetail";
 
 // 🖼️ Imágenes de productos (solo admin)
 import ImagenesIndex from "./pages/imagenes/ImagenesIndex";
@@ -91,7 +92,8 @@ export default function Router() {
 
           {/* Rutas de productos (públicas, accesibles tanto por invitados como por usuarios) */}
           <Route path="/productos" element={<ProductosList />} />
-          <Route path="/productos/:id" element={<ProductoDetail />} />
+          
+          <Route path="/productos/:id" element={<CatalogoProductDetail />} />
 
           {/* Rutas de promocion (públicas, accesibles tanto por invitados como por usuarios) */}
           <Route path="/promociones" element={<PromocionList />} />

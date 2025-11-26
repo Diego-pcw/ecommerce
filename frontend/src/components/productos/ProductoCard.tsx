@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useCarritoContext } from '../../context/CarritoContext';
-import { useToast } from '../../context/ToastContext';
-import type { ProductoListItem } from '../../types/Producto';
-import { Loader2, ShoppingCart, Tag } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useCarritoContext } from '../../context/CarritoContext.tsx';
+import { useToast } from '../../context/ToastContext.tsx';
+import type { ProductoListItem } from '../../types/Producto.ts';
+import { Loader2, ShoppingCart, Tag, Eye } from 'lucide-react';
 
 import styles from '../../styles/carritos/Carrito.module.css';
 import '../../styles/productos/productos.shared.css';
@@ -13,13 +14,14 @@ interface Props {
 }
 
 const ProductoCard: React.FC<Props> = ({ producto, mostrarPrecio = true }) => {
+
   const { agregarProducto } = useCarritoContext();
+  
   const { push } = useToast();
   const [adding, setAdding] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Evita hydration mismatch sin desmontar SVG
     const t = requestAnimationFrame(() => setMounted(true));
     return () => cancelAnimationFrame(t);
   }, []);
@@ -46,7 +48,10 @@ const ProductoCard: React.FC<Props> = ({ producto, mostrarPrecio = true }) => {
     Number(producto.promocion_vigente.valor || 0) > 0;
 
   return (
-    <article className="admin-card-item" style={{ opacity: mounted ? 1 : 0, transition: 'opacity .15s' }}>
+    <article
+      className="admin-card-item"
+      style={{ opacity: mounted ? 1 : 0, transition: 'opacity .15s' }}
+    >
       {tieneDescuento && (
         <span className="product-discount-badge">
           <Tag size={12} />
@@ -57,7 +62,12 @@ const ProductoCard: React.FC<Props> = ({ producto, mostrarPrecio = true }) => {
       )}
 
       <div className="admin-card-info">
-        <div className="product-card-content">
+        {/* ✨ Hacemos que toda la info sea un link al detalle */}
+        <Link
+          to={`/productos/${producto.id}`}
+          className="product-card-content"
+          style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
+        >
           {producto.imagenes?.[0] ? (
             <img
               src={producto.imagenes[0].url}
@@ -65,13 +75,13 @@ const ProductoCard: React.FC<Props> = ({ producto, mostrarPrecio = true }) => {
               className="product-card-image"
             />
           ) : (
-            <div className="product-card-image placeholder">
+            <div className="product-card-image product-card-placeholder">
               Sin imagen
             </div>
           )}
           <h2>{producto.nombre}</h2>
           <p>{producto.categoria as string}</p>
-        </div>
+        </Link>
       </div>
 
       {mostrarPrecio && (
@@ -93,31 +103,41 @@ const ProductoCard: React.FC<Props> = ({ producto, mostrarPrecio = true }) => {
         </div>
       )}
 
-      {producto.promocion_vigente && (
-        <div style={{ padding: '0 1.5rem 1rem' }}>
-          <span className="status-badge" style={{ backgroundColor: '#eff6ff', color: '#3b82f6' }}>
-            {producto.promocion_vigente.titulo} 🔖
-          </span>
-        </div>
-      )}
-
       <div className="admin-card-actions">
+        {/* ✨ Botón Ver Detalle (Compacto) */}
+        <Link
+          to={`/productos/${producto.id}`}
+          className="btn btn-outline btn-icon-only"
+          title="Ver detalles"
+        >
+          <Eye size={20} />
+        </Link>
+
+        {/* ✨ Botón Agregar (Expandido) */}
         <button
           onClick={handleAgregar}
           disabled={adding}
           className="btn btn-success"
+          style={{ flex: 1 }}
         >
-          <span className="icon-wrapper" style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
-            <ShoppingCart size={16} style={{ opacity: adding ? 0.4 : 1 }} />
-            {adding && (
-              <Loader2
-                size={14}
-                className="animate-spin"
-                style={{ position: 'absolute' }}
-              />
+          <span
+            className="icon-wrapper"
+            style={{
+              position: 'relative',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              justifyContent: 'center',
+              width: '100%',
+            }}
+          >
+            {adding ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <ShoppingCart size={16} />
             )}
+            {adding ? '...' : 'Agregar'}
           </span>
-          {adding ? ' Agregando...' : ' Agregar'}
         </button>
       </div>
     </article>

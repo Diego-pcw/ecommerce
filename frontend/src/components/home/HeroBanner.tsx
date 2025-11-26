@@ -21,7 +21,7 @@ const HeroBanner: React.FC = () => {
         </p>
 
         <div className="hero-actions">
-          <Link to="/productos" className="btn btn-primary">
+          <Link to="/catalogo" className="btn btn-primary">
             <ArrowRight size={18} />
             Ver Catálogo
           </Link>

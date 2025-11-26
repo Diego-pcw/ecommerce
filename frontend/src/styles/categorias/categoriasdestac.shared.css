@@ -1,0 +1,163 @@
+/* 🗂️ src/styles/categorias/categoriasdestac.shared.css */
+/* Estilos exclusivos para la sección de Categorías Destacadas del Home */
+
+.categories-section {
+  padding: 4rem 1.5rem;
+  background-color: var(--color-bg); /* Fondo suave para contraste */
+}
+
+.categories-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.categories-header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+
+.categories-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.025em;
+}
+
+.categories-title span {
+  color: var(--color-primary);
+  position: relative;
+  z-index: 1;
+}
+
+/* Efecto de subrayado creativo */
+.categories-title span::before {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: -5px;
+  right: -5px;
+  height: 12px;
+  background-color: rgba(255, 215, 0, 0.2); /* Amarillo muy suave */
+  z-index: -1;
+  transform: rotate(-2deg);
+  border-radius: 4px;
+}
+
+.categories-subtitle {
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* --- GRID --- */
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+/* --- TARJETA DE CATEGORÍA --- */
+.category-card-featured {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1.5rem; /* Muy redondeado */
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* Gradiente sutil al fondo en hover */
+.category-card-featured::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.category-card-featured:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-color: var(--color-primary);
+}
+
+.category-card-featured:hover::before {
+  opacity: 0.1;
+}
+
+/* Icono */
+.cat-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  background-color: var(--color-bg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  transition: all 0.3s ease;
+  z-index: 1;
+  border: 2px solid transparent;
+}
+
+.cat-icon-wrapper svg {
+  width: 40px;
+  height: 40px;
+  stroke-width: 1.5px;
+}
+
+.category-card-featured:hover .cat-icon-wrapper {
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 10px 15px -3px rgba(255, 215, 0, 0.3);
+}
+
+/* Texto */
+.cat-info {
+  text-align: center;
+  z-index: 1;
+}
+
+.cat-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 0.5rem;
+  transition: color 0.2s;
+}
+
+.cat-desc {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Max 2 líneas */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+}
+
+/* Loader */
+.categories-loader {
+  display: flex;
+  justify-content: center;
+  padding: 4rem;
+  color: var(--color-text-secondary);
+}

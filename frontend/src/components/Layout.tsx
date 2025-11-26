@@ -29,7 +29,7 @@ const Layout: React.FC = () => {
           </Link>
 
           <nav className="header-nav">
-            <Link to="/productos" className="header-nav-link">
+            <Link to="/catalogo" className="header-nav-link">
               <Store size={16} />
               Productos
             </Link>

@@ -1,0 +1,463 @@
+/* 🗂️ src/styles/catalogo/catalogo.shared.css */
+/* Estilos para el Catálogo Público de Productos y la Vista de Detalle */
+
+.catalog-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.catalog-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.catalog-title {
+  font-size: var(--font-size-xxl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 0.5rem;
+}
+.catalog-title span {
+  color: var(--color-primary);
+}
+
+.catalog-subtitle {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+/* ==========================
+   BARRA DE FILTROS
+   ========================== */
+.filters-wrapper {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+/* Responsive: En pantallas grandes, los filtros se ponen en fila */
+@media (min-width: 1024px) {
+  .filters-grid {
+    grid-template-columns: 2fr 1.5fr 1.5fr 1.5fr auto;
+    align-items: end; /* Alinea los inputs con el botón */
+  }
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Inputs del filtro */
+.filter-input,
+.filter-select {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  transition: var(--transition-fast);
+  width: 100%;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+  outline: 2px solid var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* Grupo de Rango de Precio (min - max) */
+.price-range-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-clear-filters {
+  height: 42px; /* Altura para igualar a los inputs */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0 1.5rem;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-weight: 500;
+  font-size: var(--font-size-sm);
+}
+.btn-clear-filters:hover {
+  background-color: #fee2e2; /* red-50 */
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+/* Resultados encontrados */
+.catalog-results-count {
+  margin-bottom: 1.5rem;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.catalog-results-count strong {
+  color: var(--color-text-primary);
+}
+
+/* ==========================
+   GRID DE PRODUCTOS
+   ========================== */
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+/* Estado vacío */
+.catalog-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  background-color: var(--color-bg);
+  border-radius: var(--border-radius-lg);
+  border: 2px dashed var(--color-border);
+}
+.catalog-empty h3 {
+  font-size: var(--font-size-xl);
+  color: var(--color-text-primary);
+  margin-bottom: 0.5rem;
+}
+.catalog-empty p {
+  color: var(--color-text-secondary);
+}
+
+/* ==========================
+   PAGINACIÓN (Reutilizamos estilos base pero ajustamos márgenes)
+   ========================== */
+.pagination-wrapper {
+  margin-top: 3rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* ==========================================================================
+   NUEVO: ESTILOS PARA DETALLE DE PRODUCTO (CatalogoProductDetail.tsx)
+   ========================================================================== */
+
+.product-detail-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.product-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+}
+
+@media (min-width: 900px) {
+  .product-detail-grid {
+    grid-template-columns: 1.2fr 1fr; /* Galería más ancha que info */
+  }
+}
+
+/* --- GALERÍA DE IMÁGENES (ZOOM) --- */
+.gallery-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.main-image-frame {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* Cuadrado perfecto */
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background-color: #fff;
+  position: relative;
+  cursor: crosshair; /* Indica que se puede interactuar/hacer zoom */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Ajusta la imagen dentro sin cortarla */
+  transition: transform 0.1s ease-out; /* Movimiento suave al hacer zoom */
+  pointer-events: none; /* El evento de mouse lo captura el contenedor padre */
+}
+
+.thumbnails-row {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.thumbnail {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--border-radius-md);
+  border: 2px solid transparent;
+  cursor: pointer;
+  object-fit: cover;
+  transition: var(--transition-fast);
+  background-color: #fff;
+}
+
+.thumbnail:hover {
+  opacity: 0.8;
+}
+
+.thumbnail.active {
+  border-color: var(--color-primary);
+  transform: scale(0.95);
+}
+
+/* --- INFORMACIÓN DEL PRODUCTO --- */
+.product-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.product-brand {
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.product-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  line-height: 1.1;
+  margin: 0;
+}
+
+.product-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #fbbf24; /* Amarillo estrella */
+  font-size: 1.1rem;
+}
+
+.product-price-block {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.price-current {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.price-old {
+  font-size: 1.25rem;
+  text-decoration: line-through;
+  color: var(--color-text-disabled);
+}
+
+.discount-tag {
+  background-color: var(--color-error);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--border-radius-full);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.product-description {
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+/* --- ACCIONES (Cantidad y Botones) --- */
+.actions-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.quantity-selector {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+}
+
+.qty-btn {
+  width: 40px;
+  height: 48px;
+  background-color: var(--color-bg);
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-primary);
+}
+.qty-btn:hover:not(:disabled) {
+  background-color: var(--color-border);
+}
+.qty-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.qty-input {
+  width: 50px;
+  height: 48px;
+  text-align: center;
+  border: none;
+  border-left: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  /* Ocultar flechas numéricas */
+  -moz-appearance: textfield;
+}
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.btn-add-cart {
+  flex: 1;
+  height: 48px;
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: var(--border-radius-md);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: var(--shadow-md);
+}
+.btn-add-cart:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+.btn-add-cart:disabled {
+  background-color: var(--color-text-disabled);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* --- STOCK STATUS --- */
+.stock-status {
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.stock-in { color: var(--color-success); }
+.stock-low { color: var(--color-warning); }
+.stock-out { color: var(--color-error); }
+
+/* --- TABS DE INFORMACIÓN --- */
+.product-tabs {
+  margin-top: 4rem;
+}
+
+.tab-headers {
+  display: flex;
+  border-bottom: 1px solid var(--color-border);
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 1rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s;
+}
+.tab-btn.active {
+  color: var(--color-primary-dark);
+}
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--color-primary);
+}
+
+.tab-content {
+  padding: 1rem 0;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Animación FadeIn simple */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Badge de descuento en detalle (reutilizando estilo pero posicionando diferente) */
+.product-detail-wrapper .product-discount-badge {
+  position: absolute;
+  z-index: 10;
+  box-shadow: var(--shadow-md);
+}

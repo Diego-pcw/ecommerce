@@ -4,7 +4,7 @@ import MarcasDestacadas from '../components/home/MarcasDestacadas';
 import CategoriasDestacadas from '../components/home/CategoriasDestacadas';
 import ProductosDestacados from '../components/home/ProductosDestacados';
 import PromocionesDestacadas from '../components/home/PromocionesDestacadas';
-import ResenasPublicList from '../pages/resenas/ResenasPublicList';
+import ResenasDestacadas from '../components/home/ResenasDestacadas';
 import ContactForm from '../components/contactos/ContactForm';
 
 import '../styles/home.shared.css';
@@ -31,7 +31,7 @@ const UserHome: React.FC = () => {
       </section>
 
       {/* Reseñas y Contacto ya tienen sus propios contenedores y padding */}
-      <ResenasPublicList />
+      <ResenasDestacadas />
       <ContactForm />
     </div>
   );

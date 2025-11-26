@@ -1,30 +1,37 @@
 /* 💰 src/styles/carritos/Carrito.module.css */
-/* Estilos de precios actualizados para usar variables de theme.css */
+/* Estilos de precios optimizados usando variables de theme.css */
 
 .priceContainer {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  gap: 0.25rem; /* Pequeña separación entre precio original y final */
 }
 
 .priceOriginal {
   text-decoration: line-through;
   color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
+  font-size: 0.85rem; /* Ligeramente más pequeño para contraste visual */
+  font-weight: 500;
   margin: 0;
-  line-height: 1;
+  line-height: 1.2;
+  opacity: 0.8;
 }
 
 .priceFinal {
   color: var(--color-text-primary);
-  font-weight: 600;
-  font-size: var(--font-size-md);
+  font-weight: 700;
+  font-size: 1.125rem; /* Un poco más grande para destacar */
   margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.025em; /* Tracking ajustado para números */
 }
 
 .priceFinalWithDiscount {
-  color: var(--color-accent); /* Rojo racing para destacar la oferta */
+  color: var(--color-error); /* Usamos color de error/acento (rojo) para ofertas */
   font-weight: 700;
-  font-size: var(--font-size-md);
+  font-size: 1.25rem; /* Destaca más cuando es oferta */
   margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
 }
