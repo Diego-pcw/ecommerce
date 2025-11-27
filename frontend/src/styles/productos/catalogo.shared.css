@@ -1,55 +1,81 @@
 /* 🗂️ src/styles/catalogo/catalogo.shared.css */
-/* Estilos para el Catálogo Público de Productos y la Vista de Detalle */
+/* Diseño Premium para el Catálogo Público */
 
 .catalog-container {
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem 1.5rem;
+  min-height: 100vh;
+  background-color: #f8fafc; /* Fondo base muy suave */
 }
 
+/* --- CABECERA CON ESTILO --- */
 .catalog-header {
   text-align: center;
   margin-bottom: 3rem;
+  position: relative;
+  padding-bottom: 1.5rem;
 }
 
 .catalog-title {
-  font-size: var(--font-size-xxl);
-  font-weight: 700;
+  font-size: 3rem;
+  font-weight: 900;
   color: var(--color-text-primary);
   margin-bottom: 0.5rem;
+  letter-spacing: -1px;
+  text-transform: uppercase;
 }
+
 .catalog-title span {
-  color: var(--color-primary);
+  color: var(--color-primary); /* Amarillo Biker */
+  text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+  position: relative;
+  display: inline-block;
+}
+
+/* Línea decorativa estilo "velocidad" */
+.catalog-title span::after {
+  content: '';
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background-color: rgba(0,0,0,0.1);
+  z-index: -1;
+  transform: skewX(-20deg);
 }
 
 .catalog-subtitle {
-  font-size: var(--font-size-base);
+  font-size: 1.1rem;
   color: var(--color-text-secondary);
+  font-weight: 500;
 }
 
 /* ==========================
-   BARRA DE FILTROS
+   BARRA DE FILTROS "COCKPIT" (Estilo Oscuro)
    ========================== */
 .filters-wrapper {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-lg);
+  background-color: #1a1a1a; /* Fondo oscuro estilo dashboard */
+  border-radius: 1rem;
   padding: 1.5rem;
-  margin-bottom: 2rem;
-  box-shadow: var(--shadow-sm);
+  margin-bottom: 3rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3); /* Sombra fuerte */
+  color: white;
+  border: 1px solid #333;
 }
 
 .filters-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
-/* Responsive: En pantallas grandes, los filtros se ponen en fila */
+/* Desktop: Fila horizontal */
 @media (min-width: 1024px) {
   .filters-grid {
     grid-template-columns: 2fr 1.5fr 1.5fr 1.5fr auto;
-    align-items: end; /* Alinea los inputs con el botón */
+    align-items: end;
   }
 }
 
@@ -60,108 +86,190 @@
 }
 
 .filter-label {
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  color: var(--color-text-primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fbbf24; /* Amarillo para etiquetas */
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-/* Inputs del filtro */
+/* Inputs estilizados para fondo oscuro */
 .filter-input,
 .filter-select {
-  padding: 0.6rem 0.75rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-sm);
-  background-color: var(--color-bg);
-  color: var(--color-text-primary);
-  transition: var(--transition-fast);
+  padding: 0.75rem 1rem;
+  border: 2px solid #333;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  background-color: #262626; /* Gris oscuro */
+  color: white;
+  transition: all 0.2s ease;
   width: 100%;
+  font-weight: 500;
+}
+
+.filter-input::placeholder {
+  color: #6b7280;
 }
 
 .filter-input:focus,
 .filter-select:focus {
-  outline: 2px solid var(--color-primary);
+  outline: none;
   border-color: var(--color-primary);
+  background-color: #000;
+  box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.1);
 }
 
-/* Grupo de Rango de Precio (min - max) */
+/* Grupo de precio */
 .price-range-group {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
+.price-range-group span {
+  color: #6b7280;
+}
 
+/* Botón Limpiar */
 .btn-clear-filters {
-  height: 42px; /* Altura para igualar a los inputs */
+  height: 46px; /* Altura match inputs */
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0 1.5rem;
-  background-color: var(--color-bg);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
-  border-radius: var(--border-radius-md);
+  padding: 0 1rem;
+  background-color: #333;
+  border: 2px solid #333;
+  color: #9ca3af;
+  border-radius: 0.5rem;
   cursor: pointer;
-  transition: var(--transition-fast);
-  font-weight: 500;
-  font-size: var(--font-size-sm);
+  transition: all 0.2s;
 }
 .btn-clear-filters:hover {
-  background-color: #fee2e2; /* red-50 */
-  color: var(--color-error);
-  border-color: var(--color-error);
+  background-color: #ef4444; /* Rojo al hover */
+  border-color: #ef4444;
+  color: white;
 }
 
-/* Resultados encontrados */
-.catalog-results-count {
-  margin-bottom: 1.5rem;
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+/* Botón Filtrar (Principal) */
+.filters-grid .btn-primary {
+  height: 46px;
+  background-color: var(--color-primary);
+  color: #000;
+  font-weight: 800;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
-.catalog-results-count strong {
-  color: var(--color-text-primary);
+.filters-grid .btn-primary:hover {
+  background-color: #fbbf24;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
 }
 
 /* ==========================
-   GRID DE PRODUCTOS
+   RESULTADOS Y GRID
    ========================== */
+.catalog-results-count {
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  width: fit-content;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.catalog-results-count strong {
+  color: var(--color-text-primary);
+  font-weight: 800;
+}
+
 .catalog-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 2rem;
+  animation: fadeInUp 0.5s ease-out;
 }
 
-/* Estado vacío */
+/* Animación de entrada */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Estado Vacío */
 .catalog-empty {
   text-align: center;
-  padding: 4rem 2rem;
-  background-color: var(--color-bg);
-  border-radius: var(--border-radius-lg);
+  padding: 6rem 2rem;
+  background-color: white;
+  border-radius: 1.5rem;
   border: 2px dashed var(--color-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
 }
 .catalog-empty h3 {
-  font-size: var(--font-size-xl);
-  color: var(--color-text-primary);
-  margin-bottom: 0.5rem;
-}
-.catalog-empty p {
-  color: var(--color-text-secondary);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
 }
 
 /* ==========================
-   PAGINACIÓN (Reutilizamos estilos base pero ajustamos márgenes)
+   PAGINACIÓN (Estilo Moderno)
    ========================== */
 .pagination-wrapper {
-  margin-top: 3rem;
+  margin-top: 4rem;
   display: flex;
   justify-content: center;
+}
+
+.pagination-container {
+  background-color: white;
+  padding: 0.75rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-border);
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Reutiliza .pagination-btn de productos.shared.css pero le damos un toque extra si es necesario */
+.pagination-btn {
+  border-radius: 0.5rem !important;
+  font-family: var(--font-family-base);
+}
+
+/* ==========================================================================
+   ESTILOS PARA DETALLE DE PRODUCTO (CatalogoProductDetail.tsx)
+   ========================================================================== */
+/* ... (Mantenemos los estilos de detalle que ya estaban bien, o los mejoramos ligeramente) ... */
+
+/* Galería con borde más sofisticado */
+.main-image-frame {
+  border: 1px solid var(--color-border);
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+}
+
+/* Título de producto más grande */
+.product-title {
+  font-size: 3rem;
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+/* Precio gigante */
+.price-current {
+  font-size: 2.5rem;
+  color: var(--color-text-primary);
+  font-weight: 900;
 }
 
 /* ==========================================================================

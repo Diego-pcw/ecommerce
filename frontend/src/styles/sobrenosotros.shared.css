@@ -1,0 +1,222 @@
+/* 🗂️ src/styles/sobrenosotros.shared.css */
+/* Diseño profesional para la sección "Sobre Nosotros" */
+
+.about-section {
+  padding: 5rem 1.5rem;
+  background-color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decoración de fondo (patrón de puntos) */
+.about-section::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 300px;
+  height: 300px;
+  background-image: radial-gradient(#e5e7eb 2px, transparent 2px);
+  background-size: 20px 20px;
+  opacity: 0.6;
+  z-index: 0;
+}
+
+.about-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4rem;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 1024px) {
+  .about-container {
+    grid-template-columns: 1fr 1fr; /* Texto izquierda, Imágenes derecha */
+  }
+}
+
+/* --- CONTENIDO DE TEXTO --- */
+.about-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.about-label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--color-primary); /* Amarillo Biker */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.about-label::before {
+  content: '';
+  width: 40px;
+  height: 2px;
+  background-color: var(--color-primary);
+}
+
+.about-title {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--color-text-primary);
+  line-height: 1.1;
+  margin: 0;
+}
+.about-title span {
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
+}
+/* Subrayado creativo */
+.about-title span::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  width: 100%;
+  height: 12px;
+  background-color: rgba(255, 215, 0, 0.3);
+  z-index: -1;
+  transform: skewX(-20deg);
+}
+
+.about-description {
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+/* Lista de características (Features) */
+.about-features {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+@media (min-width: 640px) {
+  .about-features {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.feature-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #f3f4f6;
+  color: var(--color-primary-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Botón CTA */
+.about-cta {
+  margin-top: 1rem;
+}
+
+/* --- COMPOSICIÓN DE IMÁGENES (Collage) --- */
+.about-gallery {
+  position: relative;
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gallery-img {
+  position: absolute;
+  object-fit: cover;
+  border-radius: 1rem;
+  box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease, z-index 0s;
+  border: 4px solid white;
+}
+
+/* Imagen Grande (Principal) */
+.img-main {
+  width: 75%;
+  height: 80%;
+  z-index: 2;
+  top: 10%;
+  left: 0;
+}
+
+/* Imagen Pequeña 1 (Arriba derecha) */
+.img-small-1 {
+  width: 45%;
+  height: 45%;
+  z-index: 3;
+  top: 0;
+  right: 0;
+}
+
+/* Imagen Pequeña 2 (Abajo derecha) */
+.img-small-2 {
+  width: 40%;
+  height: 40%;
+  z-index: 1;
+  bottom: 0;
+  right: 5%;
+}
+
+/* Efecto Hover en el collage */
+.about-gallery:hover .img-main {
+  transform: scale(0.98) translateX(-10px);
+}
+.about-gallery:hover .img-small-1 {
+  transform: translateY(-10px) scale(1.05);
+}
+.about-gallery:hover .img-small-2 {
+  transform: translateY(10px) scale(1.05);
+}
+
+/* Badge de experiencia flotante */
+.experience-badge {
+  position: absolute;
+  bottom: 20%;
+  left: -10px;
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  z-index: 4;
+  text-align: center;
+  animation: float 4s ease-in-out infinite;
+}
+
+.experience-number {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 900;
+  line-height: 1;
+}
+.experience-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}

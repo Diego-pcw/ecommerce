@@ -1,0 +1,228 @@
+/* 🗂️ src/styles/promociones/promocionmix.shared.css */
+/* Estilos de alto impacto para el mix de promociones (Home) */
+
+.promo-mix-section {
+  padding: 4rem 1.5rem;
+  background-color: var(--color-bg);
+  overflow: hidden;
+}
+
+.promo-mix-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.promo-mix-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.promo-mix-title {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  margin: 0;
+}
+
+.promo-mix-title span {
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* --- GRID LAYOUT --- */
+.promo-mix-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .promo-mix-grid {
+    grid-template-columns: repeat(3, 1fr);
+    height: 500px; /* Altura fija en desktop para uniformidad */
+  }
+}
+
+/* --- TARJETA BASE --- */
+.promo-card-mix {
+  position: relative;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 2rem;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.2);
+  height: 300px; /* Altura base movil */
+}
+
+@media (min-width: 768px) {
+  .promo-card-mix {
+    height: 100%;
+  }
+}
+
+.promo-card-mix:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 40px -10px rgba(0,0,0,0.4);
+}
+
+/* Fondo de imagen */
+.promo-bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+  z-index: 0;
+}
+
+.promo-card-mix:hover .promo-bg-image {
+  transform: scale(1.15);
+}
+
+/* Overlay Gradiente (Oscurece la imagen para leer texto) */
+.promo-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
+}
+
+/* --- CONTENIDO --- */
+.promo-content {
+  position: relative;
+  z-index: 2;
+  color: white;
+}
+
+/* Etiquetas Superiores */
+.promo-tag-top {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  z-index: 2;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Título y Descuento */
+.promo-discount-big {
+  font-size: 3.5rem;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+.promo-discount-big sub {
+  font-size: 1.5rem;
+  vertical-align: middle;
+  font-weight: 700;
+}
+
+.promo-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.promo-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.15);
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.btn-promo-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: white;
+  color: black;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+  width: fit-content;
+}
+.btn-promo-action:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(255,255,255,0.4);
+}
+
+/* --- VARIANTES DE ESTILO --- */
+
+/* 1. RECIÉN LLEGADO (New) */
+.style-new .promo-tag-top {
+  background-color: #00c853; /* Verde Neón */
+  color: #003300;
+}
+.style-new .promo-discount-big {
+  background: linear-gradient(to bottom, #fff, #b9f6ca);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.style-new:hover {
+  border: 2px solid #00c853;
+}
+
+/* 2. POR VENIR (Coming Soon) */
+.style-coming .promo-tag-top {
+  background-color: #6200ea; /* Violeta */
+  color: white;
+}
+.style-coming .promo-overlay {
+  background: linear-gradient(to top, rgba(30,0,60,0.9) 0%, transparent 100%);
+}
+.style-coming .btn-promo-action {
+  background-color: #b388ff;
+  color: #220044;
+}
+
+/* 3. POR VENCER (Ending) */
+.style-ending .promo-tag-top {
+  background-color: #d50000; /* Rojo Alarma */
+  color: white;
+  animation: pulse-red 2s infinite;
+}
+.style-ending .promo-timer {
+  color: #ff8a80;
+  border-color: #ff5252;
+}
+
+@keyframes pulse-red {
+  0% { box-shadow: 0 0 0 0 rgba(213, 0, 0, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(213, 0, 0, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(213, 0, 0, 0); }
+}
+
+/* Skeleton Loader */
+.promo-loader {
+  display: flex;
+  justify-content: center;
+  padding: 4rem;
+}

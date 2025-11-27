@@ -1,0 +1,240 @@
+/* 🗂️ src/styles/productos/productosmix.shared.css */
+/* Estilos para la sección mixta: Novedades (New) vs Ofertas (Sale) */
+
+.mix-section {
+  padding: 4rem 1.5rem;
+  background-color: #f8fafc; /* Fondo muy suave */
+  overflow: hidden;
+}
+
+.mix-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.mix-grid-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+}
+
+@media (min-width: 1024px) {
+  .mix-grid-layout {
+    grid-template-columns: 1fr 1fr; /* Dos columnas en desktop */
+    gap: 4rem;
+  }
+}
+
+/* --- CABECERAS DE COLUMNA --- */
+.mix-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid transparent;
+}
+
+.mix-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mix-link {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: transform 0.2s;
+}
+.mix-link:hover {
+  transform: translateX(4px);
+}
+
+/* TEMA: NOVEDADES (Azul/Cian - Frescura) */
+.theme-new .mix-header {
+  border-color: #0ea5e9; /* sky-500 */
+}
+.theme-new .mix-title {
+  color: #0f172a;
+}
+.theme-new .mix-title svg {
+  color: #0ea5e9;
+}
+.theme-new .mix-link {
+  color: #0ea5e9;
+}
+
+/* TEMA: OFERTAS (Rojo/Naranja - Urgencia) */
+.theme-sale .mix-header {
+  border-color: #f43f5e; /* rose-500 */
+}
+.theme-sale .mix-title {
+  color: #0f172a;
+}
+.theme-sale .mix-title svg {
+  color: #f43f5e;
+}
+.theme-sale .mix-link {
+  color: #f43f5e;
+}
+
+/* --- LISTA DE TARJETAS (Columna) --- */
+.mix-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* --- TARJETA MIX (Horizontal) --- */
+.mix-card {
+  display: flex;
+  background-color: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--color-border);
+  height: 140px; /* Altura fija compacta */
+  position: relative;
+  cursor: pointer;
+}
+
+.mix-card:hover {
+  transform: translateX(8px); /* Mueve a la derecha al hover */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Imagen */
+.mix-card-img-wrapper {
+  width: 140px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.mix-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.mix-card:hover .mix-card-img {
+  transform: scale(1.1);
+}
+
+/* Badges Específicos */
+.badge-mix {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: white;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.theme-new .badge-mix {
+  background-color: #0ea5e9; /* Azul */
+}
+.theme-sale .badge-mix {
+  background-color: #f43f5e; /* Rojo */
+}
+
+/* Info */
+.mix-card-info {
+  flex-grow: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.mix-card-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 0.25rem 0;
+  /* 2 líneas */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.3;
+}
+
+.mix-card-cat {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Precios */
+.mix-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.mix-price-main {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.mix-price-old {
+  font-size: 0.85rem;
+  text-decoration: line-through;
+  color: var(--color-text-secondary);
+}
+
+/* Botón Acción Rápida (Icono) */
+.btn-mix-action {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+}
+
+.btn-mix-action:hover {
+  transform: scale(1.1);
+  color: white;
+}
+
+.theme-new .btn-mix-action:hover {
+  background-color: #0ea5e9;
+}
+.theme-sale .btn-mix-action:hover {
+  background-color: #f43f5e;
+}
+
+/* Loader */
+.mix-loader {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}

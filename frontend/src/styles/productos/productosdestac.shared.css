@@ -1,0 +1,266 @@
+/* 🗂️ src/styles/productos/productosdestac.shared.css */
+/* Estilos para la sección de "Productos Destacados / Top Ventas" en el Home */
+
+.featured-products-section {
+  padding: 4rem 1.5rem;
+  background-color: #fff; /* Fondo limpio para destacar colores */
+  position: relative;
+}
+
+.featured-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* CABECERA DE SECCIÓN LLAMATIVA */
+.featured-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.featured-title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.featured-title {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--color-text-primary);
+  margin: 0;
+  line-height: 1.1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.featured-title span {
+  background: -webkit-linear-gradient(45deg, #ff6b00, #ff3d00); /* Naranja energético */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.featured-subtitle {
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+  margin-top: 0.5rem;
+}
+
+.btn-view-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  background-color: #fff8e1; /* Fondo amarillo muy suave */
+  transition: all 0.2s;
+}
+.btn-view-all:hover {
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  transform: translateX(5px);
+}
+
+/* GRID DE TARJETAS */
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+/* TARJETA DESTACADA (Estilo "Temu/AliExpress" mejorado) */
+.featured-card {
+  background-color: white;
+  border-radius: 1.25rem;
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Altura uniforme */
+}
+
+.featured-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.15);
+  border-color: transparent;
+}
+
+/* Imagen con Zoom */
+.featured-image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background-color: #f9fafb;
+}
+
+.featured-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.featured-card:hover .featured-image {
+  transform: scale(1.1);
+}
+
+/* Badges Flotantes */
+.badge-overlay {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 2;
+}
+
+.badge-hot {
+  background: linear-gradient(135deg, #ff4d4d, #f00);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  box-shadow: 0 2px 5px rgba(255, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-rating {
+  background-color: rgba(255, 255, 255, 0.95);
+  color: var(--color-text-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.badge-rating svg {
+  fill: #fbbf24;
+  color: #fbbf24;
+}
+
+/* Contenido */
+.featured-info {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.featured-category {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.featured-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+  /* Limitar a 2 líneas */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Precios Grandes */
+.featured-price-row {
+  margin-top: auto; /* Empuja hacia abajo */
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.price-main {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #e11d48; /* Rojo intenso para precio */
+}
+.price-main::first-letter {
+  font-size: 1rem; /* Símbolo de moneda más pequeño */
+}
+
+.price-crossed {
+  font-size: 0.9rem;
+  text-decoration: line-through;
+  color: var(--color-text-secondary);
+}
+
+/* Botón de Acción (Aparece o cambia en hover) */
+.featured-actions {
+  border-top: 1px solid #f3f4f6;
+  padding-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-add-fast {
+  flex: 1;
+  background-color: var(--color-text-primary);
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+.btn-add-fast:hover {
+  background-color: #000;
+  transform: scale(1.02);
+}
+
+.btn-detail-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background-color: white;
+  color: var(--color-text-primary);
+  transition: all 0.2s;
+}
+.btn-detail-icon:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background-color: #fffbeb;
+}
+
+/* Estado de Carga */
+.featured-loader {
+  display: flex;
+  justify-content: center;
+  padding: 4rem;
+}
