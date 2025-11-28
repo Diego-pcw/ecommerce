@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { productoService } from '../../services/producto.service';
-import '../../styles/productos/marcas.shared.css';
+import '../../styles/home/marcas.shared.css';
 
 interface MarcaItem {
   nombre: string;

@@ -48,6 +48,18 @@ export interface Producto {
 }
 
 /* -------------------------------------------
+ * 🔹 Categoría segura para listados
+ *  Puede venir como string o como objeto
+ * ----------------------------------------- */
+export type CategoriaSafe =
+  | string
+  | {
+      id: number;
+      nombre: string;
+    }
+  | null;
+
+/* -------------------------------------------
  * 🔹 Vista simplificada para listados públicos
  * ----------------------------------------- */
 export interface ProductoListItem {
@@ -55,11 +67,15 @@ export interface ProductoListItem {
   nombre: string;
   marca?: string | null;
   descripcion?: string | null;
-  categoria: string;
+
+  categoria: CategoriaSafe;
+
   precio_original: string;
   precio_final: number;
   stock: number;
+
   promocion_vigente: PromocionVigente | null;
+
   imagenes: ProductoImagen[];
 }
 

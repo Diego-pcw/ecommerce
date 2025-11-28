@@ -23,6 +23,8 @@ export interface Promocion {
 /**
  * 🔹 Relación de productos asignados a una promoción
  */
+import type { ImagenProductoSimple } from "./ImagenProducto";
+
 export interface PromocionProducto {
   id: number;
   nombre: string;
@@ -31,6 +33,9 @@ export interface PromocionProducto {
   categoria_nombre?: string;
   estado: "ACTIVO" | "INACTIVO";
   precio_con_descuento?: number;
+
+  /** Imágenes opcionales si el backend las incluye con with() */
+  imagenes?: ImagenProductoSimple[];
 }
 
 /**

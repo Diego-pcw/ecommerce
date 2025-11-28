@@ -13,6 +13,7 @@ import UserHome from "./pages/UserHome";
 
 // 🧱 Layout global
 import Layout from "./components/Layout";
+import SobreNosotros from "./components/home/SobreNosotros";
 
 // 🔒 Rutas protegidas
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -25,7 +26,7 @@ import CategoriaDetail from "./pages/categorias/CategoriaDetail";
 
 // 📦 Productos (solo admin)
 import ProductosList from "./pages/productos/ProductosList";
-import ProductoDetail from "./pages/productos/ProductoDetail";
+//import ProductoDetail from "./pages/productos/ProductoDetail";
 import ProductoCreate from "./pages/productos/ProductoCreate";
 import ProductoEdit from "./pages/productos/ProductoEdit";
 import CatalogoProduct from "./pages/productos/CatalogoProduct";
@@ -83,6 +84,7 @@ export default function Router() {
         <Route element={<Layout />}>
           {/* Página principal */}
           <Route path="/" element={<UserHome />} />
+          <Route path="/SobreNosotros" element={<SobreNosotros />} />
           <Route path="/catalogo" element={<CatalogoProduct />} />
 
           {/* Rutas del carrito (públicas, accesibles tanto por invitados como por usuarios) */}

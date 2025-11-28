@@ -1,219 +1,691 @@
-/* 🗂️ src/styles/home.shared.css */
-/* Estilos para todas las secciones de la página de inicio (UserHome) */
+/* 🏍️ src/styles/home.shared.css */
+/* Diseño Premium para Biker Wolf - Estilo E-commerce Moderno */
 
-/* ------------------------- */
-/* CONTENEDOR DE SECCIONES
-/* ------------------------- */
+/* ============================================ */
+/* 🎨 VARIABLES DE COLOR Y DISEÑO */
+/* ============================================ */
+:root {
+  --color-primary: #FFD700;
+  --color-primary-dark: #FFA500;
+  --color-secondary: #1a1a1a;
+  --color-accent: #FF6B00;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #6b7280;
+  --color-border: #e5e7eb;
+  --color-bg-light: #f9fafb;
+  --color-bg-white: #ffffff;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.15s ease;
+}
+
+/* ============================================ */
+/* 🌟 WRAPPER PRINCIPAL - FONDO DINÁMICO */
+/* ============================================ */
+.home-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  
+  /* 🎨 Fondo base con gradiente sutil */
+  background: linear-gradient(
+    180deg,
+    #f9fafb 0%,
+    #ffffff 20%,
+    #f9fafb 40%,
+    #ffffff 60%,
+    #f9fafb 80%,
+    #ffffff 100%
+  );
+  
+  /* ✨ Patrón de velocidad motociclística */
+  background-image:
+    /* Textura de asfalto sutil */
+    radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, rgba(255, 107, 0, 0.02) 0%, transparent 50%),
+    /* Líneas de velocidad dinámicas */
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 40px,
+      rgba(255, 215, 0, 0.015) 40px,
+      rgba(255, 215, 0, 0.015) 80px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 60px,
+      rgba(0, 0, 0, 0.008) 60px,
+      rgba(0, 0, 0, 0.008) 120px
+    ),
+    /* Puntos de textura */
+    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+  
+  background-size: 
+    cover,
+    cover,
+    100% 100%,
+    100% 100%,
+    20px 20px;
+  
+  background-attachment: fixed, fixed, scroll, scroll, scroll;
+  animation: subtleShift 20s ease-in-out infinite alternate;
+}
+
+@keyframes subtleShift {
+  0% {
+    background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0 0;
+  }
+  100% {
+    background-position: 100% 100%, 100% 100%, 0% 0%, 0% 0%, 20px 20px;
+  }
+}
+
+/* ============================================ */
+/* 📦 CONTENEDOR DE SECCIONES */
+/* ============================================ */
 .home-section {
   width: 100%;
   padding: 4rem 1.5rem;
   box-sizing: border-box;
-}
-
-/* Título de sección reutilizable */
-.home-section-title {
-  font-size: var(--font-size-xxl);
-  font-weight: 700;
-  color: var(--color-text-primary);
-  text-align: center;
-  margin-bottom: 3rem;
-}
-.home-section-title span {
-  color: var(--color-primary-dark);
-}
-
-/* Contenedor de grillas */
-.home-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-/* ------------------------- */
-/* HERO BANNER
-/* ------------------------- */
-.hero-banner {
   position: relative;
-  padding: 6rem 1.5rem;
-  background-image: linear-gradient(
-      rgba(26, 26, 26, 0.7),
-      rgba(26, 26, 26, 0.7)
-    ),
-    url('https://img.freepik.com/psd-premium/motocicleta-palabra-honda-parte-posterior_1072372-15162.jpg?semt=ais_hybrid&w=740&q=80');
-  background-size: cover;
-  background-position: center;
-  border-radius: var(--border-radius-lg);
-  margin: 1.5rem; /* Margen para que se vea el borde redondeado */
-  overflow: hidden;
+  animation: fadeInUp 0.8s ease-out;
 }
 
-.hero-content {
-  position: relative;
-  z-index: 10;
-  color: var(--color-surface);
-  text-align: center;
-  max-width: 700px;
-  margin: 0 auto;
-}
-
-.hero-title {
-  font-size: 3.5rem;
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: 1.5rem;
-}
-.hero-title span {
-  color: var(--color-primary);
-}
-
-.hero-subtitle {
-  font-size: var(--font-size-lg);
-  color: #e5e7eb; /* color-border (un gris claro) */
-  margin-bottom: 2.5rem;
-  line-height: 1.7;
-}
-
-.hero-actions {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-/* Cinta Promocional */
-.hero-promo-badge {
-  display: inline-block;
-  background: var(--color-primary);
-  padding: 0.4rem 1rem;
-  border-radius: 50px;
-  font-size: 0.85rem;
-  margin-bottom: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  color: #fff;
-}
-
-/* ------------------------- */
-/* PROMOCIONES DESTACADAS
-/* ------------------------- */
-.promo-highlight-banner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2.5rem;
-  background-color: var(--color-primary);
-  border-radius: var(--border-radius-lg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: 1.5rem;
-  box-shadow: var(--shadow-lg);
-}
-@media (min-width: 768px) {
-  .promo-highlight-banner {
-    flex-direction: row;
-    justify-content: space-between;
-    text-align: left;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.promo-highlight-banner p {
-  font-size: var(--font-size-xl);
-  font-weight: 600;
-  color: var(--color-primary-contrast);
-  margin: 0;
-  line-height: 1.4;
-}
-.promo-highlight-banner .btn {
-  background-color: var(--color-text-primary);
-  color: var(--color-surface);
-  flex-shrink: 0; /* Evita que el botón se encoja */
-}
-.promo-highlight-banner .btn:hover {
-  background-color: #000;
-  color: var(--color-primary);
+/* 🏍️ src/styles/home.shared.css */
+/* Diseño Premium para Biker Wolf - Estilo E-commerce Moderno */
+
+/* ============================================ */
+/* 🎨 VARIABLES DE COLOR Y DISEÑO */
+/* ============================================ */
+:root {
+  --color-primary: #FFD700;
+  --color-primary-dark: #FFA500;
+  --color-secondary: #1a1a1a;
+  --color-accent: #FF6B00;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #6b7280;
+  --color-border: #e5e7eb;
+  --color-bg-light: #f9fafb;
+  --color-bg-white: #ffffff;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.15s ease;
 }
 
-/* ------------------------- */
-/* PRODUCTOS/CATEGORÍAS (Tarjetas)
-/* ------------------------- */
-.product-card-simple {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-sm);
+/* ============================================ */
+/* 🌟 WRAPPER PRINCIPAL - FONDO DINÁMICO */
+/* ============================================ */
+.home-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  
+  /* 🎨 Fondo base con gradiente sutil */
+  background: linear-gradient(
+    180deg,
+    #f9fafb 0%,
+    #ffffff 20%,
+    #f9fafb 40%,
+    #ffffff 60%,
+    #f9fafb 80%,
+    #ffffff 100%
+  );
+  
+  /* ✨ Patrón de velocidad motociclística */
+  background-image:
+    /* Textura de asfalto sutil */
+    radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, rgba(255, 107, 0, 0.02) 0%, transparent 50%),
+    /* Líneas de velocidad dinámicas */
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 40px,
+      rgba(255, 215, 0, 0.015) 40px,
+      rgba(255, 215, 0, 0.015) 80px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 60px,
+      rgba(0, 0, 0, 0.008) 60px,
+      rgba(0, 0, 0, 0.008) 120px
+    ),
+    /* Puntos de textura */
+    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+  
+  background-size: 
+    cover,
+    cover,
+    100% 100%,
+    100% 100%,
+    20px 20px;
+  
+  background-attachment: fixed, fixed, scroll, scroll, scroll;
+  animation: subtleShift 20s ease-in-out infinite alternate;
+}
+
+@keyframes subtleShift {
+  0% {
+    background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0 0;
+  }
+  100% {
+    background-position: 100% 100%, 100% 100%, 0% 0%, 0% 0%, 20px 20px;
+  }
+}
+
+/* ============================================ */
+/* 📦 CONTENEDOR DE SECCIONES */
+/* ============================================ */
+.home-section {
+  width: 100%;
+  padding: 4rem 1.5rem;
+  box-sizing: border-box;
+  position: relative;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Decoración entre secciones con efecto carretera */
+.home-section:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1400px;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 215, 0, 0.1) 20%,
+    rgba(255, 215, 0, 0.3) 50%,
+    rgba(255, 215, 0, 0.1) 80%,
+    transparent 100%
+  );
+}
+
+/* Efecto parallax sutil en secciones alternas */
+.home-section:nth-child(even) {
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(255, 215, 0, 0.02) 0%, transparent 50%);
+}
+
+.home-section:nth-child(odd) {
+  background-image: 
+    radial-gradient(circle at 90% 80%, rgba(255, 107, 0, 0.02) 0%, transparent 50%);
+}
+
+/* ============================================ */
+/* 🏷️ TÍTULOS DE SECCIÓN - ESTILO PREMIUM */
+/* ============================================ */
+.home-section-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  color: var(--color-text-primary);
+  text-align: center;
+  margin-bottom: 3rem;
+  letter-spacing: -1px;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  text-transform: uppercase;
+  
+  /* Efecto de texto con sombra sutil */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.home-section-title span {
+  color: var(--color-primary);
+  position: relative;
+  display: inline-block;
+  
+  /* Efecto de destello en hover */
   transition: var(--transition-base);
+}
+
+.home-section-title span::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -10px;
+  right: -10px;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 215, 0, 0.1),
+    transparent
+  );
+  transform: translateY(-50%) scaleX(0);
+  transition: transform 0.6s ease;
+  z-index: -1;
+}
+
+.home-section-title:hover span::before {
+  transform: translateY(-50%) scaleX(1);
+}
+
+/* Línea decorativa bajo el título */
+.home-section-title::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--color-primary-dark),
+    var(--color-primary),
+    var(--color-accent)
+  );
+  margin: 1.5rem auto 0;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scaleX(1.1);
+  }
+}
+
+/* ============================================ */
+/* 📐 GRILLAS DE CONTENIDO */
+/* ============================================ */
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Grid especial para productos destacados (más compacto) */
+.home-grid--products {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Grid para categorías (más ancho) */
+.home-grid--categories {
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2.5rem;
+}
+
+/* ============================================ */
+/* 🎯 SECCIÓN DE MARCAS (FONDO DIFERENCIADO) */
+/* ============================================ */
+.brands-section {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #f9fafb 50%,
+    #ffffff 100%
+  );
+  border-top: 1px solid rgba(255, 215, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+  position: relative;
   overflow: hidden;
 }
-.product-card-simple:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-}
-.product-card-simple img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  background-color: var(--color-bg);
-}
-.product-card-simple-content {
-  padding: 1.5rem;
-}
-.product-card-simple h3 {
-  font-size: var(--font-size-lg);
-  font-weight: 600;
-  color: var(--color-text-primary);
-  margin-bottom: 0.5rem;
-}
-.product-card-simple p {
-  font-size: var(--font-size-md);
-  font-weight: 600;
-  color: var(--color-accent);
+
+.brands-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 215, 0, 0.03) 0%,
+    transparent 70%
+  );
+  animation: rotateBg 30s linear infinite;
+  pointer-events: none;
 }
 
-/* Tarjeta de Categoría */
-.category-card-simple {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-sm);
+@keyframes rotateBg {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================ */
+/* 🎨 CARDS Y ELEMENTOS INTERACTIVOS */
+/* ============================================ */
+.card-hover-effect {
   transition: var(--transition-base);
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  text-decoration: none;
-}
-.category-card-simple:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--color-primary);
-}
-.category-card-icon-wrapper {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background-color: var(--color-bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-primary-dark);
-  transition: var(--transition-fast);
-}
-.category-card-simple:hover .category-card-icon-wrapper {
-  background-color: var(--color-primary-light);
-}
-.category-card-simple p {
-  font-size: var(--font-size-md);
-  font-weight: 600;
-  color: var(--color-text-primary);
+  position: relative;
+  overflow: hidden;
 }
 
-/* ------------------------- */
-/* CONTACTO (Reutilizado)
-/* ------------------------- */
-/* .contact-form-container, etc. ya están definidos */
+.card-hover-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 215, 0, 0.1),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.card-hover-effect:hover::before {
+  left: 100%;
+}
+
+.card-hover-effect:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+/* ============================================ */
+/* 🔥 EFECTOS ESPECIALES PARA PROMOCIONES */
+/* ============================================ */
+.promo-glow {
+  position: relative;
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 20px rgba(255, 215, 0, 0.3),
+      0 0 40px rgba(255, 215, 0, 0.1);
+  }
+  50% {
+    box-shadow: 
+      0 0 30px rgba(255, 215, 0, 0.5),
+      0 0 60px rgba(255, 215, 0, 0.2);
+  }
+}
+
+/* ============================================ */
+/* 📱 RESPONSIVE DESIGN */
+/* ============================================ */
+@media (max-width: 1024px) {
+  .home-section {
+    padding: 3rem 1rem;
+  }
+  
+  .home-section-title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    margin-bottom: 2.5rem;
+  }
+  
+  .home-grid {
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-section {
+    padding: 2.5rem 1rem;
+  }
+  
+  .home-section-title {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    margin-bottom: 2rem;
+  }
+  
+  .home-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+  }
+  
+  .home-section-title::after {
+    width: 60px;
+    height: 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-section {
+    padding: 2rem 0.75rem;
+  }
+  
+  .home-section-title {
+    font-size: clamp(1.25rem, 6vw, 1.75rem);
+    margin-bottom: 1.5rem;
+  }
+  
+  .home-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* ============================================ */
+/* ⚡ ANIMACIONES DE ENTRADA */
+/* ============================================ */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-in-left {
+  animation: slideInLeft 0.6s ease-out;
+}
+
+.animate-in-right {
+  animation: slideInRight 0.6s ease-out;
+}
+
+/* ============================================ */
+/* 📦 CONTENEDORES DE SECCIÓN */
+/* ============================================ */
+.section-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* ============================================ */
+/* 🎯 SECCIONES ESPECÍFICAS */
+/* ============================================ */
+.hero-section {
+  margin-bottom: 0;
+  padding: 0;
+}
+
+.promo-section {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 215, 0, 0.03) 0%,
+    rgba(255, 107, 0, 0.03) 100%
+  );
+  position: relative;
+  overflow: hidden;
+}
+
+.promo-section::before {
+  content: '🔥';
+  position: absolute;
+  top: -20px;
+  right: 5%;
+  font-size: 120px;
+  opacity: 0.05;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+}
+
+.products-section {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 100%
+  );
+}
+
+.mix-section {
+  position: relative;
+}
+
+.mix-section::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 215, 0, 0.08) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.categories-section {
+  margin: 3rem 0;
+}
+
+.reviews-section {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 215, 0, 0.02) 0%,
+    rgba(255, 107, 0, 0.02) 100%
+  );
+}
+
+.about-section {
+  box-shadow: inset 0 10px 30px rgba(0, 0, 0, 0.02);
+}
+
+.contact-section {
+  background: linear-gradient(
+    180deg,
+    #f9fafb 0%,
+    #ffffff 50%,
+    #f9fafb 100%
+  );
+  padding-bottom: 5rem;
+}
+
+/* ============================================ */
+/* 🎯 UTILIDADES ESPECIALES */
+/* ============================================ */
+.bg-accent-gradient {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 215, 0, 0.05) 0%,
+    rgba(255, 107, 0, 0.05) 100%
+  );
+}
+
+.text-gradient {
+  background: linear-gradient(
+    90deg,
+    var(--color-primary-dark),
+    var(--color-primary),
+    var(--color-accent)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Efecto de brillo en botones importantes */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 70%
+  );
+  transform: rotate(45deg);
+  animation: shine 3s ease-in-out infinite;
+}
+
+@keyframes shine {
+  0% {
+    left: -50%;
+  }
+  100% {
+    left: 150%;
+  }
+}

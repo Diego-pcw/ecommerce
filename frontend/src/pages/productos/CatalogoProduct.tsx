@@ -14,7 +14,6 @@ import {
   Loader2,
   ShoppingBag,
 } from 'lucide-react';
-
 import '../../styles/productos/catalogo.shared.css';
 import '../../styles/productos/productos.shared.css';
 

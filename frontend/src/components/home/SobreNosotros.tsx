@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Check, ShieldCheck, Wrench, Truck, ArrowRight } from 'lucide-react';
-import '../../styles/sobrenosotros.shared.css';
+import '../../styles/home/sobrenosotros.shared.css';
 
 const SobreNosotros: React.FC = () => {
   return (
@@ -59,14 +59,14 @@ const SobreNosotros: React.FC = () => {
         <div className="about-gallery">
           {/* Imagen Grande (Taller/Moto principal) */}
           <img 
-            src="https://images.unsplash.com/photo-1558981806-ec527fa84c3d?auto=format&fit=crop&w=800&q=80" 
+            src="https://images.unsplash.com/photo-1579509554343-b76cbc7a1a2e?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
             alt="Taller Biker" 
             className="gallery-img img-main"
           />
           
           {/* Imagen Pequeña 1 (Detalle/Accesorio) */}
           <img 
-            src="https://images.unsplash.com/photo-1622185135505-2d79504399d9?auto=format&fit=crop&w=400&q=80" 
+            src="https://images.unsplash.com/photo-1580341567260-3569b4dc537a?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
             alt="Casco Premium" 
             className="gallery-img img-small-1"
           />

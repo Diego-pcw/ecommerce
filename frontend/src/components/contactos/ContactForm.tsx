@@ -11,7 +11,6 @@ import '../../styles/contactos/contacto.shared.css';
 
 const ContactForm: React.FC = () => {
   const { push } = useToast();
-
   const [mensaje, setMensaje] = useState('');
   const [telefono, setTelefono] = useState('');
   const [canal, setCanal] =

@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Loader2 } from 'lucide-react';
-import '../styles/layout.shared.css'; // Contiene el .loader-container
+import '../styles/home/layout.shared.css'; // Contiene el .loader-container
 
 type Props = {
   requiredRole?: 'admin' | 'cliente';

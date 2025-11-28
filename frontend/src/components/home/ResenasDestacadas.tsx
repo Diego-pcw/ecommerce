@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { resenaService } from '../../services/resena.service.ts';
-import type { Resena } from '../../types/Resena.ts'; // Asegúrate de tener este tipo o usa 'any' temporalmente
 import { Star, Quote, ShoppingBag, Loader2, User } from 'lucide-react';
 import '../../styles/resenas/resenadestac.shared.css';
 

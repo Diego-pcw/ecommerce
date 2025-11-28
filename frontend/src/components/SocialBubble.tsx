@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MessageSquare, Facebook, Instagram, X } from 'lucide-react';
-import '../styles/layout.shared.css';
+import '../styles/home/socialbubble.shared.css';
 
 const SocialBubble: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);

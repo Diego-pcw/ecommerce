@@ -6,7 +6,7 @@
   background-color: var(--color-surface);
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
-  /* Un patrón de fondo sutil para darle textura "mecánica" */
+  /* Patrón de fondo sutil */
   background-image: radial-gradient(var(--color-border) 1px, transparent 1px);
   background-size: 20px 20px;
 }
@@ -79,7 +79,7 @@
 .marca-card {
   background-color: white;
   border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-lg);
+  border-radius: 1rem; /* Más redondeado */
   padding: 2rem 1rem;
   display: flex;
   flex-direction: column;
@@ -131,4 +131,12 @@
 .marca-card:hover .marca-name {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Loader */
+.marcas-loading {
+  text-align: center;
+  padding: 3rem;
+  color: var(--color-text-secondary);
+  font-style: italic;
 }

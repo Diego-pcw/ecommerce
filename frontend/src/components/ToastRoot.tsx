@@ -7,7 +7,7 @@ import {
   Info,
   X,
 } from 'lucide-react';
-import '../styles/layout.shared.css';
+import '../styles/home/layout.shared.css';
 
 const ToastRoot: React.FC = () => {
   const { toasts, remove } = useToast();
